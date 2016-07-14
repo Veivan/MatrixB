@@ -3,13 +3,10 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-import inrtfs.IUser;
 import inrtfs.Observable;
 import inrtfs.Observer;
 
 public class Engine implements Observable {
-
-    private List<IUser> accounts;
 
     private List<Observer> observers;
     private String actiontxt;
@@ -34,7 +31,13 @@ public class Engine implements Observable {
             observer.update(actiontxt);
 	}
 
-    public void setUserAction(int user, String actiontxt) {
+	  public void update(MatrixAct act )
+	  {
+	        this.actiontxt = act.ActionTXT;
+	        notifyObservers();
+	  }
+
+	  public void setUserAction(int user, String actiontxt) {
         this.actiontxt = actiontxt;
         notifyObservers();
     }
