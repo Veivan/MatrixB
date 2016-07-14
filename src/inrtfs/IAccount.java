@@ -1,6 +1,9 @@
 package inrtfs;
 
-public interface IUser {
+public interface IAccount {
+	int getAccID();
+	long getLastActivity();
+
 	boolean Auth();
 	// Profile
 	void SetAva();

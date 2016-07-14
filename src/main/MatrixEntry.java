@@ -1,18 +1,29 @@
 package main;
 
+import inrtfs.IAccount;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MatrixEntry {
 
 	public static void main(String[] args) {
-		Brain brain = new Brain();
-		Engine engine = new Engine();
+		List<IAccount> accounts = new ArrayList<IAccount>();
+		ConcreteAcc acc1 = new ConcreteAcc(1);
+		//ConcreteAcc acc2 = new ConcreteAcc(2);
+		accounts.add(acc1);
+		//accounts.add(acc2);
 
-        @SuppressWarnings("unused")
+		Brain brain = new Brain(accounts);
+		Engine engine = new Engine(accounts);
+
+
+		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
-        engine.setUserAction(1, "act1");
-        engine.setUserAction(2, "act2");
-        engine.setUserAction(1, "act3");
+		engine.setUserAction(1, "act1");
+		engine.setUserAction(2, "act2");
+		engine.setUserAction(1, "act3");
 		try {
 			while (true) {
 				Date ndate = new Date();
@@ -24,5 +35,4 @@ public class MatrixEntry {
 			e.printStackTrace();
 		}
 	}
-
 }
