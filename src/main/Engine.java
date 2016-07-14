@@ -3,17 +3,18 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import inrtfs.IUser;
 import inrtfs.Observable;
 import inrtfs.Observer;
 
-public class WeatherData implements Observable {
+public class Engine implements Observable {
+
+    private List<IUser> accounts;
 
     private List<Observer> observers;
-    private float temperature;
-    private float humidity;
-    private int pressure;
-    
-    public WeatherData() {
+    private String actiontxt;
+
+    public Engine() {
         observers = new ArrayList<Observer>();
     }
 
@@ -30,13 +31,11 @@ public class WeatherData implements Observable {
 	@Override
 	public void notifyObservers() {
         for (Observer observer : observers)
-            observer.update(temperature, humidity, pressure);
+            observer.update(actiontxt);
 	}
 
-    public void setMeasurements(float temperature, float humidity, int pressure) {
-        this.temperature = temperature;
-        this.humidity = humidity;
-        this.pressure = pressure;
+    public void setUserAction(int user, String actiontxt) {
+        this.actiontxt = actiontxt;
         notifyObservers();
     }
 }
