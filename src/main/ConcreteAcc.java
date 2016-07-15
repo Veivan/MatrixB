@@ -13,7 +13,10 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> FolwrsList;
     private List<IAccount> FolwngList;
 
+    // Unix time of last action. Set by class methods.
     private long LastActivity;
+    // Unix time of next action. Set by Brain.   
+    public long NextActivity;
 
     public ConcreteAcc(int AccID) {
     	this.AccID = AccID;
