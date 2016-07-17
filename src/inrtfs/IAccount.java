@@ -3,6 +3,7 @@ package inrtfs;
 public interface IAccount {
 	int getAccID();
 	long getLastActivity();
+	boolean IsActive(long moment);
 
 	boolean Auth();
 	// Profile

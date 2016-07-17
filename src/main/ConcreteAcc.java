@@ -9,14 +9,18 @@ public class ConcreteAcc implements IAccount {
     private int TimeZone;
     private int WakeHour = 8; // Begin activity
     private int BedHour = 23; // End activity
+    private int Lounch = 12; // No activity
+    private int Supper = 19; // No activity
     
-	private List<IAccount> FolwrsList;
+    private List<IAccount> FolwrsList;
     private List<IAccount> FolwngList;
 
     // Unix time of last action. Set by class methods.
     private long LastActivity;
     // Unix time of next action. Set by Brain.   
     public long NextActivity;
+
+    public int Tweets2Send = 5; 
 
     public ConcreteAcc(int AccID) {
     	this.AccID = AccID;
@@ -94,6 +98,12 @@ public class ConcreteAcc implements IAccount {
 	@Override
 	public long getLastActivity() {
 		return LastActivity;
+	}
+
+	@Override
+	public boolean IsActive(long moment) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

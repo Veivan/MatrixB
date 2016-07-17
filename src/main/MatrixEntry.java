@@ -15,9 +15,9 @@ public class MatrixEntry {
 		accounts.add(acc1);
 		//accounts.add(acc2);
 
-		Brain brain = new Brain(accounts);
+		Homeworks howmworks = new Homeworks();
+		Brain brain = new Brain(accounts, howmworks);
 		Engine engine = new Engine(accounts);
-
 
 		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
