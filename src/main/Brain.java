@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import jobs.Homeworks;
+
 public class Brain {
 	private List<IAccount> accounts;
 	private Homeworks howmworks;
@@ -39,8 +41,7 @@ public class Brain {
 	// Считать остаток рабочего времени (за минусом обеда)
 	// Считать число оставшихся простых твитов и число заданий.
 	// Равномерно распределить экшэны по оставшемуся времени.
-	private long CalcNextActivity() {
-		Set<Integer> intset = new HashSet<Integer>();
+	private long GetNextActivity() {
 
 		
 		long NextActivity = 0l;

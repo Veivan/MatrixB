@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import settings.Constants;
+import jobs.Homeworks;
+import jobs.JobList;
+
 public class MatrixEntry {
 
 	public static void main(String[] args) {
@@ -15,7 +19,10 @@ public class MatrixEntry {
 		accounts.add(acc1);
 		//accounts.add(acc2);
 
+		// Формирование списков заданий
 		Homeworks howmworks = new Homeworks();
+		MakeHowmworks(howmworks);
+		
 		Brain brain = new Brain(accounts, howmworks);
 		Engine engine = new Engine(accounts);
 
@@ -34,5 +41,17 @@ public class MatrixEntry {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private static void MakeHowmworks(Homeworks howmworks)
+	{
+		JobList ReTweetList = new JobList(Constants.ReTweet, Constants.JobType.ReTweet);
+		JobList TweetList = new JobList(Constants.Tweet, Constants.JobType.Tweet);
+		JobList SetAvaList = new JobList(Constants.SetAva, Constants.JobType.SetAva);
+
+		// Добавлять в класс в порядке приоритета
+		howmworks.HomeworksList.add(ReTweetList);
+		howmworks.HomeworksList.add(TweetList);
+		howmworks.HomeworksList.add(SetAvaList);
 	}
 }
