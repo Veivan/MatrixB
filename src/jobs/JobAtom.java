@@ -12,4 +12,10 @@ public class JobAtom {
 
 	/** Свойство - время выполнения задания. Заполняется при размещении задания в тайминге аккаунта */
 	public Long timestamp = 0l;
+	
+	public JobAtom(int JobID, Constants.JobType Type)
+	{
+		this.JobID = JobID;
+		this.Type = Type;
+	}
 }

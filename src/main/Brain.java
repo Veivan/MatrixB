@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import jobs.Homeworks;
+import jobs.JobAtom;
 import jobs.JobList;
 
 /** Класс наблюдает за списком списков заданий
@@ -18,7 +19,6 @@ import jobs.JobList;
 public class Brain implements Observer{
 	private List<IAccount> accounts;
 	private Homeworks howmworks;
-	private List<JobList> HomeworksList;
 
 	private static final long tick = 5000l; // ms
 	private static final long delay = tick * 1l; // ms
@@ -29,7 +29,7 @@ public class Brain implements Observer{
 		this.howmworks.registerObserver(this);
 	}
 
-	public MatrixAct getAction() {
+/*	public MatrixAct getAction() {
 		// MatrixAct act = new MatrixAct(1, "act1");
 		MatrixAct act = ThinkAboutTweet();
 		return act;
@@ -45,25 +45,18 @@ public class Brain implements Observer{
 		}
 		return act;
 	};
-
-	// Считать остаток рабочего времени (за минусом обеда)
-	// Считать число оставшихся простых твитов и число заданий.
-	// Равномерно распределить экшэны по оставшемуся времени.
-	private long GetNextActivity() {
-
-		
-		long NextActivity = 0l;
-
-		return NextActivity;
-	}
-
-	@Override
-	public void perform(List<JobList> HomeworksList) {
-		this.HomeworksList = HomeworksList;
-	}
+*/
 
 	@Override
 	public void update(List<MatrixAct> actionlist) {
 		// not used		
+	}
+
+	@Override
+	public void perform(List<JobList> homeworks) {
+		for (IAccount acc : accounts) {
+			acc.RebuldAccTiming(homeworks);
+		}
+		
 	}
 }

@@ -1,6 +1,9 @@
 package inrtfs;
 
+import java.util.List;
+
 import jobs.JobAtom;
+import jobs.JobList;
 
 public interface IAccount {
 	int getAccID();
@@ -22,4 +25,5 @@ public interface IAccount {
 	// Lists
 	void Follow(int userID);
 	void UnFollow(int userID);
+	void RebuldAccTiming(List<JobList> homeworks);
 }

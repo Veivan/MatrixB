@@ -1,13 +1,13 @@
 package settings;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
+
+/**
+ * Constants declarations.
+ */
 public final class Constants {
-    /**
-     * Constants declarations.
-     */
-	public static final String CONNECTED_STATUS = "connected";                        // Describes the connection status with the WhatsApp server.
-	public static final String DISCONNECTED_STATUS = "disconnected";                  // Describes the connection status with the WhatsApp server.
-	public static final String UNAUTHORIZED_STATUS = "UNAUTHORIZED";                  // Describes the connection status with the WhatsApp server.
     
     public enum JobType
     {
@@ -16,10 +16,12 @@ public final class Constants {
         SetAva
     }
 
-    // Приоритеты задач и списков задач
+    // Приоритеты списков задач
     public static int SetAva = 0;
     public static int Tweet = 1;
     public static int ReTweet = 2;
+ 
+    public static DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     
     private Constants() {} // make clacc abstract
 }

@@ -14,7 +14,7 @@ public class JobList {
 	/** Свойство - тип */
 	private Constants.JobType Type;
 
-	public List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
+	private List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
 
 	 /** Создает новый объект для хранения списка заданий
      * @param priority - приоритет
@@ -30,6 +30,10 @@ public class JobList {
 
 	public Constants.JobType getType() {
 		return Type;
+	}
+
+	public void AddJob(JobAtom job) {
+		JobAtomList.add(job);		
 	}
 
 }
