@@ -11,18 +11,11 @@ import java.util.List;
 */
 public class Homeworks implements Observable{
 
-	private List<Observer> observers;
+	private List<Observer> observers = new ArrayList<Observer>();
 
-	private int HowmworksCount = 0;
-	
-	public List<JobList> HomeworksList = new ArrayList<JobList>();
+	private List<JobList> HomeworksList = new ArrayList<JobList>();
 	
 	// TODO сделать сортировку списков по убыванию приоритета после добавления списка 
-	
-	public int GetHowmworksCount()
-	{
-		return HowmworksCount;
-	}
 
 	@Override
 	public void registerObserver(Observer o) {
@@ -37,7 +30,11 @@ public class Homeworks implements Observable{
 	@Override
 	public void notifyObservers() {
 		for (Observer observer : observers)
-			observer.update();
+			observer.perform(HomeworksList);
+	}
+
+	public void AddList(JobList list) {
+		HomeworksList.add(list);
 	}
 
 }

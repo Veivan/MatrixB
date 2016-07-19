@@ -1,10 +1,16 @@
 package inrtfs;
 
+import java.util.List;
+
+import jobs.JobList;
+import main.MatrixAct;
+
 public interface Observer {
 
-	/** Используется в обсервере ActionsObserver */
-	void update(String actiontxt);
+	/** Используется в обсервере ActionsObserver - выполняет запуск заданий */
+	void update(List<MatrixAct> actionlist);
     
-	/** Используется в обсервере Brain */
-    void update();
+	/** Используется в обсервере Brain - выполняет переформирование таймингов при изменении списков заданий*/
+    void perform(List<JobList> HomeworksList);
+    
 }

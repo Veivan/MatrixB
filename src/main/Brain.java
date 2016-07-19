@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Set;
 
 import jobs.Homeworks;
+import jobs.JobList;
 
 /** Класс наблюдает за списком списков заданий
  * <b>howmworks</b> для перечня аккаунтов <b>accounts</b>.
@@ -17,6 +18,7 @@ import jobs.Homeworks;
 public class Brain implements Observer{
 	private List<IAccount> accounts;
 	private Homeworks howmworks;
+	private List<JobList> HomeworksList;
 
 	private static final long tick = 5000l; // ms
 	private static final long delay = tick * 1l; // ms
@@ -24,6 +26,7 @@ public class Brain implements Observer{
 	public Brain(List<IAccount> accounts, Homeworks howmworks) {
 		this.accounts = accounts;
 		this.howmworks = howmworks;
+		this.howmworks.registerObserver(this);
 	}
 
 	public MatrixAct getAction() {
@@ -50,22 +53,17 @@ public class Brain implements Observer{
 
 		
 		long NextActivity = 0l;
-		if (howmworks.GetHowmworksCount() == 0) {
-			Random random = new Random();
 
-			int tickscnt = random.nextInt(3);
-		}
 		return NextActivity;
 	}
 
 	@Override
-	public void update(String actiontxt) {
-		// not used		
+	public void perform(List<JobList> HomeworksList) {
+		this.HomeworksList = HomeworksList;
 	}
 
 	@Override
-	public void update() {
-		// TODO Auto-generated method stub
-		
+	public void update(List<MatrixAct> actionlist) {
+		// not used		
 	}
 }

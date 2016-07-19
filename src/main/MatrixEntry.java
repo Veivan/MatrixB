@@ -23,9 +23,13 @@ public class MatrixEntry {
 		Homeworks howmworks = new Homeworks();
 		MakeHowmworks(howmworks);
 		
+		@SuppressWarnings("unused")
 		Brain brain = new Brain(accounts, howmworks);
 		Engine engine = new Engine(accounts);
 
+		// Запустить формирование тайминга
+		howmworks.notifyObservers();
+		
 		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
 		engine.setUserAction(1, "act1");
@@ -35,8 +39,8 @@ public class MatrixEntry {
 			while (true) {
 				Date ndate = new Date();
 				System.out.println(ndate);
-				
-				engine.update(brain.getAction());
+				long moment = System.currentTimeMillis();
+				engine.ReadTimings(moment);
 				
 				Thread.sleep(5 * 1000);
 			}
@@ -52,8 +56,8 @@ public class MatrixEntry {
 		JobList SetAvaList = new JobList(Constants.SetAva, Constants.JobType.SetAva);
 
 		// Добавлять в класс в порядке приоритета
-		howmworks.HomeworksList.add(ReTweetList);
-		howmworks.HomeworksList.add(TweetList);
-		howmworks.HomeworksList.add(SetAvaList);
+		howmworks.AddList(ReTweetList);
+		howmworks.AddList(TweetList);
+		howmworks.AddList(SetAvaList);
 	}
 }

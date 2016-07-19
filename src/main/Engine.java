@@ -16,10 +16,9 @@ import jobs.JobAtom;
 public class Engine implements Observable {
 	private List<IAccount> accounts;
 
-	public List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
+	private List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
 
 	private List<Observer> observers;
-	private String actiontxt;
 
 	public Engine(List<IAccount> accounts) {
 		this.accounts = accounts;
@@ -39,31 +38,25 @@ public class Engine implements Observable {
 	@Override
 	public void notifyObservers() {
 		for (Observer observer : observers)
-			observer.update(actiontxt);
+			observer.update(MatrixActList);
 	}
 
-	public void ReadTimings() {
+	public void ReadTimings(long moment) {
 		MatrixActList.clear();
 		for (IAccount acc : accounts) {
-			long moment = System.currentTimeMillis();
 			JobAtom job = acc.getTimedJob(moment);
 			if (job != null) {
 				MatrixAct act = new MatrixAct(job, acc);
+				MatrixActList.add(act);
+				notifyObservers();
 			}
 		}
 	}
 
-	public void update(MatrixAct act) {
-		if (act != null) {
-			this.actiontxt = act.ActionTXT;
-			ConcreteAcc acc = (ConcreteAcc) accounts.get(0);// act.AccID
-			acc.Tweet("ww");
-			notifyObservers();
-		}
-	}
-
 	public void setUserAction(int user, String actiontxt) {
-		this.actiontxt = actiontxt;
+		MatrixActList.clear();
+		MatrixAct act = new MatrixAct(0, "qq");
+		MatrixActList.add(act);
 		notifyObservers();
 	}
 }

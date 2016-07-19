@@ -1,11 +1,16 @@
 package main;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jobs.JobList;
 import inrtfs.Observer;
 
 public class ActionsObserver implements Observer {
 
 	private Engine engine;
-	private String actiontxt;
+
+	List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
 
 	public ActionsObserver(Engine engine) {
 		this.engine = engine;
@@ -13,18 +18,25 @@ public class ActionsObserver implements Observer {
 	}
 
 	@Override
-	public void update(String actiontxt) {
-		this.actiontxt = actiontxt;
-		display();
+	public void update(List<MatrixAct> actionlist) {
+		MatrixActList.addAll(actionlist);
+		// TODO Здесь надо в потоках запускать выполнение каждого MatrixAct
+		for (MatrixAct act : actionlist) {
+			execute(act);
+		}
+	}
+
+	public void execute(MatrixAct act) {
+		System.out.printf("Action: %s \n", act.ActionTXT);
+		/*
+		 * ConcreteAcc acc = (ConcreteAcc) accounts.get(0);// act.AccID
+		 * acc.Tweet("ww");
+		 */
 	}
 
 	@Override
-	public void update() {
-		// not used		
-	}
-
-	public void display() {
-		System.out.printf("Action: %s \n", actiontxt);
+	public void perform(List<JobList> HomeworksList) {
+		// not used
 	}
 
 }
