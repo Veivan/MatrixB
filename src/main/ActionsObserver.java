@@ -13,14 +13,14 @@ public class ActionsObserver implements Observer {
 	}
 
 	@Override
-	public void update(float temperature, float humidity, int pressure) {
+	public void update(String actiontxt) {
+		this.actiontxt = actiontxt;
 		display();
 	}
 
 	@Override
-	public void update(String actiontxt) {
-		this.actiontxt = actiontxt;
-		display();
+	public void update() {
+		// not used		
 	}
 
 	public void display() {

@@ -1,9 +1,14 @@
 package inrtfs;
 
+import jobs.JobAtom;
+
 public interface IAccount {
 	int getAccID();
 	long getLastActivity();
 	boolean IsActive(long moment);
+	
+	/** Метод - получает из тайминга задание, соответствующее по времени <b>moment</b>.*/
+	JobAtom getTimedJob(long moment);
 
 	boolean Auth();
 	// Profile

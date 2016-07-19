@@ -35,7 +35,9 @@ public class MatrixEntry {
 			while (true) {
 				Date ndate = new Date();
 				System.out.println(ndate);
+				
 				engine.update(brain.getAction());
+				
 				Thread.sleep(5 * 1000);
 			}
 		} catch (InterruptedException e) {

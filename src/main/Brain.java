@@ -1,6 +1,7 @@
 package main;
 
 import inrtfs.IAccount;
+import inrtfs.Observer;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +10,11 @@ import java.util.Set;
 
 import jobs.Homeworks;
 
-public class Brain {
+/** Класс наблюдает за списком списков заданий
+ * <b>howmworks</b> для перечня аккаунтов <b>accounts</b>.
+ * При изменении <b>howmworks</b> производит пересчёт таймингов для <b>accounts</b>.
+*/
+public class Brain implements Observer{
 	private List<IAccount> accounts;
 	private Homeworks howmworks;
 
@@ -51,5 +56,16 @@ public class Brain {
 			int tickscnt = random.nextInt(3);
 		}
 		return NextActivity;
+	}
+
+	@Override
+	public void update(String actiontxt) {
+		// not used		
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 }

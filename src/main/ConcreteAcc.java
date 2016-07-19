@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
+import jobs.JobAtom;
 import inrtfs.IAccount;
 
 public class ConcreteAcc implements IAccount {
@@ -27,6 +28,7 @@ public class ConcreteAcc implements IAccount {
 
 	private List<IAccount> FolwrsList;
 	private List<IAccount> FolwngList;
+	private List<IAccount> UnFolwdList;
 
 	// Unix time of last action. Set by class methods.
 	private long LastActivity;
@@ -35,7 +37,9 @@ public class ConcreteAcc implements IAccount {
 
 	public int Tweets2Send = 6; // TODO make count random
 	public ArrayList<Long> Timing = new ArrayList<Long>();
-	
+
+	DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	public ConcreteAcc(int AccID) {
 		this.AccID = AccID;
 		this.LastActivity = System.currentTimeMillis();
@@ -55,23 +59,23 @@ public class ConcreteAcc implements IAccount {
 		myArray = intset.toArray(new Integer[intset.size()]);
 		Arrays.sort(myArray);
 		// Randomize time inside the hour
-		GregorianCalendar date = new GregorianCalendar(TimeZone.getTimeZone(cTimeZone));
+		GregorianCalendar date = new GregorianCalendar(
+				TimeZone.getTimeZone(cTimeZone));
 		for (int i = 0; i < myArray.length; i++) {
 			int h = myArray[i];
-			//System.out.printf("Value: %s \n", String.valueOf(h));
+			// System.out.printf("Value: %s \n", String.valueOf(h));
 			int m = random.nextInt(58) + 1;
-			date.set(Calendar.HOUR_OF_DAY, h); 
+			date.set(Calendar.HOUR_OF_DAY, h);
 			date.set(Calendar.MINUTE, m);
 			date.set(Calendar.SECOND, random.nextInt(58) + 1);
 			Timing.add(date.getTimeInMillis());
 		}
 	}
-	
+
 	public void printTiming() {
-	    DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		for (Long tm : Timing) {
 			Date d = new Date(tm);
-			System.out.printf("%s \n", dfm.format(d));			
+			System.out.printf("%s \n", dfm.format(d));
 		}
 	}
 
@@ -152,6 +156,23 @@ public class ConcreteAcc implements IAccount {
 	public boolean IsActive(long moment) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public JobAtom getTimedJob(long moment) {
+		for (Long tm : Timing) {
+			if (tm <= moment) {
+				Date d = new Date(tm);
+				System.out.printf("%s \n", dfm.format(d));
+			}
+		}
+		return null;
+	}
+
+	/** Метод - удаляет задание из тайминга. */
+	public void RemoveJob(int JobID) {
+		for (Long tm : Timing) {
+		}
 	}
 
 }
