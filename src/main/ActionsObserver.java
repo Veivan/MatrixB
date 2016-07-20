@@ -30,7 +30,7 @@ public class ActionsObserver implements Observer {
 		System.out.printf("Action: %s \n", act.ActionTXT);
 		/*
 		 * ConcreteAcc acc = (ConcreteAcc) accounts.get(0);// act.AccID
-		 * acc.Tweet("ww");
+		 * acc.Twit("ww");
 		 */
 	}
 

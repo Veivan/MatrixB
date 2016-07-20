@@ -29,21 +29,21 @@ public class testTiming {
 
 	private static void MakeHowmworks(Homeworks howmworks) {
 
-		JobList ReTweetList = new JobList(Constants.ReTweet,
-				Constants.JobType.ReTweet);
-		JobList TweetList = new JobList(Constants.Tweet,
-				Constants.JobType.Tweet);
+		JobList ReTwitList = new JobList(Constants.ReTwit,
+				Constants.JobType.ReTwit);
+		JobList TwitList = new JobList(Constants.Twit,
+				Constants.JobType.Twit);
 		JobList SetAvaList = new JobList(Constants.SetAva,
 				Constants.JobType.SetAva);
 
 		for (int i = 0; i < 5; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.Tweet);
-			TweetList.AddJob(job);
+			JobAtom job = new JobAtom(i, Constants.JobType.Twit);
+			TwitList.AddJob(job);
 		}
 
 		// Добавлять в класс в порядке приоритета
-		howmworks.AddList(ReTweetList);
-		howmworks.AddList(TweetList);
+		howmworks.AddList(ReTwitList);
+		howmworks.AddList(TwitList);
 		howmworks.AddList(SetAvaList);
 	}
 

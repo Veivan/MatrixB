@@ -13,8 +13,8 @@ public final class Constants {
     {
         SetAva,
         SetBackgrnd,
-        Tweet,
-        ReTweet,
+        Twit,
+        ReTwit,
         Like,
         Replay,
         Direct,
@@ -23,11 +23,11 @@ public final class Constants {
     }
 
     // Приоритеты списков задач
-    public static int ReTweet = 90;
+    public static int ReTwit = 90;
     public static int Like = 80;
     public static int Replay = 70;
     public static int Direct = 60;
-    public static int Tweet = 50;
+    public static int Twit = 50;
 
     public static int UnFollow = 40;
     public static int Follow = 30;

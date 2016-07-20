@@ -18,17 +18,10 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> FolwngList;
 	private List<IAccount> UnFolwdList;
 
-	// Unix time of last action. Set by class methods.
-	private long LastActivity;
-	// Unix time of next action. Set by Brain.
-	public long NextActivity;
-
 	private Timing timing;
 
 	public ConcreteAcc(int AccID) {
 		this.AccID = AccID;
-		this.LastActivity = System.currentTimeMillis();
-
 		this.regim = new Regimen();
 		this.timing = new Timing(this.cTimeZone, this.regim);
 	}
@@ -45,82 +38,52 @@ public class ConcreteAcc implements IAccount {
 	@Override
 	public boolean Auth() {
 		// TODO Auto-generated method stub
-		LastActivity = System.currentTimeMillis();
 		return true;
 	}
 
 	@Override
 	public void SetAva() {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void SetBackgrnd() {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
-	public void Tweet(String mess) {
+	public void Twit(String mess) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
-	public void ReTweet(int twID, String mess) {
+	public void ReTwit(int twID, String mess) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void Like(int twID) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void Replay(int twID) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void Direct(int twID) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void Follow(int userID) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
 	}
 
 	@Override
 	public void UnFollow(int userID) {
 		// TODO Auto-generated method stub
-
-		LastActivity = System.currentTimeMillis();
-	}
-
-	@Override
-	public long getLastActivity() {
-		return LastActivity;
-	}
-
-	@Override
-	public boolean IsActive(long moment) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
