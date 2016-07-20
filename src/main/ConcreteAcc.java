@@ -3,7 +3,7 @@ package main;
 import java.util.Date;
 import java.util.List;
 
-import settings.Constants;
+import service.Constants;
 import jobs.JobAtom;
 import jobs.JobList;
 import inrtfs.IAccount;
@@ -87,9 +87,16 @@ public class ConcreteAcc implements IAccount {
 	}
 
 	@Override
-	public void Answer(int twID) {
+	public void Replay(int twID) {
 		// TODO Auto-generated method stub
 
+		LastActivity = System.currentTimeMillis();
+	}
+
+	@Override
+	public void Direct(int twID) {
+		// TODO Auto-generated method stub
+		
 		LastActivity = System.currentTimeMillis();
 	}
 

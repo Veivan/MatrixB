@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import settings.Constants;
+import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;

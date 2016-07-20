@@ -1,13 +1,15 @@
 package jobs;
 
+import inrtfs.IAggregate;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import settings.Constants;
+import service.Constants;
 
 /** Класс служит для хранения списка заданий.
 */
-public class JobList {
+public class JobList implements IAggregate {
     /** Свойство - приоритет */
 	private int Priority;
 
@@ -34,6 +36,20 @@ public class JobList {
 
 	public void AddJob(JobAtom job) {
 		JobAtomList.add(job);		
+	}
+
+	@Override
+	public int Count() {
+		return JobAtomList.size();
+	}
+
+	@Override
+	public Object Element(int index) {
+        if (index >= 0 && index < JobAtomList.size())
+        {
+    		return JobAtomList.get(index);
+        }
+		return null;
 	}
 
 }

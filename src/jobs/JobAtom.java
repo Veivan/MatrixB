@@ -1,6 +1,6 @@
 package jobs;
 
-import settings.Constants;
+import service.Constants;
 
 /** Класс описывает единицу задания - твит, ретвит... .
 */

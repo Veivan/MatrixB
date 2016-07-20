@@ -21,7 +21,8 @@ public interface IAccount {
 	void Tweet(String mess);
 	void ReTweet(int twID, String mess);
 	void Like(int twID);
-	void Answer(int twID);
+	void Replay(int twID);
+	void Direct(int twID);
 	// Lists
 	void Follow(int userID);
 	void UnFollow(int userID);

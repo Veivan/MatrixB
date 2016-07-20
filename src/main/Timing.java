@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
-import settings.Constants;
+import service.Constants;
 import jobs.JobAtom;
 import jobs.JobList;
 
@@ -33,11 +33,19 @@ public class Timing implements Iterator<JobAtom>{
 		this.regim = regim;
 	}
 
-	// Считать остаток рабочего времени (за минусом обеда)
-	// Считать число оставшихся простых твитов и число заданий.
-	// Равномерно распределить экшэны по оставшемуся времени.
-
+	// Считать остаток рабочего времени (за минусом обеда и ужина)
+	// Считать число оставшихся заданий.
+	// Равномерно распределить задания по оставшемуся времени.
+	// Приоритет заданий не учитывается
 	public void RebuildTiming(List<JobList> HomeworksList) {
+		// Формируем плоский список заданий
+		for (JobList jobList : HomeworksList) {
+//			for (JobAtom jobAtom : jobList) {
+				
+			//}
+			
+		}
+		
 		Random random = new Random();
 		Set<Integer> intset = new HashSet<Integer>();
 		while (intset.size() < 6) {
