@@ -1,6 +1,5 @@
 package jobs;
 
-import inrtfs.IAggregate;
 import inrtfs.Observable;
 import inrtfs.Observer;
 
@@ -8,13 +7,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import service.InnerListIteratior;
-
 /**
  * Класс - список списков заданий. Списки хранятся в классе в порядке убывания
  * приоритета.
  */
-public class Homeworks implements Observable, Iterable<JobList>, Iterator {
+public class Homeworks implements Observable, Iterable<JobList>, Iterator<JobList> {
 
 	private List<Observer> observers = new ArrayList<Observer>();
 
@@ -37,7 +34,7 @@ public class Homeworks implements Observable, Iterable<JobList>, Iterator {
 	@Override
 	public void notifyObservers() {
 		for (Observer observer : observers)
-			observer.perform(HomeworksList);
+			observer.perform(this);
 	}
 
 	public void AddList(JobList list) {
@@ -55,19 +52,12 @@ public class Homeworks implements Observable, Iterable<JobList>, Iterator {
 	}
 
 	@Override
-	public Object next() {
+	public JobList next() {
 		index++;
 		if (index >= 0 && index <= HomeworksList.size()) {
 			return HomeworksList.get(index-1);
 		}
 		return null;
 	}
-
-	/*
-	 * @Override public int Count() { return HomeworksList.size(); }
-	 * 
-	 * @Override public Object Element(int index) { if (index >= 0 && index <
-	 * HomeworksList.size()) { return HomeworksList.get(index); } return null; }
-	 */
 
 }

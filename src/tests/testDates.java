@@ -28,7 +28,7 @@ public class testDates {
 		System.out.printf("%s \n", dfm.format(d));
 		
 		//GregorianCalendar calendar = new GregorianCalendar(year, month, day);
-		Date hireDay = calendar.getTime();
+		//Date hireDay = calendar.getTime();
 		
 		/*		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG,

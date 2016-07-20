@@ -4,15 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import service.Constants;
-import service.InnerListIteratior;
+import jobs.Homeworks;
 import jobs.JobAtom;
-import jobs.JobList;
 import inrtfs.IAccount;
 
 public class ConcreteAcc implements IAccount {
 	private int AccID;
 	private final String cTimeZone = "GMT+3";
-	
+
 	private Regimen regim = new Regimen();
 
 	private List<IAccount> FolwrsList;
@@ -24,9 +23,7 @@ public class ConcreteAcc implements IAccount {
 	// Unix time of next action. Set by Brain.
 	public long NextActivity;
 
-
 	private Timing timing;
-
 
 	public ConcreteAcc(int AccID) {
 		this.AccID = AccID;
@@ -36,8 +33,8 @@ public class ConcreteAcc implements IAccount {
 		this.timing = new Timing(this.cTimeZone, this.regim);
 	}
 
-	public void RebuldAccTiming(List<JobList> homeworks) {	
-		this.timing.RebuildTiming(homeworks);		
+	public void RebuldAccTiming(Homeworks homeworks) {
+		this.timing.RebuildTiming(homeworks);
 	}
 
 	@Override
@@ -97,7 +94,7 @@ public class ConcreteAcc implements IAccount {
 	@Override
 	public void Direct(int twID) {
 		// TODO Auto-generated method stub
-		
+
 		LastActivity = System.currentTimeMillis();
 	}
 
@@ -128,23 +125,20 @@ public class ConcreteAcc implements IAccount {
 
 	@Override
 	public JobAtom getTimedJob(long moment) {
-		InnerListIteratior iterator = new InnerListIteratior(timing);
-		JobAtom job = (JobAtom) iterator.First();
-		do {
-			if (job != null && job.timestamp <= moment) {
+		for (JobAtom job : timing) {
+			if (job.timestamp <= moment) {
 				Date d = new Date(job.timestamp);
 				System.out.printf("%s \n", Constants.dfm.format(d));
 				return job;
 			}
-			job = (JobAtom)iterator.next();			
-		} while (iterator.hasNext());	
+		}
 		return null;
 	}
 
 	/** Метод - удаляет задание из тайминга. */
 	public void RemoveJob(int JobID) {
-	// TODO	for (Long tm : Timing) {
-		//}
+		// TODO for (Long tm : Timing) {
+		// }
 	}
 
 }

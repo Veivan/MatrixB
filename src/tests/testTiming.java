@@ -23,7 +23,7 @@ public class testTiming {
 
 	@Test
 	public void testRebuildTiming() {
-//		timing.RebuildTiming(howmworks.HomeworksList);
+		timing.RebuildTiming(howmworks);
 		timing.printTiming();
 	}
 
@@ -52,7 +52,6 @@ public class testTiming {
 		MakeHowmworks(howmworks);
 		for (JobList jobList : howmworks) {
 			System.out.printf("Value: %s \n", String.valueOf(jobList.getPriority()));
-			
 		}
 	}
 

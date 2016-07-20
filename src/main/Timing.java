@@ -1,20 +1,18 @@
 package main;
 
-import inrtfs.IAggregate;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
 import service.Constants;
-import service.InnerListIteratior;
+import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
 
@@ -22,13 +20,14 @@ import jobs.JobList;
  * Класс описывает расписание выполнения задний. Реализует интерфейс IAggregate
  * для возможности обхода внутреннего списка с помощью итератора.
  */
-public class Timing implements IAggregate {
+public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	private static final int delay = 3; // мин
 
 	private String timeZone;
 	private Regimen regim;
 
 	private ArrayList<JobAtom> innerTiming = new ArrayList<JobAtom>();
+	private int index = 0;
 
 	public Timing(String timeZone, Regimen regim) {
 		this.timeZone = timeZone;
@@ -44,17 +43,12 @@ public class Timing implements IAggregate {
 	// Считать число оставшихся заданий.
 	// Равномерно распределить задания по оставшемуся времени.
 	// Приоритет заданий не учитывается
-	public void RebuildTiming(List<JobList> HomeworksList) {
+	public void RebuildTiming(Homeworks homeworks) {
 		// Формируем плоский список заданий
-		for (JobList jobList : HomeworksList) {
-			InnerListIteratior iterator = new InnerListIteratior(jobList);
-			JobAtom job = (JobAtom) iterator.First();
-			do {
-				if (job != null) {
-					innerTiming.add(job);
-				}
-				job = (JobAtom) iterator.next();
-			} while (iterator.hasNext());
+		for (JobList jobList : homeworks) {
+			for (JobAtom job : jobList) {
+				innerTiming.add(job);
+			}
 		}
 
 		Random random = new Random();
@@ -75,12 +69,12 @@ public class Timing implements IAggregate {
 			if (myArray[i + 1] - myArray[i] <= delay)
 				myArray[i + 1] += delay;
 		}
-		
+
 		GregorianCalendar date = new GregorianCalendar(
 				TimeZone.getTimeZone(timeZone));
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
-			System.out.printf("Value: %s \n", String.valueOf(t));
+			//System.out.printf("Value: %s \n", String.valueOf(t));
 			int h = t / 60;
 			int m = t % 60;
 			date.set(Calendar.HOUR_OF_DAY, h);
@@ -98,15 +92,21 @@ public class Timing implements IAggregate {
 	}
 
 	@Override
-	public int Count() {
-		return innerTiming.size();
+	public boolean hasNext() {
+		return (index < innerTiming.size());
 	}
 
 	@Override
-	public Object Element(int index) {
-		if (index >= 0 && index < innerTiming.size()) {
-			return innerTiming.get(index);
+	public JobAtom next() {
+		index++;
+		if (index >= 0 && index <= innerTiming.size()) {
+			return innerTiming.get(index - 1);
 		}
 		return null;
+	}
+
+	@Override
+	public Iterator<JobAtom> iterator() {
+		return this;
 	}
 }

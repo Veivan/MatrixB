@@ -2,7 +2,7 @@ package inrtfs;
 
 import java.util.List;
 
-import jobs.JobList;
+import jobs.Homeworks;
 import main.MatrixAct;
 
 public interface Observer {
@@ -11,6 +11,6 @@ public interface Observer {
 	void update(List<MatrixAct> actionlist);
     
 	/** Используется в обсервере Brain - выполняет переформирование таймингов при изменении списков заданий*/
-    void perform(List<JobList> HomeworksList);
+	void perform(Homeworks homeworks);
     
 }

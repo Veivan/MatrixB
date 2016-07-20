@@ -6,7 +6,6 @@ import inrtfs.IAccount;
 import inrtfs.Observer;
 
 import jobs.Homeworks;
-import jobs.JobList;
 
 /**
  * Класс наблюдает за списком списков заданий <b>howmworks</b> для перечня
@@ -24,7 +23,7 @@ public class Brain implements Observer {
 	}
 
 	@Override
-	public void perform(List<JobList> homeworks) {
+	public void perform(Homeworks homeworks) {
 		for (IAccount acc : accounts) {
 			acc.RebuldAccTiming(homeworks);
 		}

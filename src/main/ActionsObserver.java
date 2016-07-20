@@ -3,7 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
-import jobs.JobList;
+import jobs.Homeworks;
 import inrtfs.Observer;
 
 public class ActionsObserver implements Observer {
@@ -35,7 +35,7 @@ public class ActionsObserver implements Observer {
 	}
 
 	@Override
-	public void perform(List<JobList> HomeworksList) {
+	public void perform(Homeworks homeworks) {
 		// not used
 	}
 
