@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import service.Constants;
+import service.InnerListIteratior;
 import jobs.JobAtom;
 import jobs.JobList;
 import inrtfs.IAccount;
@@ -127,15 +128,16 @@ public class ConcreteAcc implements IAccount {
 
 	@Override
 	public JobAtom getTimedJob(long moment) {
-		JobAtom job = timing.First();
+		InnerListIteratior iterator = new InnerListIteratior(timing);
+		JobAtom job = (JobAtom) iterator.First();
 		do {
 			if (job != null && job.timestamp <= moment) {
 				Date d = new Date(job.timestamp);
 				System.out.printf("%s \n", Constants.dfm.format(d));
 				return job;
 			}
-		} while (timing.hasNext());
-		
+			job = (JobAtom)iterator.next();			
+		} while (iterator.hasNext());	
 		return null;
 	}
 

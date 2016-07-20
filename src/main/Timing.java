@@ -1,5 +1,7 @@
 package main;
 
+import inrtfs.IAggregate;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -13,6 +15,7 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import service.Constants;
+import service.InnerListIteratior;
 import jobs.JobAtom;
 import jobs.JobList;
 
@@ -20,7 +23,7 @@ import jobs.JobList;
  * Класс описывает расписание выполнения задний.
  *
  */
-public class Timing implements Iterator<JobAtom>{
+public class Timing implements IAggregate{
 	private String timeZone;
 	private Regimen regim ;
     private int index = -1; // Points to innerTiming position
@@ -40,10 +43,14 @@ public class Timing implements Iterator<JobAtom>{
 	public void RebuildTiming(List<JobList> HomeworksList) {
 		// Формируем плоский список заданий
 		for (JobList jobList : HomeworksList) {
-//			for (JobAtom jobAtom : jobList) {
-				
-			//}
-			
+			InnerListIteratior iterator = new InnerListIteratior(jobList);
+			JobAtom job = (JobAtom)iterator.First();
+			do {
+				if (job != null) {
+					System.out.printf("job %s \n", job.JobID);
+				}
+				job = (JobAtom)iterator.next();			
+			} while (iterator.hasNext());		
 		}
 		
 		Random random = new Random();
@@ -78,28 +85,17 @@ public class Timing implements Iterator<JobAtom>{
 		}
 	}
 
-	public JobAtom First() {
-		if (innerTiming.size() > 0)
-		{
-			index = 0;
-    		return innerTiming.get(index);			
-		}
-		return null;
+	@Override
+	public int Count() {
+		return innerTiming.size();
 	}
 
 	@Override
-	public boolean hasNext() {
-		return (index > -1 || index < innerTiming.size());
-	}
-
-	@Override
-	public JobAtom next() {
-		index++;		
-        if (index < innerTiming.size())
+	public Object Element(int index) {
+        if (index >= 0 && index < innerTiming.size())
         {
     		return innerTiming.get(index);
         }
 		return null;
 	}
-
 }
