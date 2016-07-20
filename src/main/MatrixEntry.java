@@ -13,6 +13,8 @@ import jobs.JobList;
 
 public class MatrixEntry {
 
+	private static final long tick = 5000l; // ms
+
 	public static void main(String[] args) {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		ConcreteAcc acc1 = new ConcreteAcc(1);
@@ -43,7 +45,7 @@ public class MatrixEntry {
 				long moment = System.currentTimeMillis();
 				engine.ReadTimings(moment);
 
-				Thread.sleep(5 * 1000);
+				Thread.sleep(tick);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

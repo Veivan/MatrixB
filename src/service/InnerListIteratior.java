@@ -4,6 +4,10 @@ import inrtfs.IAggregate;
 
 import java.util.Iterator;
 
+/** Реализация паттерна <b>Iterator</b> для объктов с интерфейсом <b>IAggregate</b>.
+ * Реализует обход внутренних списков объктов типа IAggregate.
+*/
+
 public class InnerListIteratior implements Iterator<Object> {
 
     private IAggregate aggr;

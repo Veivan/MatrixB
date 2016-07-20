@@ -20,9 +20,6 @@ public class Brain implements Observer{
 	private List<IAccount> accounts;
 	private Homeworks howmworks;
 
-	private static final long tick = 5000l; // ms
-	private static final long delay = tick * 1l; // ms
-
 	public Brain(List<IAccount> accounts, Homeworks howmworks) {
 		this.accounts = accounts;
 		this.howmworks = howmworks;

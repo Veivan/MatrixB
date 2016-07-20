@@ -13,7 +13,7 @@ public class Homeworks implements Observable{
 
 	private List<Observer> observers = new ArrayList<Observer>();
 
-	private List<JobList> HomeworksList = new ArrayList<JobList>();
+	public List<JobList> HomeworksList = new ArrayList<JobList>();
 	
 	// TODO сделать сортировку списков по убыванию приоритета после добавления списка 
 

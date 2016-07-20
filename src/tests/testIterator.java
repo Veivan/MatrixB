@@ -1,9 +1,5 @@
 package tests;
 
-import static org.junit.Assert.*;
-
-import java.util.Date;
-
 import jobs.JobAtom;
 import jobs.JobList;
 
