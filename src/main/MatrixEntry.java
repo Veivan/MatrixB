@@ -66,7 +66,6 @@ public class MatrixEntry {
 			TwitList.AddJob(job);
 		}
 
-		// Добавлять в класс в порядке приоритета
 		howmworks.AddList(ReTwitList);
 		howmworks.AddList(TwitList);
 		howmworks.AddList(SetAvaList);

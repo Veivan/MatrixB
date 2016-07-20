@@ -8,8 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Класс - список списков заданий. Списки хранятся в классе в порядке убывания
- * приоритета.
+ * Класс - список списков заданий. 
  */
 public class Homeworks implements Observable, Iterable<JobList>, Iterator<JobList> {
 
@@ -17,9 +16,6 @@ public class Homeworks implements Observable, Iterable<JobList>, Iterator<JobLis
 
 	private List<JobList> HomeworksList = new ArrayList<JobList>();
 	private int index = 0;
-
-	// TODO сделать сортировку списков по убыванию приоритета после добавления
-	// списка
 
 	@Override
 	public void registerObserver(Observer o) {

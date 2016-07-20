@@ -24,5 +24,4 @@ public interface ItwClient {
 
 	void UnFollow(int userID);
 
-
 }
