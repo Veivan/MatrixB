@@ -36,57 +36,6 @@ public class ConcreteAcc implements IAccount {
 	}
 
 	@Override
-	public boolean Auth() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	@Override
-	public void SetAva() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void SetBackgrnd() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void Twit(String mess) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void ReTwit(int twID, String mess) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void Like(int twID) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void Replay(int twID) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void Direct(int twID) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void Follow(int userID) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void UnFollow(int userID) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public JobAtom getTimedJob(long moment) {
 		for (JobAtom job : timing) {
 			if (job.timestamp <= moment) {

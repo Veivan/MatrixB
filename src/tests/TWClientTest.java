@@ -28,8 +28,8 @@ public class TWClientTest {
 	}
 
 	@Test
-	public void testDoAuth() {
-		client.DoAuth();
+	public void testAuth() {
+	    Assert.assertEquals(true, client.Auth());
 	}
 
 }
