@@ -11,19 +11,19 @@ import service.Constants;
 import main.Timing;
 
 public class testTiming {
-	
+
 	Homeworks howmworks = new Homeworks();
 	Timing timing;
-	
+
 	@Before
 	public void setUp() throws Exception {
-		 MakeHowmworks(howmworks);
-		 timing = new Timing();
+		MakeHowmworks(howmworks);
+		timing = new Timing();
 	}
 
 	@Test
 	public void testRebuildTiming() {
-		timing.RebuildTiming(howmworks.HomeworksList);
+//		timing.RebuildTiming(howmworks.HomeworksList);
 		timing.printTiming();
 	}
 
@@ -46,4 +46,14 @@ public class testTiming {
 		howmworks.AddList(TweetList);
 		howmworks.AddList(SetAvaList);
 	}
+
+	public static void main(String[] args) {
+		Homeworks howmworks = new Homeworks();
+		MakeHowmworks(howmworks);
+		for (JobList jobList : howmworks) {
+			System.out.printf("Value: %s \n", String.valueOf(jobList.getPriority()));
+			
+		}
+	}
+
 }
