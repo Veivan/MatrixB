@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -16,6 +17,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import service.Constants;
+
 public class TWClient extends Thread {
 
 	static String AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
@@ -24,6 +27,7 @@ public class TWClient extends Thread {
 	static String ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
 
 	private MatrixAct act;
+	private Constants.JobType jobType;
 
 	private String str;
 
@@ -46,11 +50,12 @@ public class TWClient extends Thread {
 
 	public TWClient(MatrixAct act) {
 		this.act = act;
+		this.jobType = act.getJob().Type;
 	}
 
 	@Override
 	public void run() {
-//		System.out.printf("Action: %s \n", act.getActionTXT());
+		// System.out.printf("Action: %s \n", act.getActionTXT());
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
 				ConsumerSecret);
@@ -58,36 +63,31 @@ public class TWClient extends Thread {
 
 		CloseableHttpClient httpclient = HttpClients.custom().build();
 		try {
-			URI uri = new URIBuilder(
-					"https://stream.twitter.com/1.1/statuses/filter.json")
-					//.addParameter("track", "москва")
-					 .addParameter("track", "питер")
-					// .addParameters(listparams)
-					// .setParameters(listparams)
-					.build();
-			HttpGet request = new HttpGet(uri);
-			consumer.sign(request);
-			CloseableHttpResponse response = httpclient.execute(request);
-			try {
-				// System.out.println("----------------------------------------");
-				// System.out.println(response.getStatusLine());
-				String message = response.getStatusLine().toString();
-				System.out.printf("ResponseStatus: %s \n", message);
+			URI uri = MakeURI(this.jobType);
+			if (uri != null) {
+				HttpGet request = new HttpGet(uri);
+				consumer.sign(request);
+				CloseableHttpResponse response = httpclient.execute(request);
+				try {
+					// System.out.println("----------------------------------------");
+					// System.out.println(response.getStatusLine());
+					String message = response.getStatusLine().toString();
+					System.out.printf("ResponseStatus: %s \n", message);
 
-				HttpEntity httpEntity = response.getEntity();
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						httpEntity.getContent()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					if (line.isEmpty())
-						continue;
-					System.out.println(line);
+					HttpEntity httpEntity = response.getEntity();
+					BufferedReader br = new BufferedReader(
+							new InputStreamReader(httpEntity.getContent()));
+					String line;
+					while ((line = br.readLine()) != null) {
+						if (line.isEmpty())
+							continue;
+						System.out.println(line);
+					}
+					EntityUtils.consume(httpEntity);
+				} finally {
+					response.close();
 				}
-				EntityUtils.consume(httpEntity);
-			} finally {
-				response.close();
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -109,7 +109,44 @@ public class TWClient extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
+	private URI MakeURI(Constants.JobType jobType) {
+		URI uri = null;
+		try {
+			switch (jobType) {
+			case SetAva:
+				uri = new URIBuilder(
+						"https://stream.twitter.com/1.1/statuses/filter.json")
+						.addParameter("track", "допинг").build();
+				break;
+			case Twit:
+				uri = new URIBuilder(
+						"https://api.twitter.com/1.1/statuses/update.json")
+						.addParameter("track", "допинг").build();
+				break;
+			case Direct:
+				break;
+			case Follow:
+				break;
+			case Like:
+				break;
+			case ReTwit:
+				break;
+			case Replay:
+				break;
+			case SetBackgrnd:
+				break;
+			case UnFollow:
+				break;
+			default:
+				break;
+			}
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return uri;
+	}
+
 	/*
 	 * @Override public boolean Auth() { ReaderIni keys = new ReaderIni();
 	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
