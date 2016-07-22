@@ -1,12 +1,11 @@
 package main;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import service.ReaderIni;
-import inrtfs.ItwClient;
+import service.Constants.JobType;
 
-public class TWClient implements ItwClient {
+public class TWClient extends Thread {
 
+	private MatrixAct act;
+	
 	private String str;
 
 	public String getData() {
@@ -23,7 +22,17 @@ public class TWClient implements ItwClient {
 		return str;
 	}
 
+	public TWClient(MatrixAct act) {
+		this.act = act;
+	}
+
 	@Override
+	public void run() {
+		System.out.printf("Action: %s \n", act.getActionTXT());
+
+	}
+	
+/*	@Override
 	public boolean Auth() {
 		ReaderIni keys = new ReaderIni();
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
@@ -77,5 +86,5 @@ public class TWClient implements ItwClient {
 		// TODO Auto-generated method stub
 	}
 
-
+*/
 }

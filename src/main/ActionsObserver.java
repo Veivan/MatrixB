@@ -2,15 +2,23 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jobs.Homeworks;
 import inrtfs.Observer;
 
+/**
+ * Класс наблюдает за классом <b>Engine</b>.
+ * При получении списка заданий на выполнение запускает каждое задание в отдельном потоке.
+ * Для управления потоками импользует пул потоков.
+ */
 public class ActionsObserver implements Observer {
 
 	private Engine engine;
 
 	List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
+	ExecutorService cachedPool = Executors.newCachedThreadPool();
 
 	public ActionsObserver(Engine engine) {
 		this.engine = engine;
@@ -20,18 +28,13 @@ public class ActionsObserver implements Observer {
 	@Override
 	public void update(List<MatrixAct> actionlist) {
 		MatrixActList.addAll(actionlist);
-		// TODO Здесь надо в потоках запускать выполнение каждого MatrixAct
 		for (MatrixAct act : actionlist) {
 			execute(act);
 		}
 	}
 
 	public void execute(MatrixAct act) {
-		System.out.printf("Action: %s \n", act.ActionTXT);
-		/*
-		 * ConcreteAcc acc = (ConcreteAcc) accounts.get(0);// act.AccID
-		 * acc.Twit("ww");
-		 */
+		cachedPool.submit(new TWClient(act));
 	}
 
 	@Override
