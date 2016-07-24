@@ -46,6 +46,7 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient() {
+		this.jobType = jobType.Like;
 	}
 
 	public TWClient(MatrixAct act) {
@@ -129,6 +130,8 @@ public class TWClient extends Thread {
 			case Follow:
 				break;
 			case Like:
+				uri = new URIBuilder(
+						"http://geokot.com/reqwinfo/getreqwinfo?").build();
 				break;
 			case ReTwit:
 				break;
