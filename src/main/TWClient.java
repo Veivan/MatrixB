@@ -3,6 +3,11 @@ package main;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -10,11 +15,19 @@ import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import service.Constants;
@@ -46,7 +59,7 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient() {
-		this.jobType = jobType.Like;
+		this.jobType = Constants.JobType.Like;
 	}
 
 	public TWClient(MatrixAct act) {
@@ -62,13 +75,27 @@ public class TWClient extends Thread {
 				ConsumerSecret);
 		consumer.setTokenWithSecret(AccessToken, AccessSecret);
 
-		CloseableHttpClient httpclient = HttpClients.custom().build();
+        Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
+                .register("http", new MyConnectionSocketFactory())
+                .build();
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setConnectionManager(cm)
+                .build();
+		//CloseableHttpClient httpclient = HttpClients.custom().build();
 		try {
-			URI uri = MakeURI(this.jobType);
+            InetAddress sockshost = InetAddress.getByName("212.174.226.105");
+            //sockshost = InetAddress.getByAddress(new byte[] {(byte)212, (byte)174, (byte)226, (byte)105});
+            
+            InetSocketAddress socksaddr = new InetSocketAddress(sockshost, 48111 ); // 212.174.226.105:48111
+            HttpClientContext context = HttpClientContext.create();
+            context.setAttribute("socks.address", socksaddr);
+
+            URI uri = MakeURI(this.jobType);
 			if (uri != null) {
 				HttpGet request = new HttpGet(uri);
 				consumer.sign(request);
-				CloseableHttpResponse response = httpclient.execute(request);
+				CloseableHttpResponse response = httpclient.execute(request, context);
 				try {
 					// System.out.println("----------------------------------------");
 					// System.out.println(response.getStatusLine());
@@ -150,6 +177,39 @@ public class TWClient extends Thread {
 		return uri;
 	}
 
+    static class MyConnectionSocketFactory implements ConnectionSocketFactory {
+
+        public Socket createSocket(final HttpContext context) throws IOException {
+            InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
+            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
+            return new Socket(proxy);
+        }
+
+        public Socket connectSocket(
+                final int connectTimeout,
+                final Socket socket,
+                final HttpHost host,
+                final InetSocketAddress remoteAddress,
+                final InetSocketAddress localAddress,
+                final HttpContext context) throws IOException, ConnectTimeoutException {
+            Socket sock;
+            if (socket != null) {
+                sock = socket;
+            } else {
+                sock = createSocket(context);
+            }
+            if (localAddress != null) {
+                sock.bind(localAddress);
+            }
+            try {
+                sock.connect(remoteAddress, connectTimeout);
+            } catch (SocketTimeoutException ex) {
+                throw new ConnectTimeoutException(ex, host, remoteAddress.getAddress());
+            }
+            return sock;
+        }
+
+    }
 	/*
 	 * @Override public boolean Auth() { ReaderIni keys = new ReaderIni();
 	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
