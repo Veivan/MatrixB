@@ -16,6 +16,7 @@ import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -75,27 +76,40 @@ public class TWClient extends Thread {
 				ConsumerSecret);
 		consumer.setTokenWithSecret(AccessToken, AccessSecret);
 
-        Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
+/* make SOCKS proxy
+         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", new MyConnectionSocketFactory())
                 .build();
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
         CloseableHttpClient httpclient = HttpClients.custom()
                 .setConnectionManager(cm)
-                .build();
-		//CloseableHttpClient httpclient = HttpClients.custom().build();
+                .build(); */
+		
+		CloseableHttpClient httpclient = HttpClients.custom().build();
+		
 		try {
-            InetAddress sockshost = InetAddress.getByName("212.174.226.105");
+          /*  InetAddress sockshost = InetAddress.getByName("212.174.226.105");
             //sockshost = InetAddress.getByAddress(new byte[] {(byte)212, (byte)174, (byte)226, (byte)105});
+            InetSocketAddress socksaddr = new InetSocketAddress(sockshost, 48111 ); */ 
             
-            InetSocketAddress socksaddr = new InetSocketAddress(sockshost, 48111 ); // 212.174.226.105:48111
+      /*      InetSocketAddress socksaddr = new InetSocketAddress("212.174.226.105", 48111 ); */
             HttpClientContext context = HttpClientContext.create();
-            context.setAttribute("socks.address", socksaddr);
+//            context.setAttribute("socks.address", socksaddr); 
 
             URI uri = MakeURI(this.jobType);
 			if (uri != null) {
 				HttpGet request = new HttpGet(uri);
+
+				// make HTTP proxy
+	            HttpHost proxy = new HttpHost("37.187.115.112", 80, "http"); 
+	            RequestConfig config = RequestConfig.custom()
+	                    .setProxy(proxy)
+	                    .build();
+	            request.setConfig(config);
+
 				consumer.sign(request);
 				CloseableHttpResponse response = httpclient.execute(request, context);
+				//CloseableHttpResponse response = httpclient.execute(request);
 				try {
 					// System.out.println("----------------------------------------");
 					// System.out.println(response.getStatusLine());
