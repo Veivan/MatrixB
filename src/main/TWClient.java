@@ -28,10 +28,12 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import service.Constants;
+import service.Constants.ProxyType;
 
 public class TWClient extends Thread {
 
@@ -42,6 +44,11 @@ public class TWClient extends Thread {
 
 	private MatrixAct act;
 	private Constants.JobType jobType;
+
+	private CloseableHttpClient httpclient;
+	private String ip;
+	private int port;
+	private Constants.ProxyType proxyType;
 
 	private String str;
 
@@ -59,8 +66,11 @@ public class TWClient extends Thread {
 		return str;
 	}
 
-	public TWClient() {
+	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
 		this.jobType = Constants.JobType.Like;
+		this.ip = ip;
+		this.port = port;
+		this.proxyType = proxyType;
 	}
 
 	public TWClient(MatrixAct act) {
@@ -76,40 +86,46 @@ public class TWClient extends Thread {
 				ConsumerSecret);
 		consumer.setTokenWithSecret(AccessToken, AccessSecret);
 
-/* make SOCKS proxy
-         Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", new MyConnectionSocketFactory())
-                .build();
-        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
-        CloseableHttpClient httpclient = HttpClients.custom()
-                .setConnectionManager(cm)
-                .build(); */
-		
-		CloseableHttpClient httpclient = HttpClients.custom().build();
-		
-		try {
-          /*  InetAddress sockshost = InetAddress.getByName("212.174.226.105");
-            //sockshost = InetAddress.getByAddress(new byte[] {(byte)212, (byte)174, (byte)226, (byte)105});
-            InetSocketAddress socksaddr = new InetSocketAddress(sockshost, 48111 ); */ 
-            
-      /*      InetSocketAddress socksaddr = new InetSocketAddress("212.174.226.105", 48111 ); */
-            HttpClientContext context = HttpClientContext.create();
-//            context.setAttribute("socks.address", socksaddr); 
+		if (this.proxyType == ProxyType.SOCKS) {
+			// make SOCKS proxy
+			Registry<ConnectionSocketFactory> reg = RegistryBuilder
+					.<ConnectionSocketFactory> create()
+					.register("http", new MyConnectionSocketFactory()).build();
+			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
+					reg);
+			this.httpclient = HttpClients.custom().setConnectionManager(cm)
+					.build();
+		} else
+			this.httpclient = HttpClients.custom().build();
 
-            URI uri = MakeURI(this.jobType);
+		try {
+
+			HttpClientContext context = HttpClientContext.create();
+
+			URI uri = MakeURI(this.jobType);
 			if (uri != null) {
 				HttpGet request = new HttpGet(uri);
 
-				// make HTTP proxy
-	            HttpHost proxy = new HttpHost("37.187.115.112", 80, "http"); 
-	            RequestConfig config = RequestConfig.custom()
-	                    .setProxy(proxy)
-	                    .build();
-	            request.setConfig(config);
-
+				if (this.proxyType == ProxyType.SOCKS) {
+					// InetSocketAddress socksaddr = new
+					// InetSocketAddress("212.174.226.105", 48111);
+					InetSocketAddress socksaddr = new InetSocketAddress(
+							this.ip, this.port);
+					context.setAttribute("socks.address", socksaddr);
+				} else {
+					// make HTTP proxy
+					// HttpHost proxy = new HttpHost("37.187.115.112", 80,
+					// "http");
+					HttpHost proxy = new HttpHost(this.ip, this.port, "http");
+					RequestConfig config = RequestConfig.custom()
+							.setProxy(proxy).build();
+					request.setConfig(config);
+				}
+				request.setHeader("User-Agent", "MySuperUserAgent");
+				
 				consumer.sign(request);
-				CloseableHttpResponse response = httpclient.execute(request, context);
-				//CloseableHttpResponse response = httpclient.execute(request);
+				CloseableHttpResponse response = httpclient.execute(request,
+						context);
 				try {
 					// System.out.println("----------------------------------------");
 					// System.out.println(response.getStatusLine());
@@ -144,7 +160,9 @@ public class TWClient extends Thread {
 
 	public static void main(String[] args) {
 
-		TWClient client = new TWClient();
+		// TWClient client = new TWClient("212.174.226.105", 48111,
+		// ProxyType.SOCKS);
+		TWClient client = new TWClient("37.187.115.112", 80, ProxyType.HTTP);
 		try {
 			client.run();
 		} catch (Exception e) {
@@ -171,8 +189,8 @@ public class TWClient extends Thread {
 			case Follow:
 				break;
 			case Like:
-				uri = new URIBuilder(
-						"http://geokot.com/reqwinfo/getreqwinfo?").build();
+				uri = new URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
+						.build();
 				break;
 			case ReTwit:
 				break;
@@ -191,39 +209,40 @@ public class TWClient extends Thread {
 		return uri;
 	}
 
-    static class MyConnectionSocketFactory implements ConnectionSocketFactory {
+	static class MyConnectionSocketFactory implements ConnectionSocketFactory {
 
-        public Socket createSocket(final HttpContext context) throws IOException {
-            InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
-            Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-            return new Socket(proxy);
-        }
+		public Socket createSocket(final HttpContext context)
+				throws IOException {
+			InetSocketAddress socksaddr = (InetSocketAddress) context
+					.getAttribute("socks.address");
+			Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
+			return new Socket(proxy);
+		}
 
-        public Socket connectSocket(
-                final int connectTimeout,
-                final Socket socket,
-                final HttpHost host,
-                final InetSocketAddress remoteAddress,
-                final InetSocketAddress localAddress,
-                final HttpContext context) throws IOException, ConnectTimeoutException {
-            Socket sock;
-            if (socket != null) {
-                sock = socket;
-            } else {
-                sock = createSocket(context);
-            }
-            if (localAddress != null) {
-                sock.bind(localAddress);
-            }
-            try {
-                sock.connect(remoteAddress, connectTimeout);
-            } catch (SocketTimeoutException ex) {
-                throw new ConnectTimeoutException(ex, host, remoteAddress.getAddress());
-            }
-            return sock;
-        }
+		public Socket connectSocket(final int connectTimeout,
+				final Socket socket, final HttpHost host,
+				final InetSocketAddress remoteAddress,
+				final InetSocketAddress localAddress, final HttpContext context)
+				throws IOException, ConnectTimeoutException {
+			Socket sock;
+			if (socket != null) {
+				sock = socket;
+			} else {
+				sock = createSocket(context);
+			}
+			if (localAddress != null) {
+				sock.bind(localAddress);
+			}
+			try {
+				sock.connect(remoteAddress, connectTimeout);
+			} catch (SocketTimeoutException ex) {
+				throw new ConnectTimeoutException(ex, host,
+						remoteAddress.getAddress());
+			}
+			return sock;
+		}
 
-    }
+	}
 	/*
 	 * @Override public boolean Auth() { ReaderIni keys = new ReaderIni();
 	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,

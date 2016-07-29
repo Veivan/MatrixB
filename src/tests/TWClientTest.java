@@ -12,7 +12,7 @@ public class TWClientTest {
 
 	@Before
 	public void setUp() throws Exception {
-		client = new TWClient();
+//		client = new TWClient();
 		client.setData("MyData");
 	}
 
