@@ -9,7 +9,7 @@ import jobs.JobAtom;
 import inrtfs.IAccount;
 
 public class ConcreteAcc implements IAccount {
-	private int AccID;
+	private long AccID;
 	private final String cTimeZone = "GMT+3";
 
 	private Regimen regim = new Regimen();
@@ -20,7 +20,7 @@ public class ConcreteAcc implements IAccount {
 
 	private Timing timing;
 
-	public ConcreteAcc(int AccID) {
+	public ConcreteAcc(long AccID) {
 		this.AccID = AccID;
 		this.regim = new Regimen();
 		this.timing = new Timing(this.cTimeZone, this.regim);
@@ -31,7 +31,7 @@ public class ConcreteAcc implements IAccount {
 	}
 
 	@Override
-	public int getAccID() {
+	public long getAccID() {
 		return AccID;
 	}
 

@@ -29,14 +29,14 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	private ArrayList<JobAtom> innerTiming = new ArrayList<JobAtom>();
 	private int index = 0;
 
-	public Timing(String timeZone, Regimen regim) {
-		this.timeZone = timeZone;
-		this.regim = regim;
-	}
-
 	public Timing() {
 		this.timeZone = "GMT+3";
 		this.regim = new Regimen();
+	}
+
+	public Timing(String timeZone, Regimen regim) {
+		this.timeZone = timeZone;
+		this.regim = regim;
 	}
 
 	// Считать остаток рабочего времени (за минусом обеда и ужина)
@@ -74,7 +74,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 				TimeZone.getTimeZone(timeZone));
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
-			//System.out.printf("Value: %s \n", String.valueOf(t));
+			// System.out.printf("Value: %s \n", String.valueOf(t));
 			int h = t / 60;
 			int m = t % 60;
 			date.set(Calendar.HOUR_OF_DAY, h);

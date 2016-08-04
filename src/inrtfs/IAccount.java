@@ -4,7 +4,7 @@ import jobs.Homeworks;
 import jobs.JobAtom;
 
 public interface IAccount {
-	int getAccID();
+	long getAccID();
 
 	/**
 	 * Метод - получает из тайминга задание, соответствующее по времени

@@ -1,10 +1,10 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import inrtfs.IAccount;
 import inrtfs.Observer;
-
 import jobs.Homeworks;
 
 /**
@@ -13,15 +13,19 @@ import jobs.Homeworks;
  * таймингов для <b>accounts</b>.
  */
 public class Brain implements Observer {
-	private List<IAccount> accounts;
+	private List<IAccount> accounts = new ArrayList<IAccount>();
 	private Homeworks howmworks;
 
-	public Brain(List<IAccount> accounts, Homeworks howmworks) {
-		this.accounts = accounts;
+	public Brain(Homeworks howmworks) {
 		this.howmworks = howmworks;
 		this.howmworks.registerObserver(this);
 	}
 
+	public void setAccounts(List<IAccount> accounts) {
+		this.accounts.clear();
+		this.accounts.addAll(accounts);
+	}
+	
 	@Override
 	public void perform(Homeworks homeworks) {
 		for (IAccount acc : accounts) {

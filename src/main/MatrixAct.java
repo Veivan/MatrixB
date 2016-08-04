@@ -8,7 +8,7 @@ public class MatrixAct {
 	private JobAtom job;
 	private IAccount acc;
 
-	private int AccID;
+	private long AccID;
 	private String ActionTXT;
 
 	public MatrixAct(int i, String string) {

@@ -14,11 +14,14 @@ import jobs.JobAtom;
  * обхода перечня аккаунтов передаёт внутренний список обсерверу.
  */
 public class Engine implements Observable {
-	private List<IAccount> accounts;
-
+	private List<IAccount> accounts = new ArrayList<IAccount>();
 	private List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
 
 	private List<Observer> observers;
+
+	public Engine() {
+		this.observers = new ArrayList<Observer>();
+	}
 
 	public Engine(List<IAccount> accounts) {
 		this.accounts = accounts;
@@ -53,6 +56,11 @@ public class Engine implements Observable {
 		}
 	}
 
+	public void setAccounts(List<IAccount> accounts) {
+		this.accounts.clear();
+		this.accounts.addAll(accounts);
+	}
+	
 	public void setUserAction(int user, String actiontxt) {
 		MatrixActList.clear();
 		MatrixAct act = new MatrixAct(0, "qq");
