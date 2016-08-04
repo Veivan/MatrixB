@@ -162,6 +162,7 @@ public class TWClient extends Thread {
 
 		// TWClient client = new TWClient("212.174.226.105", 48111, ProxyType.SOCKS);
 		 TWClient client = new TWClient("217.15.206.240", 48111, ProxyType.SOCKS); // RU
+		 //TWClient client = new TWClient("79.105.9.108", 48111, ProxyType.SOCKS); // RU
 		
 		//TWClient client = new TWClient("37.187.115.112", 80, ProxyType.HTTP);
 		//TWClient client = new TWClient("145.255.15.37", 8080, ProxyType.HTTP);

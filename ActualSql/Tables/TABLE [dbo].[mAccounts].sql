@@ -22,6 +22,9 @@ CREATE TABLE [dbo].[mAccounts](
 	[default_profile_image] [bit] NULL,
 	[verified] [bit] NULL,
 	[finsert] [datetime] NULL,
-	[sinsert] [datetime] NULL
+	[sinsert] [datetime] NULL,
+	[email] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[phone] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
 ) ON [PRIMARY]
 

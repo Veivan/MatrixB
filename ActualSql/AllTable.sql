@@ -39,7 +39,10 @@ CREATE TABLE [dbo].[mAccounts](
 	[default_profile_image] [bit] NULL,
 	[verified] [bit] NULL,
 	[finsert] [datetime] NULL,
-	[sinsert] [datetime] NULL
+	[sinsert] [datetime] NULL,
+	[email] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[phone] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
 ) ON [PRIMARY]
 
 
@@ -52,5 +55,14 @@ CREATE TABLE [dbo].[mProxies](
 	[prtypeID] [tinyint] NOT NULL,
 	[id_cn] [int] NOT NULL,
 	[alive] [bit] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mProxyAcc](
+	[acprID] [bigint] IDENTITY(1,1) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[ProxyID] [bigint] NOT NULL
 ) ON [PRIMARY]
 
