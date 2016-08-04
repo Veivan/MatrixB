@@ -22,8 +22,7 @@ public class Brain implements Observer {
 	}
 
 	public void setAccounts(List<IAccount> accounts) {
-		this.accounts.clear();
-		this.accounts.addAll(accounts);
+		this.accounts = accounts;
 	}
 	
 	@Override

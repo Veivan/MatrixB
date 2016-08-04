@@ -45,10 +45,14 @@ public class MatrixEntry {
 			while (true) {
 				Date ndate = new Date();
 				System.out.println(ndate);
-
+				// Accounts refreshing
 				List<IAccount> accounts = dbConnector.getAccounts();
 				brain.setAccounts(accounts);
 				engine.setAccounts(accounts);
+
+				// Homeworks refreshing
+				//dbConnector.getHomeworks();
+				
 				long moment = System.currentTimeMillis();
 				engine.ReadTimings(moment);
 

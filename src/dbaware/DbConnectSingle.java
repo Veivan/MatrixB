@@ -51,7 +51,7 @@ public class DbConnectSingle {
 
 		try {
 			dbConnect();
-			String query = "SELECT [user_id] FROM [dbo].[TwAccounts]";
+			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			ResultSet rs = pstmt.executeQuery();
 

@@ -23,11 +23,6 @@ public class Engine implements Observable {
 		this.observers = new ArrayList<Observer>();
 	}
 
-	public Engine(List<IAccount> accounts) {
-		this.accounts = accounts;
-		this.observers = new ArrayList<Observer>();
-	}
-
 	@Override
 	public void registerObserver(Observer o) {
 		observers.add(o);
@@ -57,8 +52,7 @@ public class Engine implements Observable {
 	}
 
 	public void setAccounts(List<IAccount> accounts) {
-		this.accounts.clear();
-		this.accounts.addAll(accounts);
+		this.accounts = accounts;
 	}
 	
 	public void setUserAction(int user, String actiontxt) {
