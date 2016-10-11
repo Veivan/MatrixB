@@ -79,19 +79,18 @@ public class TWClient extends Thread {
 		this.jobType = act.getJob().Type;
 	}
 
+	static Logger logger = LoggerFactory.getLogger(TWClient.class);
+
 	@Override
 	public void run() {
 		// System.out.printf("Action: %s \n", act.getActionTXT());
 
-		Logger logger = LoggerFactory
-				.getLogger(TWClient.class);
-		logger.debug("Hello world.");
-	    logger.info("Hello World2");
+		logger.info("TWClient run");
 
-	 // print internal state
-	 //   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-	 //   StatusPrinter.print(lc);
-	 		
+		// print internal state
+		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		// StatusPrinter.print(lc);
+
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
 				ConsumerSecret);
 		consumer.setTokenWithSecret(AccessToken, AccessSecret);
@@ -109,7 +108,6 @@ public class TWClient extends Thread {
 			this.httpclient = HttpClients.custom().build();
 
 		try {
-
 			HttpClientContext context = HttpClientContext.create();
 
 			URI uri = MakeURI(this.jobType);
@@ -133,14 +131,17 @@ public class TWClient extends Thread {
 				}
 				request.setHeader("User-Agent", "MySuperUserAgent");
 
-				consumer.sign(request);
+				// При обращении к сайту авторизация не обязательна
+				// consumer.sign(request);
+
 				CloseableHttpResponse response = httpclient.execute(request,
 						context);
 				try {
 					// System.out.println("----------------------------------------");
 					// System.out.println(response.getStatusLine());
 					String message = response.getStatusLine().toString();
-					System.out.printf("ResponseStatus: %s \n", message);
+					// System.out.printf("ResponseStatus: %s \n", message);
+					logger.info("ResponseStatus: {}", message);
 
 					HttpEntity httpEntity = response.getEntity();
 					BufferedReader br = new BufferedReader(
@@ -157,12 +158,14 @@ public class TWClient extends Thread {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("TWClient run thrown exception", e);
+			logger.debug("TWClient run thrown exception", e);
 		} finally {
 			try {
 				httpclient.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("An httpclient.close thrown exception :", e);
+				logger.debug("An httpclient.close thrown exception :", e);
 			}
 		}
 
@@ -172,19 +175,20 @@ public class TWClient extends Thread {
 
 		// TWClient client = new TWClient("212.174.226.105", 48111,
 		// ProxyType.SOCKS);
-		TWClient client = new TWClient("217.15.206.240", 48111, ProxyType.SOCKS); // RU
-		// TWClient client = new TWClient("79.105.9.108", 48111,
+
+		// TWClient client = new TWClient("217.15.206.240", 48111,
+		// ProxyType.SOCKS); // RU
+		// TWClient client = new TWClient("213.79.120.82", 48111,
 		// ProxyType.SOCKS); // RU
 
-		// TWClient client = new TWClient("37.187.115.112", 80, ProxyType.HTTP);
-		// TWClient client = new TWClient("145.255.15.37", 8080,
-		// ProxyType.HTTP);
+		// good 
+		TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
+		// bad
+		// TWClient client = new TWClient("85.26.146.169", 80, ProxyType.HTTP);
 
-		try {
-			client.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		logger.info("TWClient main");
+
+		client.run();
 	}
 
 	private URI MakeURI(Constants.JobType jobType) {
@@ -221,7 +225,8 @@ public class TWClient extends Thread {
 				break;
 			}
 		} catch (URISyntaxException e) {
-			e.printStackTrace();
+			logger.error("MakeURI exception", e);
+			logger.debug("MakeURI exception", e);
 		}
 		return uri;
 	}
