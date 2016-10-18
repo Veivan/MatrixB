@@ -3,6 +3,9 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import inrtfs.IAccount;
 import inrtfs.Observable;
 import inrtfs.Observer;
@@ -18,6 +21,8 @@ public class Engine implements Observable {
 	private List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
 
 	private List<Observer> observers;
+
+	static Logger logger = LoggerFactory.getLogger(Engine.class);
 
 	public Engine() {
 		this.observers = new ArrayList<Observer>();
@@ -41,6 +46,7 @@ public class Engine implements Observable {
 
 	public void ReadTimings(long moment) {
 		MatrixActList.clear();
+		logger.debug("Engine Read Timings");
 		for (IAccount acc : accounts) {
 			JobAtom job = acc.getTimedJob(moment);
 			if (job != null) {
@@ -53,8 +59,10 @@ public class Engine implements Observable {
 
 	public void setAccounts(List<IAccount> accounts) {
 		this.accounts = accounts;
+		logger.debug("Engine Accounts setting");
 	}
 	
+	// for debug only
 	public void setUserAction(int user, String actiontxt) {
 		MatrixActList.clear();
 		MatrixAct act = new MatrixAct(0, "qq");

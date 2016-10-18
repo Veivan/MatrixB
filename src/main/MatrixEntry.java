@@ -2,8 +2,12 @@ package main;
 
 import inrtfs.IAccount;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnectSingle;
 import service.Constants;
@@ -13,15 +17,21 @@ import jobs.JobList;
 
 public class MatrixEntry {
 
+	static Logger logger = LoggerFactory.getLogger(MatrixEntry.class);
 	private static final long tick = 5000l; // ms
 
 	public static void main(String[] args) {
-/*		List<IAccount> accounts = new ArrayList<IAccount>();
+		
+		logger.info("MatrixEntry starting");
+		
+		List<IAccount> accounts;
+		/**/
+		accounts = new ArrayList<IAccount>();
 		ConcreteAcc acc1 = new ConcreteAcc(1);
 		// ConcreteAcc acc2 = new ConcreteAcc(2);
 		accounts.add(acc1);
 		// accounts.add(acc2);
-*/
+
 		// Формирование списков заданий
 		Homeworks howmworks = new Homeworks();
 		MakeHowmworks(howmworks);
@@ -35,18 +45,18 @@ public class MatrixEntry {
 		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
 		
-		/*engine.setUserAction(1, "act1");
-		engine.setUserAction(2, "act2");
+		engine.setUserAction(1, "Like");
+		
+		/*engine.setUserAction(2, "act2");
 		engine.setUserAction(1, "act3"); */
 		
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 
 		try {
 			while (true) {
-				Date ndate = new Date();
-				System.out.println(ndate);
+				logger.debug("MatrixEntry tick : {}", Constants.dfm.format(new Date()));
 				// Accounts refreshing
-				List<IAccount> accounts = dbConnector.getAccounts();
+				//List<IAccount> accounts = dbConnector.getAccounts();
 				brain.setAccounts(accounts);
 				engine.setAccounts(accounts);
 
@@ -59,8 +69,10 @@ public class MatrixEntry {
 				Thread.sleep(tick);
 			}
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error("MatrixEntry cycle exception :", e);
+			logger.debug("MatrixEntry cycle exception :", e);
 		}
+		logger.info("MatrixEntry finishing");
 	}
 
 	private static void MakeHowmworks(Homeworks howmworks) {

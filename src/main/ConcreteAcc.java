@@ -8,6 +8,9 @@ import jobs.Homeworks;
 import jobs.JobAtom;
 import inrtfs.IAccount;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConcreteAcc implements IAccount {
 	private long AccID;
 	private final String cTimeZone = "GMT+3";
@@ -19,6 +22,8 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> UnFolwdList;
 
 	private Timing timing;
+
+	static Logger logger = LoggerFactory.getLogger(ConcreteAcc.class);
 
 	public ConcreteAcc(long AccID) {
 		this.AccID = AccID;
@@ -40,7 +45,8 @@ public class ConcreteAcc implements IAccount {
 		for (JobAtom job : timing) {
 			if (job.timestamp <= moment) {
 				Date d = new Date(job.timestamp);
-				System.out.printf("%s \n", Constants.dfm.format(d));
+				//System.out.printf("%s \n", Constants.dfm.format(d));
+				logger.debug("%s \n", Constants.dfm.format(d));
 				return job;
 			}
 		}

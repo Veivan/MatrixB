@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jobs.Homeworks;
 import inrtfs.Observer;
 
@@ -14,6 +17,8 @@ import inrtfs.Observer;
  * Для управления потоками импользует пул потоков.
  */
 public class ActionsObserver implements Observer {
+
+	static Logger logger = LoggerFactory.getLogger(ActionsObserver.class);
 
 	private Engine engine;
 
@@ -29,6 +34,7 @@ public class ActionsObserver implements Observer {
 	public void update(List<MatrixAct> actionlist) {
 		MatrixActList.addAll(actionlist);
 		for (MatrixAct act : actionlist) {
+			logger.debug("ActionsObserver execute act");
 			execute(act);
 		}
 	}

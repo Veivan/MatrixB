@@ -17,7 +17,7 @@
 	<!--Файловый аппендер -->
 	<appender name="file" class="ch.qos.logback.core.FileAppender">
 		<file>log.log</file>
-		<append>false</append>
+		<append>true</append>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>debug</level>
 			<onMatch>DENY</onMatch>
@@ -39,7 +39,7 @@
 		<appender-ref ref="sout" />
 	</logger>
 
-	<logger name="TWClient.main.src" level="info" additivity="false">
+	<logger name="TWClient.main.src" level="info" additivity="true">
 		<appender-ref ref="file" />
 	</logger>
 
