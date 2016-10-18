@@ -39,15 +39,18 @@ public class MatrixEntry {
 		Brain brain = new Brain(howmworks);
 		Engine engine = new Engine();
 
+		brain.setAccounts(accounts);
+		engine.setAccounts(accounts);
+		
 		// Запустить формирование тайминга
 		howmworks.notifyObservers();
 
 		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
 		
-		engine.setUserAction(1, "Like");
+		/*engine.setUserAction(1, "Like");
 		
-		/*engine.setUserAction(2, "act2");
+		engine.setUserAction(2, "act2");
 		engine.setUserAction(1, "act3"); */
 		
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
@@ -84,8 +87,8 @@ public class MatrixEntry {
 		JobList SetAvaList = new JobList(Constants.SetAva,
 				Constants.JobType.SetAva);
 
-		for (int i = 0; i < 5; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.Twit);
+		for (int i = 0; i < 50; i++) {
+			JobAtom job = new JobAtom(i, Constants.JobType.Like);
 			TwitList.AddJob(job);
 		}
 

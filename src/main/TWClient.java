@@ -68,7 +68,9 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
+		this.act = new MatrixAct(0, "Test");
 		this.jobType = Constants.JobType.Like;
+
 		this.ip = ip;
 		this.port = port;
 		this.proxyType = proxyType;
@@ -77,15 +79,19 @@ public class TWClient extends Thread {
 	public TWClient(MatrixAct act) {
 		this.act = act;
 		this.jobType = act.getJob().Type;
+
+		// DEBUG
+		this.ip = "120.52.73.97";
+		this.port = 80;
+		this.proxyType = ProxyType.HTTP;
 	}
 
 	static Logger logger = LoggerFactory.getLogger(TWClient.class);
 
 	@Override
 	public void run() {
-		// System.out.printf("Action: %s \n", act.getActionTXT());
 
-		logger.info("TWClient run");
+		logger.info("TWClient run Action : {}", act.getActionTXT());
 
 		// print internal state
 		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -181,7 +187,7 @@ public class TWClient extends Thread {
 		// TWClient client = new TWClient("213.79.120.82", 48111,
 		// ProxyType.SOCKS); // RU
 
-		// good 
+		// good
 		TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
 		// bad
 		// TWClient client = new TWClient("85.26.146.169", 80, ProxyType.HTTP);
@@ -210,7 +216,8 @@ public class TWClient extends Thread {
 			case Follow:
 				break;
 			case Like:
-				uri = new URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
+				//uri = new URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
+				uri = new URIBuilder("http://veivan.ucoz.ru")
 						.build();
 				break;
 			case ReTwit:

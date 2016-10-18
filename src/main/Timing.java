@@ -11,6 +11,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
@@ -22,6 +25,7 @@ import jobs.JobList;
  */
 public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	private static final int delay = 3; // мин
+	static Logger logger = LoggerFactory.getLogger(Timing.class);
 
 	private String timeZone;
 	private Regimen regim;
@@ -44,6 +48,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	// Равномерно распределить задания по оставшемуся времени.
 	// Приоритет заданий не учитывается
 	public void RebuildTiming(Homeworks homeworks) {
+		logger.info("Timing  rebuilding");
 		// Формируем плоский список заданий
 		for (JobList jobList : homeworks) {
 			for (JobAtom job : jobList) {
@@ -74,7 +79,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 				TimeZone.getTimeZone(timeZone));
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
-			// System.out.printf("Value: %s \n", String.valueOf(t));
+			//logger.debug("Value: {}", String.valueOf(t));
 			int h = t / 60;
 			int m = t % 60;
 			date.set(Calendar.HOUR_OF_DAY, h);
@@ -82,12 +87,14 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 			date.set(Calendar.SECOND, random.nextInt(58) + 1);
 			innerTiming.get(i).timestamp = date.getTimeInMillis();
 		}
+		
+		printTiming();
 	}
 
 	public void printTiming() {
 		for (JobAtom job : innerTiming) {
 			Date d = new Date(job.timestamp);
-			System.out.printf("%s \n", Constants.dfm.format(d));
+			logger.info("Job at : {}", Constants.dfm.format(d));
 		}
 	}
 

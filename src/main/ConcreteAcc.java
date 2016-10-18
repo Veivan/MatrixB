@@ -45,8 +45,7 @@ public class ConcreteAcc implements IAccount {
 		for (JobAtom job : timing) {
 			if (job.timestamp <= moment) {
 				Date d = new Date(job.timestamp);
-				//System.out.printf("%s \n", Constants.dfm.format(d));
-				logger.debug("%s \n", Constants.dfm.format(d));
+				logger.info("ConcreteAcc found job : {}", Constants.dfm.format(d));
 				return job;
 			}
 		}
