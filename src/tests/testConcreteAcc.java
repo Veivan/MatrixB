@@ -29,14 +29,15 @@ public class testConcreteAcc {
 		Homeworks howmworks = new Homeworks();
 		MakeHowmworks(howmworks);
 		acc.RebuldAccTiming(howmworks);
-		acc.getTimedJob(System.currentTimeMillis());
-
+		long moment = System.currentTimeMillis();
+		while (true) {
+			acc.getTimedJob(moment);
+		}
 	}
-	
+
 	private static void MakeHowmworks(Homeworks howmworks) {
 
-		JobList TwitList = new JobList(Constants.Twit,
-				Constants.JobType.Twit);
+		JobList TwitList = new JobList(Constants.Twit, Constants.JobType.Twit);
 
 		for (int i = 0; i < 50; i++) {
 			JobAtom job = new JobAtom(i, Constants.JobType.Twit);

@@ -31,7 +31,7 @@
 	<!-- Логгеры -->
 	<!-- Корневой логгер -->
 	<root level="info">
-		<appender-ref ref="sout" />
+		<appender-ref ref="file" />
 	</root>
 
 	<!-- Логгер нашего класса -->
