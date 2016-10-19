@@ -43,9 +43,10 @@ public class ConcreteAcc implements IAccount {
 	@Override
 	public JobAtom getTimedJob(long moment) {
 		for (JobAtom job : timing) {
+			logger.info("job : {}, moment : {}", Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
 			if (job.timestamp <= moment) {
 				Date d = new Date(job.timestamp);
-				logger.info("ConcreteAcc found job : {}", Constants.dfm.format(d));
+				logger.info("ConcreteAcc found job : {}, moment : {}", Constants.dfm.format(d), Constants.dfm.format(moment));
 				return job;
 			}
 		}

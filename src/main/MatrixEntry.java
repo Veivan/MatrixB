@@ -3,8 +3,10 @@ package main;
 import inrtfs.IAccount;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,8 @@ public class MatrixEntry {
 
 		try {
 			while (true) {
-				logger.debug("MatrixEntry tick : {}", Constants.dfm.format(new Date()));
+				long moment = System.currentTimeMillis();
+				logger.debug("MatrixEntry tick : {}", Constants.dfm.format(moment));
 				// Accounts refreshing
 				//List<IAccount> accounts = dbConnector.getAccounts();
 				brain.setAccounts(accounts);
@@ -65,8 +68,7 @@ public class MatrixEntry {
 
 				// Homeworks refreshing
 				//dbConnector.getHomeworks();
-				
-				long moment = System.currentTimeMillis();
+							
 				engine.ReadTimings(moment);
 
 				Thread.sleep(tick);

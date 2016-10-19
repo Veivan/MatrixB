@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -144,9 +143,7 @@ public class TWClient extends Thread {
 						context);
 				try {
 					// System.out.println("----------------------------------------");
-					// System.out.println(response.getStatusLine());
 					String message = response.getStatusLine().toString();
-					// System.out.printf("ResponseStatus: %s \n", message);
 					logger.info("ResponseStatus: {}", message);
 
 					HttpEntity httpEntity = response.getEntity();
@@ -193,7 +190,6 @@ public class TWClient extends Thread {
 		// TWClient client = new TWClient("85.26.146.169", 80, ProxyType.HTTP);
 
 		logger.info("TWClient main");
-
 		client.run();
 	}
 
@@ -217,8 +213,7 @@ public class TWClient extends Thread {
 				break;
 			case Like:
 				//uri = new URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
-				uri = new URIBuilder("http://veivan.ucoz.ru")
-						.build();
+				//uri = new URIBuilder("http://veivan.ucoz.ru").build();
 				break;
 			case ReTwit:
 				break;
