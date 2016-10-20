@@ -60,5 +60,9 @@ public class JobList implements Iterable<JobAtom>, Iterator<JobAtom> {
 	public Iterator<JobAtom> iterator() {
 		return this;
 	}
+	
+	public void First() {
+		this.index = 0;
+	}
 
 }

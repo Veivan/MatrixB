@@ -55,5 +55,9 @@ public class Homeworks implements Observable, Iterable<JobList>, Iterator<JobLis
 		}
 		return null;
 	}
+	
+	public void First() {
+		this.index = 0;
+	}
 
 }

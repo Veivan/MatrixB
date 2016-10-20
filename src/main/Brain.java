@@ -35,6 +35,7 @@ public class Brain implements Observer {
 	public void perform(Homeworks homeworks) {
 		for (IAccount acc : accounts) {
 			acc.RebuldAccTiming(homeworks);
+			logger.info("Brain Rebuld Timing for Acc = {}", acc.getAccID());
 		}
 	}
 

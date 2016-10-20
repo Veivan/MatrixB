@@ -30,9 +30,9 @@ public class MatrixEntry {
 		/**/
 		accounts = new ArrayList<IAccount>();
 		ConcreteAcc acc1 = new ConcreteAcc(1);
-		// ConcreteAcc acc2 = new ConcreteAcc(2);
+		ConcreteAcc acc2 = new ConcreteAcc(2);
 		accounts.add(acc1);
-		// accounts.add(acc2);
+		accounts.add(acc2);
 
 		// Формирование списков заданий
 		Homeworks howmworks = new Homeworks();

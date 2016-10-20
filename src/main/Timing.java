@@ -50,7 +50,9 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	public void RebuildTiming(Homeworks homeworks) {
 		logger.info("Timing  rebuilding");
 		// Формируем плоский список заданий
+		homeworks.First();
 		for (JobList jobList : homeworks) {
+			jobList.First();
 			for (JobAtom job : jobList) {
 				innerTiming.add(job);
 			}

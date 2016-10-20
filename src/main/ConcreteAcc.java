@@ -48,7 +48,7 @@ public class ConcreteAcc implements IAccount {
 			if (job.timestamp <= moment && !job.IsFinished) {
 				job.IsFinished = true;
 				Date d = new Date(job.timestamp);
-				logger.info("ConcreteAcc found job : {}, moment : {}", Constants.dfm.format(d), Constants.dfm.format(moment));
+				logger.info("ConcreteAcc id={} found job : {}, moment : {}", this.AccID, Constants.dfm.format(d), Constants.dfm.format(moment));
 				return job;
 			}
 		}
