@@ -60,4 +60,19 @@ public class Homeworks implements Observable, Iterable<JobList>, Iterator<JobLis
 		this.index = 0;
 	}
 
+	// Сравнение двух расписаний
+	public boolean CompareWith(Homeworks newsched) {
+		//this.index = 0;
+		return true;
+	}
+
+	// Сравнение двух расписаний
+	public void ReplaceWith(Homeworks newsched) {
+		HomeworksList.clear();	
+		newsched.First();
+		for (JobList jobList : newsched) {
+			HomeworksList.add(jobList);
+		}
+	}
+	
 }

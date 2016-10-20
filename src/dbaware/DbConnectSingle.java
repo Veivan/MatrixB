@@ -10,6 +10,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import service.Constants;
+import jobs.Homeworks;
+import jobs.JobAtom;
+import jobs.JobList;
 import main.ConcreteAcc;
 
 public class DbConnectSingle {
@@ -76,4 +80,31 @@ public class DbConnectSingle {
 		conn = null;
 		return AccList;
 	}
+	
+	// Возвращает текущее расписание заданий.
+	public Homeworks getHomeworks() {
+		Homeworks newschedule = new Homeworks();
+		MakeHowmworks(newschedule);
+		return newschedule;
+	}
+
+	private static void MakeHowmworks(Homeworks howmworks) {
+
+		JobList ReTwitList = new JobList(Constants.ReTwit,
+				Constants.JobType.ReTwit);
+		JobList TwitList = new JobList(Constants.Twit,
+				Constants.JobType.Twit);
+		JobList SetAvaList = new JobList(Constants.SetAva,
+				Constants.JobType.SetAva);
+
+		for (int i = 0; i < 50; i++) {
+			JobAtom job = new JobAtom(i, Constants.JobType.Like);
+			TwitList.AddJob(job);
+		}
+
+		howmworks.AddList(ReTwitList);
+		howmworks.AddList(TwitList);
+		howmworks.AddList(SetAvaList);
+	}
+
 }

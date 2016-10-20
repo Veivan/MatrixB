@@ -90,7 +90,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 			innerTiming.get(i).timestamp = date.getTimeInMillis();
 		}
 		
-		printTiming();
+		//printTiming();
 	}
 
 	public void printTiming() {
