@@ -51,8 +51,15 @@ public class DbConnectSingle {
 	}
 
 	public List<IAccount> getAccounts() {
-		List<IAccount> AccList = new ArrayList<IAccount>();
+		List<IAccount> accounts = new ArrayList<IAccount>();
 
+		// Debug
+		ConcreteAcc acc1 = new ConcreteAcc(1);
+		ConcreteAcc acc2 = new ConcreteAcc(2);
+		accounts.add(acc1);
+		accounts.add(acc2);
+
+		/*/ Accounts from DB
 		try {
 			dbConnect();
 			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
@@ -61,7 +68,7 @@ public class DbConnectSingle {
 
 			while (rs.next()) {
 				ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
-				AccList.add(acc);
+				accounts.add(acc);
 			}
 			pstmt.close();
 			pstmt = null;
@@ -77,8 +84,9 @@ public class DbConnectSingle {
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
-		conn = null;
-		return AccList;
+		conn = null; */
+		
+		return accounts;
 	}
 	
 	// Возвращает текущее расписание заданий.
