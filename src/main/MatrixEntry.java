@@ -48,7 +48,7 @@ public class MatrixEntry {
 
 				// Homeworks refreshing
 				Homeworks newschedule = dbConnector.getHomeworks();
-				boolean ischanged = howmworks.CompareWith(newschedule);
+				boolean ischanged = howmworks.IsDifferent(newschedule);
 				if (ischanged) {
 					howmworks.ReplaceWith(newschedule);
 					// Запустить формирование тайминга

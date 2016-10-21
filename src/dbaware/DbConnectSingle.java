@@ -90,6 +90,7 @@ public class DbConnectSingle {
 	}
 	
 	// Возвращает текущее расписание заданий.
+	// Надо сортировать элементы в списках по одному алгоритму для правильного сравнения
 	public Homeworks getHomeworks() {
 		Homeworks newschedule = new Homeworks();
 		MakeHowmworks(newschedule);

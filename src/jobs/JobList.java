@@ -38,6 +38,18 @@ public class JobList implements Iterable<JobAtom>, Iterator<JobAtom> {
 		return Type;
 	}
 
+	public int getSize() {
+		return JobAtomList.size();
+	}
+
+	public String getHash() {
+		String hash = "";
+		for (JobAtom jobAtom : JobAtomList) {
+			hash += "" + jobAtom.JobID + "_"; 	
+		} 
+		return hash;
+	}
+
 	public void AddJob(JobAtom job) {
 		JobAtomList.add(job);
 	}
