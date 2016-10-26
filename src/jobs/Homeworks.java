@@ -4,10 +4,9 @@ import inrtfs.Observable;
 import inrtfs.Observer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import main.ConcreteAcc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +74,7 @@ public class Homeworks implements Observable, Iterable<JobList>,
 		// Сравнение по числу списков
 		if (this.JobListsCount() != newsched.JobListsCount())
 			return true;
+
 		// Сравнение по типам списков, числу элементов и по эдементам списков
 		this.First();
 		for (JobList jobList : this) {
@@ -91,8 +91,9 @@ public class Homeworks implements Observable, Iterable<JobList>,
 					if (thissize != jobListnew.getSize())
 						return true;
 					// Хэш совпадает?
-					String newhash = jobListnew.getHash();					
-					logger.debug("thishash : {}, newhash : {}, equal {}", thishash, newhash, thishash.equals(newhash));
+					String newhash = jobListnew.getHash();
+					logger.debug("thishash : {}, newhash : {}, equal {}",
+							thishash, newhash, thishash.equals(newhash));
 					if (!thishash.equals(newhash))
 						return true;
 					break;
@@ -108,11 +109,37 @@ public class Homeworks implements Observable, Iterable<JobList>,
 
 	// Замена старого расписания новым
 	public void ReplaceWith(Homeworks newsched) {
+		// Помечаем в новом расписании уже выполненные задания
+		newsched.First();
+		for (JobList jobList : newsched) {
+			jobList.First();
+			for (JobAtom job : jobList) {
+				job.IsFinished = AlreadyFinished(job);
+			}
+		}
+		// Замена старого расписания новым
 		HomeworksList.clear();
 		newsched.First();
 		for (JobList jobList : newsched) {
 			HomeworksList.add(jobList);
 		}
+	}
+
+	// Функция ищет в старом расписании работу с таким же ID
+	// Возвращает true, если работа найдена и завершена
+	// иначе возвращает false
+	private boolean AlreadyFinished(JobAtom ajob) {
+		for (JobList jobList : HomeworksList) {
+			if (jobList.getType() == ajob.Type) {
+				jobList.First();
+				for (JobAtom job : jobList) {
+					if (job.JobID == ajob.JobID && job.IsFinished) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public int JobListsCount() {

@@ -28,6 +28,10 @@ public class MatrixAct {
 		return job;
 	}
 
+	public long getAccID() {
+		return AccID;
+	}
+
 	public String getActionTXT() {
 		return ActionTXT;
 	}

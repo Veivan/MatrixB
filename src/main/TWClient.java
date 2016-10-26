@@ -90,7 +90,8 @@ public class TWClient extends Thread {
 	@Override
 	public void run() {
 
-		logger.info("TWClient run Action : {}", act.getActionTXT());
+		logger.info("TWClient run Action : {} {} {}", act.getActionTXT(),
+				Constants.dfm.format(act.getJob().timestamp), act.getAccID());
 
 		// print internal state
 		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -212,8 +213,9 @@ public class TWClient extends Thread {
 			case Follow:
 				break;
 			case Like:
-				//uri = new URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
-				//uri = new URIBuilder("http://veivan.ucoz.ru").build();
+				// uri = new
+				// URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
+				// uri = new URIBuilder("http://veivan.ucoz.ru").build();
 				break;
 			case ReTwit:
 				break;

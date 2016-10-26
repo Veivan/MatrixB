@@ -90,13 +90,13 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 			innerTiming.get(i).timestamp = date.getTimeInMillis();
 		}
 		
-		//printTiming();
+		printTiming();
 	}
 
 	public void printTiming() {
 		for (JobAtom job : innerTiming) {
 			Date d = new Date(job.timestamp);
-			logger.info("Job at : {}", Constants.dfm.format(d));
+			logger.info("Job at : {} {}", Constants.dfm.format(d), job.timestamp);
 		}
 	}
 
