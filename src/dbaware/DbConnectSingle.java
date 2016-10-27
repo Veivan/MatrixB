@@ -56,8 +56,12 @@ public class DbConnectSingle {
 		// Debug
 		ConcreteAcc acc1 = new ConcreteAcc(1);
 		ConcreteAcc acc2 = new ConcreteAcc(2);
+		ConcreteAcc acc3 = new ConcreteAcc(3);
+		ConcreteAcc acc4 = new ConcreteAcc(4);
 		accounts.add(acc1);
 		accounts.add(acc2);
+		accounts.add(acc3);
+		accounts.add(acc4);
 
 		/*/ Accounts from DB
 		try {

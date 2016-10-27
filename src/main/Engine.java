@@ -59,12 +59,11 @@ public class Engine implements Observable {
 				MatrixActList.add(act);
 			}
 		}
-		//if (!MatrixActList.isEmpty())			notifyObservers();
+		// if (!MatrixActList.isEmpty()) notifyObservers();
 	}
 
 	public void Execute() {
 		for (MatrixAct act : MatrixActList) {
-			//logger.info("Job22 at : {} {}",					Constants.dfm.format(act.getJob().timestamp),					act.getJob().timestamp);
 			cachedPool.submit(new TWClient(act));
 		}
 	}

@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Random;
+
 import inrtfs.IAccount;
 import jobs.JobAtom;
 
@@ -11,18 +13,23 @@ public class MatrixAct {
 	private long AccID;
 	private String ActionTXT;
 
+	private long ID;
+
 	public MatrixAct(int i, String string) {
 		this.AccID = i;
 		this.setActionTXT(string);
 	}
 
-	public MatrixAct(JobAtom job, IAccount acc) {
-		this.job = new JobAtom(job.JobID, job.Type);
-		this.job.timestamp = job.timestamp;
+	public MatrixAct(JobAtom ajob, IAccount acc) {
+		this.job = new JobAtom(ajob.JobID, ajob.Type);
+		this.job.timestamp = ajob.timestamp;
 		this.acc = acc;
 
 		this.AccID = acc.getAccID();
-		this.setActionTXT(job.Type.name());
+		this.setActionTXT(ajob.Type.name());
+
+		Random random = new Random();
+		this.ID = random.nextInt();
 	}
 
 	public JobAtom getJob() {
@@ -35,6 +42,10 @@ public class MatrixAct {
 
 	public long getAccID() {
 		return AccID;
+	}
+
+	public long getSelfID() {
+		return this.ID;
 	}
 
 	public String getActionTXT() {

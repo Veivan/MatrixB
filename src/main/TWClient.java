@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -75,9 +76,10 @@ public class TWClient extends Thread {
 		this.proxyType = proxyType;
 	}
 
-	public TWClient(MatrixAct act) {
-		this.act = new MatrixAct(act.getJob(), act.getAcc());
-		this.jobType = act.getJob().Type;
+	public TWClient(MatrixAct theact) {
+
+		this.act = theact;
+		this.jobType = theact.getJob().Type;
 
 		// DEBUG
 		this.ip = "120.52.73.97";
@@ -90,8 +92,10 @@ public class TWClient extends Thread {
 	@Override
 	public void run() {
 
-		logger.info("TWClient run Action : {} {} accID = {}", act.getActionTXT(),
-				Constants.dfm.format(act.getJob().timestamp), act.getAccID());
+		logger.info("TWClient run Action : {} {} accID = {} ID = {}",
+				act.getActionTXT(),
+				Constants.dfm.format(act.getJob().timestamp), act.getAccID(),
+				act.getSelfID());
 
 		// print internal state
 		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
