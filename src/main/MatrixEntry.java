@@ -23,8 +23,8 @@ public class MatrixEntry {
 		Brain brain = new Brain(howmworks);
 		Engine engine = new Engine();
 
-		@SuppressWarnings("unused")
-		ActionsObserver currentDisplay = new ActionsObserver(engine);
+		//@SuppressWarnings("unused")
+		//ActionsObserver currentDisplay = new ActionsObserver(engine);
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 
 		// If read Accounts in cycle then need to refresh their timings 
@@ -57,6 +57,7 @@ public class MatrixEntry {
 				}
 
 				engine.ReadTimings(moment);
+				engine.Execute();
 
 				Thread.sleep(tick);
 			}

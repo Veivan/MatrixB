@@ -2,6 +2,8 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +22,7 @@ import jobs.JobAtom;
 public class Engine implements Observable {
 	private List<IAccount> accounts = new ArrayList<IAccount>();
 	private List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
+	ExecutorService cachedPool = Executors.newCachedThreadPool();
 
 	private List<Observer> observers;
 
@@ -56,8 +59,14 @@ public class Engine implements Observable {
 				MatrixActList.add(act);
 			}
 		}
-		if (!MatrixActList.isEmpty())
-			notifyObservers();
+		//if (!MatrixActList.isEmpty())			notifyObservers();
+	}
+
+	public void Execute() {
+		for (MatrixAct act : MatrixActList) {
+			//logger.info("Job22 at : {} {}",					Constants.dfm.format(act.getJob().timestamp),					act.getJob().timestamp);
+			cachedPool.submit(new TWClient(act));
+		}
 	}
 
 	public void setAccounts(List<IAccount> accounts) {
@@ -75,7 +84,8 @@ public class Engine implements Observable {
 
 	private void printMList() {
 		for (MatrixAct act : MatrixActList) {
-			logger.info("Act at : {}", Constants.dfm.format(act.getJob().timestamp));
+			logger.info("Act at : {}",
+					Constants.dfm.format(act.getJob().timestamp));
 		}
 	}
 }
