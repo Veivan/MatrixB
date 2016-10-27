@@ -76,7 +76,7 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient(MatrixAct act) {
-		this.act = act;
+		this.act = new MatrixAct(act.getJob(), act.getAcc());
 		this.jobType = act.getJob().Type;
 
 		// DEBUG

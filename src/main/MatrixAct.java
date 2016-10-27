@@ -17,7 +17,8 @@ public class MatrixAct {
 	}
 
 	public MatrixAct(JobAtom job, IAccount acc) {
-		this.job = job;
+		this.job = new JobAtom(job.JobID, job.Type);
+		this.job.timestamp = job.timestamp;
 		this.acc = acc;
 
 		this.AccID = acc.getAccID();
@@ -26,6 +27,10 @@ public class MatrixAct {
 
 	public JobAtom getJob() {
 		return job;
+	}
+
+	public IAccount getAcc() {
+		return acc;
 	}
 
 	public long getAccID() {

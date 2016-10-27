@@ -25,23 +25,27 @@ public class MatrixEntry {
 
 		@SuppressWarnings("unused")
 		ActionsObserver currentDisplay = new ActionsObserver(engine);
+		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+
+		// If read Accounts in cycle then need to refresh their timings 
+		List<IAccount> accounts = dbConnector.getAccounts();
+		brain.setAccounts(accounts);
+		engine.setAccounts(accounts);
 
 		/*
 		 * engine.setUserAction(1, "Like"); engine.setUserAction(2, "act2");
 		 * engine.setUserAction(1, "act3");
 		 */
 
-		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
-
 		try {
 			while (true) {
 				long moment = System.currentTimeMillis();
 				logger.debug("MatrixEntry tick : {}",
 						Constants.dfm.format(moment));
-				// Accounts refreshing
+				/*/ Accounts refreshing
 				List<IAccount> accounts = dbConnector.getAccounts();
 				brain.setAccounts(accounts);
-				engine.setAccounts(accounts);
+				engine.setAccounts(accounts); */
 
 				// Homeworks refreshing
 				Homeworks newschedule = dbConnector.getHomeworks();

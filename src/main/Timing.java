@@ -95,12 +95,9 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	}
 
 	public void printTiming() {
-		/*
-		 * for (JobAtom job : innerTiming) { logger.info("Job at : {} {}",
-		 * Constants.dfm.format(job.timestamp), job.timestamp); }
-		 */
-		for (int i = 0; i < 2; i++) {
-			JobAtom job = innerTiming.get(i);
+		for (JobAtom job : innerTiming) {
+		//for (int i = 0; i < 2; i++) {
+			//JobAtom job = innerTiming.get(i);
 			logger.info("Job at : {} {}", Constants.dfm.format(job.timestamp),
 					job.timestamp);
 		}

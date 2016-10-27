@@ -8,13 +8,14 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import service.Constants;
 import jobs.Homeworks;
 import inrtfs.Observer;
 
 /**
- * Класс наблюдает за классом <b>Engine</b>.
- * При получении списка заданий на выполнение запускает каждое задание в отдельном потоке.
- * Для управления потоками импользует пул потоков.
+ * Класс наблюдает за классом <b>Engine</b>. При получении списка заданий на
+ * выполнение запускает каждое задание в отдельном потоке. Для управления
+ * потоками импользует пул потоков.
  */
 public class ActionsObserver implements Observer {
 
@@ -33,13 +34,19 @@ public class ActionsObserver implements Observer {
 	@Override
 	public void update(List<MatrixAct> actionlist) {
 		MatrixActList.addAll(actionlist);
+		for (MatrixAct act : MatrixActList) {
+			logger.info("Action Act at : {}", Constants.dfm.format(act.getJob().timestamp));
+		}
 		for (MatrixAct act : actionlist) {
 			logger.debug("ActionsObserver execute act");
+			logger.info("Job at : {} {}",				Constants.dfm.format(act.getJob().timestamp),				act.getJob().timestamp);
 			execute(act);
 		}
+		MatrixActList.clear();
 	}
 
 	public void execute(MatrixAct act) {
+		//logger.info("Job at : {} {}",				Constants.dfm.format(act.getJob().timestamp),				act.getJob().timestamp);
 		cachedPool.submit(new TWClient(act));
 	}
 

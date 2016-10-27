@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import service.Constants;
 import inrtfs.IAccount;
 import inrtfs.Observable;
 import inrtfs.Observer;
@@ -40,6 +41,7 @@ public class Engine implements Observable {
 
 	@Override
 	public void notifyObservers() {
+		printMList();
 		for (Observer observer : observers)
 			observer.update(MatrixActList);
 	}
@@ -48,26 +50,32 @@ public class Engine implements Observable {
 		MatrixActList.clear();
 		logger.debug("Engine Read Timings");
 		for (IAccount acc : accounts) {
-			//((ConcreteAcc)acc).printTiming();
 			JobAtom job = acc.getTimedJob(moment);
 			if (job != null) {
 				MatrixAct act = new MatrixAct(job, acc);
 				MatrixActList.add(act);
-				notifyObservers();
 			}
 		}
+		if (!MatrixActList.isEmpty())
+			notifyObservers();
 	}
 
 	public void setAccounts(List<IAccount> accounts) {
 		this.accounts = accounts;
 		logger.debug("Engine Accounts setting");
 	}
-	
+
 	// for debug only
 	public void setUserAction(int user, String actiontxt) {
 		MatrixActList.clear();
 		MatrixAct act = new MatrixAct(0, "qq");
 		MatrixActList.add(act);
 		notifyObservers();
+	}
+
+	private void printMList() {
+		for (MatrixAct act : MatrixActList) {
+			logger.info("Act at : {}", Constants.dfm.format(act.getJob().timestamp));
+		}
 	}
 }
