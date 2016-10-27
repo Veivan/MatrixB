@@ -54,7 +54,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		for (JobList jobList : homeworks) {
 			jobList.First();
 			for (JobAtom job : jobList) {
-				innerTiming.add(job);
+				JobAtom jobcopy = new JobAtom(job.JobID, job.Type);
+				innerTiming.add(jobcopy);
 			}
 		}
 
@@ -81,7 +82,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 				TimeZone.getTimeZone(timeZone));
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
-			//logger.debug("Value: {}", String.valueOf(t));
+			// logger.debug("Value: {}", String.valueOf(t));
 			int h = t / 60;
 			int m = t % 60;
 			date.set(Calendar.HOUR_OF_DAY, h);
@@ -89,14 +90,19 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 			date.set(Calendar.SECOND, random.nextInt(58) + 1);
 			innerTiming.get(i).timestamp = date.getTimeInMillis();
 		}
-		
+
 		printTiming();
 	}
 
 	public void printTiming() {
-		for (JobAtom job : innerTiming) {
-			Date d = new Date(job.timestamp);
-			logger.info("Job at : {} {}", Constants.dfm.format(d), job.timestamp);
+		/*
+		 * for (JobAtom job : innerTiming) { logger.info("Job at : {} {}",
+		 * Constants.dfm.format(job.timestamp), job.timestamp); }
+		 */
+		for (int i = 0; i < 2; i++) {
+			JobAtom job = innerTiming.get(i);
+			logger.info("Job at : {} {}", Constants.dfm.format(job.timestamp),
+					job.timestamp);
 		}
 	}
 
@@ -118,7 +124,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	public Iterator<JobAtom> iterator() {
 		return this;
 	}
-	
+
 	public void First() {
 		this.index = 0;
 	}

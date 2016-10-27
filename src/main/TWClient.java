@@ -90,7 +90,7 @@ public class TWClient extends Thread {
 	@Override
 	public void run() {
 
-		logger.info("TWClient run Action : {} {} {}", act.getActionTXT(),
+		logger.info("TWClient run Action : {} {} accID = {}", act.getActionTXT(),
 				Constants.dfm.format(act.getJob().timestamp), act.getAccID());
 
 		// print internal state

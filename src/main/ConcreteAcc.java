@@ -1,6 +1,5 @@
 package main;
 
-import java.util.Date;
 import java.util.List;
 
 import service.Constants;
@@ -34,6 +33,11 @@ public class ConcreteAcc implements IAccount {
 	public void RebuldAccTiming(Homeworks homeworks) {
 		this.timing.RebuildTiming(homeworks);
 	}
+	
+	public void printTiming()
+	{
+		this.timing.printTiming();
+	}
 
 	@Override
 	public long getAccID() {
@@ -44,11 +48,10 @@ public class ConcreteAcc implements IAccount {
 	public JobAtom getTimedJob(long moment) {
 		timing.First();
 		for (JobAtom job : timing) {
-			logger.debug("job : {}, moment : {}", Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
+			logger.debug("id={} job : {}, moment : {}", this.AccID, Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
 			if (job.timestamp <= moment && !job.IsFinished) {
 				job.IsFinished = true;
-				Date d = new Date(job.timestamp);
-				logger.info("ConcreteAcc id={} found job : {}, moment : {}", this.AccID, Constants.dfm.format(d), Constants.dfm.format(moment));
+				logger.info("ConcreteAcc id={} found job : {}, moment : {}", this.AccID, Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
 				return job;
 			}
 		}

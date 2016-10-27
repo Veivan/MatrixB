@@ -2,7 +2,6 @@ package main;
 
 import inrtfs.IAccount;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +19,7 @@ public class MatrixEntry {
 
 		logger.info("MatrixEntry starting");
 
-		// Формирование списков заданий
 		Homeworks howmworks = new Homeworks();
-
 		Brain brain = new Brain(howmworks);
 		Engine engine = new Engine();
 

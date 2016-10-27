@@ -48,6 +48,7 @@ public class Engine implements Observable {
 		MatrixActList.clear();
 		logger.debug("Engine Read Timings");
 		for (IAccount acc : accounts) {
+			//((ConcreteAcc)acc).printTiming();
 			JobAtom job = acc.getTimedJob(moment);
 			if (job != null) {
 				MatrixAct act = new MatrixAct(job, acc);
