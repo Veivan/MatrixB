@@ -37,10 +37,10 @@ public class testConcreteAcc {
 
 	private static void MakeHowmworks(Homeworks howmworks) {
 
-		JobList TwitList = new JobList(Constants.Twit, Constants.JobType.Twit);
+		JobList TwitList = new JobList(Constants.Twit, Constants.JobType.TWIT);
 
 		for (int i = 0; i < 50; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.Twit);
+			JobAtom job = new JobAtom(i, Constants.JobType.TWIT);
 			TwitList.AddJob(job);
 		}
 

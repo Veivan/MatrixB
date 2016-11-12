@@ -11,19 +11,21 @@ public final class Constants {
     
     public enum JobType
     {
-        SetAva,
-        SetBackgrnd,
-        Twit,
-        ReTwit,
-        Like,
-        Replay,
-        Direct,
-        Follow,
-        UnFollow
+        SETAVA,
+        SETBACKGROUND,
+        TWIT,
+        RETWIT,
+        LIKE,
+        REPLAY,
+        DIRECT,
+        FOLLOW,
+        UNFOLLOW,
+        VISIT
     }
 
     // Приоритеты списков задач
-    public static int ReTwit = 90;
+	public static int ReTwit = 90;
+    public static int Visit = 85;
     public static int Like = 80;
     public static int Replay = 70;
     public static int Direct = 60;

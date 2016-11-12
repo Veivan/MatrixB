@@ -69,7 +69,7 @@ public class TWClient extends Thread {
 
 	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
 		this.act = new MatrixAct(0, "Test");
-		this.jobType = Constants.JobType.Like;
+		this.jobType = Constants.JobType.LIKE;
 
 		this.ip = ip;
 		this.port = port;
@@ -202,32 +202,34 @@ public class TWClient extends Thread {
 		URI uri = null;
 		try {
 			switch (jobType) {
-			case SetAva:
-				uri = new URIBuilder(
-						"https://stream.twitter.com/1.1/statuses/filter.json")
-						.addParameter("track", "допинг").build();
-				break;
-			case Twit:
-				uri = new URIBuilder(
-						"https://api.twitter.com/1.1/statuses/update.json")
-						.addParameter("track", "допинг").build();
-				break;
-			case Direct:
-				break;
-			case Follow:
-				break;
-			case Like:
+			case VISIT:
 				// uri = new
 				// URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
 				// uri = new URIBuilder("http://veivan.ucoz.ru").build();
 				break;
-			case ReTwit:
+			case SETAVA:
+				uri = new URIBuilder(
+						"https://stream.twitter.com/1.1/statuses/filter.json")
+						.addParameter("track", "допинг").build();
 				break;
-			case Replay:
+			case TWIT:
+				uri = new URIBuilder(
+						"https://api.twitter.com/1.1/statuses/update.json")
+						.addParameter("track", "допинг").build();
 				break;
-			case SetBackgrnd:
+			case DIRECT:
 				break;
-			case UnFollow:
+			case LIKE:
+				break;
+			case RETWIT:
+				break;
+			case REPLAY:
+				break;
+			case SETBACKGROUND:
+				break;
+			case FOLLOW:
+				break;
+			case UNFOLLOW:
 				break;
 			default:
 				break;

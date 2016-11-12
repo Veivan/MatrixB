@@ -2,7 +2,9 @@ package dbaware;
 
 import inrtfs.IAccount;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,14 +12,20 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
 import main.ConcreteAcc;
+import main.TWClient;
 
 public class DbConnectSingle {
 	private static volatile DbConnectSingle instance;
+
+	static Logger logger = LoggerFactory.getLogger(DbConnectSingle.class);
 
 	private DbConnectSingle() {
 	}
@@ -97,26 +105,58 @@ public class DbConnectSingle {
 	// Надо сортировать элементы в списках по одному алгоритму для правильного сравнения
 	public Homeworks getHomeworks() {
 		
+		List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
+
 		// В БД надо хранить задания с конкретной датой выполнения
 		// Сделать признак повторения у задания
 		// Выбирать из БД задания только с датой, равной текущей или с признаком повторения
+		Date moment = new Date(System.currentTimeMillis());		
+		// Tasks from DB
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spTasksSelect](?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setDate(1, moment); 
+			ResultSet rs = sp.executeQuery();
+			while (rs.next()) {
+				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(4), rs.getString(6));
+				JobAtomList.add(job);
+			}
+			rs.close();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("getHomeworks spTasksSelect exception", e);
+			logger.debug("getHomeworks spTasksSelect exception", e);
+		}
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("getHomeworks conn.close exception", e);
+				logger.debug("getHomeworks conn.close exception", e);
+			}
+		conn = null; 
 		
 		Homeworks newschedule = new Homeworks();
-		MakeHowmworks(newschedule);
+		MakeHowmworks(newschedule, JobAtomList);
 		return newschedule;
 	}
 
-	private static void MakeHowmworks(Homeworks howmworks) {
+	private static void MakeHowmworks(Homeworks howmworks, List<JobAtom> JobAtomList) {
 
 		JobList ReTwitList = new JobList(Constants.ReTwit,
-				Constants.JobType.ReTwit);
+				Constants.JobType.RETWIT);
 		JobList TwitList = new JobList(Constants.Twit,
-				Constants.JobType.Twit);
+				Constants.JobType.TWIT);
 		JobList SetAvaList = new JobList(Constants.SetAva,
-				Constants.JobType.SetAva);
+				Constants.JobType.SETAVA);
 
 		for (int i = 0; i < 50; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.Like);
+			JobAtom job = new JobAtom(i, Constants.JobType.LIKE);
 			TwitList.AddJob(job);
 		}
 
@@ -125,4 +165,22 @@ public class DbConnectSingle {
 		howmworks.AddList(SetAvaList);
 	}
 
+	private static void MakeHowmworks(Homeworks howmworks) {
+
+		JobList ReTwitList = new JobList(Constants.ReTwit,
+				Constants.JobType.RETWIT);
+		JobList TwitList = new JobList(Constants.Twit,
+				Constants.JobType.TWIT);
+		JobList SetAvaList = new JobList(Constants.SetAva,
+				Constants.JobType.SETAVA);
+
+		for (int i = 0; i < 50; i++) {
+			JobAtom job = new JobAtom(i, Constants.JobType.LIKE);
+			TwitList.AddJob(job);
+		}
+
+		howmworks.AddList(ReTwitList);
+		howmworks.AddList(TwitList);
+		howmworks.AddList(SetAvaList);
+	}
 }

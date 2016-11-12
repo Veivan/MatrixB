@@ -18,6 +18,14 @@ CREATE TABLE [dbo].[DicProxyType](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicTaskType](
+	[id_TaskType] [smallint] NOT NULL,
+	[TypeMean] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mAccounts](
 	[user_id] [bigint] NOT NULL,
 	[name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
@@ -64,5 +72,16 @@ CREATE TABLE [dbo].[mProxyAcc](
 	[acprID] [bigint] IDENTITY(1,1) NOT NULL,
 	[user_id] [bigint] NOT NULL,
 	[ProxyID] [bigint] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mTasks](
+	[id_Task] [bigint] IDENTITY(1,1) NOT NULL,
+	[TaskDate] [datetime] NOT NULL,
+	[id_TaskType] [smallint] NOT NULL,
+	[TContent] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL,
+	[IsRepeat] [bit] NOT NULL
 ) ON [PRIMARY]
 
