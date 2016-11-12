@@ -20,7 +20,6 @@ import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
 import main.ConcreteAcc;
-import main.TWClient;
 
 public class DbConnectSingle {
 	private static volatile DbConnectSingle instance;
@@ -33,11 +32,13 @@ public class DbConnectSingle {
 	private Connection conn = null;
 	private String db_connect_string =
 	// local
+	"jdbc:sqlserver://KONSTANTIN-PC;instanceName=SQLEXPRESS14"
 	// "jdbc:sqlserver://WIN-2TFLS2PJ38K;instanceName=MSSQL2008R2"
 	// AWS
 	// "jdbc:sqlserver://WIN-VTEXJXYLHHY;instanceName=SQLEXPRESS"
 	// office
-	"jdbc:sqlserver://014-MSDN;instanceName=SQL12" + ";databaseName=MatrixB;";
+	//"jdbc:sqlserver://014-MSDN;instanceName=SQL12" 
+			+ ";databaseName=MatrixB;";
 	private String db_userid = "sa";
 	private String db_password = "123456";
 
@@ -119,7 +120,7 @@ public class DbConnectSingle {
 			sp.setDate(1, moment); 
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(4), rs.getString(6));
+				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(6), rs.getString(4));
 				JobAtomList.add(job);
 			}
 			rs.close();
@@ -147,22 +148,15 @@ public class DbConnectSingle {
 	}
 
 	private static void MakeHowmworks(Homeworks howmworks, List<JobAtom> JobAtomList) {
+		JobList VisitList = new JobList(Constants.Visit,
+				Constants.JobType.VISIT);
 
-		JobList ReTwitList = new JobList(Constants.ReTwit,
-				Constants.JobType.RETWIT);
-		JobList TwitList = new JobList(Constants.Twit,
-				Constants.JobType.TWIT);
-		JobList SetAvaList = new JobList(Constants.SetAva,
-				Constants.JobType.SETAVA);
-
-		for (int i = 0; i < 50; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.LIKE);
-			TwitList.AddJob(job);
+		for (JobAtom job : JobAtomList) {
+			JobAtom jobcopy = new JobAtom(job);
+			VisitList.AddJob(jobcopy);
 		}
 
-		howmworks.AddList(ReTwitList);
-		howmworks.AddList(TwitList);
-		howmworks.AddList(SetAvaList);
+		howmworks.AddList(VisitList);
 	}
 
 	private static void MakeHowmworks(Homeworks howmworks) {
