@@ -53,7 +53,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		for (JobList jobList : homeworks) {
 			jobList.First();
 			for (JobAtom job : jobList) {
-				JobAtom jobcopy = new JobAtom(job.JobID, job.Type);
+				JobAtom jobcopy = new JobAtom(job);
 				innerTiming.add(jobcopy);
 			}
 		}

@@ -1,8 +1,5 @@
 package jobs;
 
-import java.text.ParseException;
-import java.util.Arrays;
-
 import service.Constants;
 
 /** Класс описывает единицу задания - твит, ретвит... . */
@@ -27,6 +24,13 @@ public class JobAtom {
 		this.JobID = JobID;		
 		this.Type = Constants.JobType.valueOf(Type.toUpperCase()); 
 		this.TContent = TContent;
+	}
+
+	/** Construct new copy */
+	public JobAtom(JobAtom job) {
+		this.JobID = job.JobID;		
+		this.Type = job.Type; 
+		this.TContent = job.TContent;
 	}
 
 	public JobAtom(long JobID, Constants.JobType Type) {
