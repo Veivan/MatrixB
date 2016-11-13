@@ -280,31 +280,5 @@ public class TWClient extends Thread {
 	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
 	 * keys.cConsumerSecret); consumer.setTokenWithSecret(keys.cAccessToken,
 	 * keys.cAccessSecret); return false; }
-	 * 
-	 * @Override public void SetAva() { // TODO Auto-generated method stub }
-	 * 
-	 * @Override public void SetBackgrnd() { // TODO Auto-generated method stub
-	 * }
-	 * 
-	 * @Override public void Twit(String mess) { // TODO Auto-generated method
-	 * stub }
-	 * 
-	 * @Override public void ReTwit(int twID, String mess) { // TODO
-	 * Auto-generated method stub }
-	 * 
-	 * @Override public void Like(int twID) { // TODO Auto-generated method stub
-	 * }
-	 * 
-	 * @Override public void Replay(int twID) { // TODO Auto-generated method
-	 * stub }
-	 * 
-	 * @Override public void Direct(int twID) { // TODO Auto-generated method
-	 * stub }
-	 * 
-	 * @Override public void Follow(int userID) { // TODO Auto-generated method
-	 * stub }
-	 * 
-	 * @Override public void UnFollow(int userID) { // TODO Auto-generated
-	 * method stub }
-	 */
+	 */ 
 }
