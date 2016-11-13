@@ -37,7 +37,7 @@ public class DbConnectSingle {
 	// AWS
 	// "jdbc:sqlserver://WIN-VTEXJXYLHHY;instanceName=SQLEXPRESS"
 	// office
-	//"jdbc:sqlserver://014-MSDN;instanceName=SQL12" 
+	// "jdbc:sqlserver://014-MSDN;instanceName=SQL12"
 			+ ";databaseName=MatrixB;";
 	private String db_userid = "sa";
 	private String db_password = "123456";
@@ -72,55 +72,43 @@ public class DbConnectSingle {
 		accounts.add(acc3);
 		accounts.add(acc4);
 
-		/*/ Accounts from DB
-		try {
-			dbConnect();
-			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
+		/*
+		 * / Accounts from DB try { dbConnect(); String query =
+		 * "SELECT [user_id] FROM [dbo].[mAccounts]"; PreparedStatement pstmt =
+		 * conn.prepareStatement(query); ResultSet rs = pstmt.executeQuery();
+		 * 
+		 * while (rs.next()) { ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
+		 * accounts.add(acc); } pstmt.close(); pstmt = null; if (conn != null)
+		 * conn.close(); conn = null; } catch (Exception e) {
+		 * e.printStackTrace(); } if (conn != null) try { conn.close(); } catch
+		 * (SQLException e) { e.printStackTrace(); } conn = null;
+		 */
 
-			while (rs.next()) {
-				ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
-				accounts.add(acc);
-			}
-			pstmt.close();
-			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		conn = null; */
-		
 		return accounts;
 	}
-	
+
 	// Возвращает текущее расписание заданий.
-	// Надо сортировать элементы в списках по одному алгоритму для правильного сравнения
+	// Надо сортировать элементы в списках по одному алгоритму для правильного
+	// сравнения
 	public Homeworks getHomeworks() {
-		
+
 		List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
 
 		// В БД надо хранить задания с конкретной датой выполнения
 		// Сделать признак повторения у задания
-		// Выбирать из БД задания только с датой, равной текущей или с признаком повторения
-		Date moment = new Date(System.currentTimeMillis());		
+		// Выбирать из БД задания только с датой, равной текущей или с признаком
+		// повторения
+		Date moment = new Date(System.currentTimeMillis());
 		// Tasks from DB
 		try {
 			dbConnect();
 			String query = "{call [dbo].[spTasksSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
-			sp.setDate(1, moment); 
+			sp.setDate(1, moment);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(6), rs.getString(4));
+				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(6),
+						rs.getString(4));
 				JobAtomList.add(job);
 			}
 			rs.close();
@@ -140,37 +128,38 @@ public class DbConnectSingle {
 				logger.error("getHomeworks conn.close exception", e);
 				logger.debug("getHomeworks conn.close exception", e);
 			}
-		conn = null; 
-		
+		conn = null;
+
 		Homeworks newschedule = new Homeworks();
 		MakeHowmworks(newschedule, JobAtomList);
+		//MakeHowmworks(newschedule);
 		return newschedule;
 	}
 
-	private static void MakeHowmworks(Homeworks howmworks, List<JobAtom> JobAtomList) {
-		JobList VisitList = new JobList(Constants.JobType.VISIT);
-
+	private static void MakeHowmworks(Homeworks homeworks,
+			List<JobAtom> JobAtomList) {
 		for (JobAtom job : JobAtomList) {
 			JobAtom jobcopy = new JobAtom(job);
-			VisitList.AddJob(jobcopy);
+			homeworks.AddJob(jobcopy);
 		}
-
-		howmworks.AddList(VisitList);
 	}
 
-	private static void MakeHowmworks(Homeworks howmworks) {
+	// 4 debug without DB
+	private static void MakeHowmworks(Homeworks homeworks) {
+		JobAtom job = new JobAtom(5, Constants.JobType.SETAVA);
+		homeworks.AddJob(job);
 
-		JobList ReTwitList = new JobList(Constants.JobType.RETWIT);
-		JobList TwitList = new JobList(Constants.JobType.TWIT);
-		JobList SetAvaList = new JobList(Constants.JobType.SETAVA);
-
-		for (int i = 0; i < 50; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.LIKE);
-			TwitList.AddJob(job);
+		for (int i = 0; i < 2; i++) {
+			job = new JobAtom(i, Constants.JobType.LIKE);
+			homeworks.AddJob(job);
 		}
 
-		howmworks.AddList(ReTwitList);
-		howmworks.AddList(TwitList);
-		howmworks.AddList(SetAvaList);
+		homeworks.First();
+		for (JobList jobList : homeworks) {
+			jobList.First();
+			logger.debug("joblist : {} {}", jobList.getType(),
+					jobList.getPriority());
+		}
+
 	}
 }

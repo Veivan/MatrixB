@@ -12,42 +12,32 @@ import main.Timing;
 
 public class testTiming {
 
-	Homeworks howmworks = new Homeworks();
+	Homeworks homeworks = new Homeworks();
 	Timing timing;
 
 	@Before
 	public void setUp() throws Exception {
-		MakeHowmworks(howmworks);
+		MakeHowmworks(homeworks);
 		timing = new Timing();
 	}
 
 	@Test
 	public void testRebuildTiming() {
-		timing.RebuildTiming(howmworks);
+		timing.RebuildTiming(homeworks);
 		timing.printTiming();
 	}
 
-	private static void MakeHowmworks(Homeworks howmworks) {
-
-		JobList ReTwitList = new JobList(Constants.JobType.RETWIT);
-		JobList TwitList = new JobList(Constants.JobType.TWIT);
-		JobList SetAvaList = new JobList(Constants.JobType.SETAVA);
-
+	private static void MakeHowmworks(Homeworks homeworks) {
 		for (int i = 0; i < 5; i++) {
 			JobAtom job = new JobAtom(i, Constants.JobType.TWIT);
-			TwitList.AddJob(job);
+			homeworks.AddJob(job);
 		}
-
-		// Добавлять в класс в порядке приоритета
-		howmworks.AddList(ReTwitList);
-		howmworks.AddList(TwitList);
-		howmworks.AddList(SetAvaList);
 	}
 
 	public static void main(String[] args) {
-		Homeworks howmworks = new Homeworks();
-		MakeHowmworks(howmworks);
-		for (JobList jobList : howmworks) {
+		Homeworks homeworks = new Homeworks();
+		MakeHowmworks(homeworks);
+		for (JobList jobList : homeworks) {
 			System.out.printf("Value: %s \n", String.valueOf(jobList.getPriority()));
 		}
 	}

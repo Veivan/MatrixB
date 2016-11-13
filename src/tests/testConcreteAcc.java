@@ -1,9 +1,7 @@
 package tests;
 
-import static org.junit.Assert.*;
 import jobs.Homeworks;
 import jobs.JobAtom;
-import jobs.JobList;
 import main.ConcreteAcc;
 
 import org.junit.Before;
@@ -36,15 +34,9 @@ public class testConcreteAcc {
 	}
 
 	private static void MakeHowmworks(Homeworks howmworks) {
-
-		JobList TwitList = new JobList(Constants.JobType.TWIT);
-
 		for (int i = 0; i < 50; i++) {
 			JobAtom job = new JobAtom(i, Constants.JobType.TWIT);
-			TwitList.AddJob(job);
+			howmworks.AddJob(job);
 		}
-
-		// Добавлять в класс в порядке приоритета
-		howmworks.AddList(TwitList);
 	}
 }

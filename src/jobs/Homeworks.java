@@ -4,6 +4,7 @@ import inrtfs.Observable;
 import inrtfs.Observer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
+import service.JobListComparator;
 
 /**
  * Класс - список списков заданий.
@@ -41,8 +43,25 @@ public class Homeworks implements Observable, Iterable<JobList>,
 			observer.perform(this);
 	}
 
-	public void AddList(JobList list) {
-		HomeworksList.add(list);
+	public void AddJob(JobAtom job) {
+		JobList targetList = null; 
+		// Searching target list
+		for (JobList jobList : HomeworksList) {
+			if (job.Type == jobList.getType()) {
+				targetList = jobList;
+				break;
+			}
+		}
+		// If not found then make new one
+		if (targetList == null)
+		{
+			JobListComparator comparator = new JobListComparator();
+			targetList = new JobList(job.Type);
+			HomeworksList.add(targetList);
+			// Добавлять в класс надо в порядке приоритета
+			Collections.sort(HomeworksList, comparator);
+		}
+		targetList.AddJob(job);
 	}
 
 	@Override
