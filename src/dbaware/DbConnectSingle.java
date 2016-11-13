@@ -148,8 +148,7 @@ public class DbConnectSingle {
 	}
 
 	private static void MakeHowmworks(Homeworks howmworks, List<JobAtom> JobAtomList) {
-		JobList VisitList = new JobList(Constants.Visit,
-				Constants.JobType.VISIT);
+		JobList VisitList = new JobList(Constants.JobType.VISIT);
 
 		for (JobAtom job : JobAtomList) {
 			JobAtom jobcopy = new JobAtom(job);
@@ -161,12 +160,9 @@ public class DbConnectSingle {
 
 	private static void MakeHowmworks(Homeworks howmworks) {
 
-		JobList ReTwitList = new JobList(Constants.ReTwit,
-				Constants.JobType.RETWIT);
-		JobList TwitList = new JobList(Constants.Twit,
-				Constants.JobType.TWIT);
-		JobList SetAvaList = new JobList(Constants.SetAva,
-				Constants.JobType.SETAVA);
+		JobList ReTwitList = new JobList(Constants.JobType.RETWIT);
+		JobList TwitList = new JobList(Constants.JobType.TWIT);
+		JobList SetAvaList = new JobList(Constants.JobType.SETAVA);
 
 		for (int i = 0; i < 50; i++) {
 			JobAtom job = new JobAtom(i, Constants.JobType.LIKE);

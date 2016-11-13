@@ -25,8 +25,8 @@ public class JobList implements Iterable<JobAtom>, Iterator<JobAtom> {
 	 * @param type
 	 *            - тип заданий
 	 */
-	public JobList(int priority, Constants.JobType type) {
-		this.Priority = priority;
+	public JobList(Constants.JobType type) {
+		this.Priority = Constants.GetPriority(type);
 		this.Type = type;
 	}
 
