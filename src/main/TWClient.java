@@ -208,9 +208,11 @@ public class TWClient extends Thread {
 				// uri = new URIBuilder("http://veivan.ucoz.ru").build();
 				break;
 			case SETAVA:
-				uri = new URIBuilder(
-						"https://stream.twitter.com/1.1/statuses/filter.json")
-						.addParameter("track", "допинг").build();
+				/*
+				 * uri = new URIBuilder(
+				 * "https://stream.twitter.com/1.1/statuses/filter.json")
+				 * .addParameter("track", "допинг").build();
+				 */
 				break;
 			case TWIT:
 				uri = new URIBuilder(
@@ -280,5 +282,5 @@ public class TWClient extends Thread {
 	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
 	 * keys.cConsumerSecret); consumer.setTokenWithSecret(keys.cAccessToken,
 	 * keys.cAccessSecret); return false; }
-	 */ 
+	 */
 }

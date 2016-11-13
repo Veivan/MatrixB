@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 public class ConcreteAcc implements IAccount {
 	private long AccID;
 	private final String cTimeZone = "GMT+3";
+	private static final long late = 300000l; // ms = 5min
 
 	private Regimen regim = new Regimen();
 
@@ -33,9 +34,8 @@ public class ConcreteAcc implements IAccount {
 	public void RebuldAccTiming(Homeworks homeworks) {
 		this.timing.RebuildTiming(homeworks);
 	}
-	
-	public void printTiming()
-	{
+
+	public void printTiming() {
 		this.timing.printTiming();
 	}
 
@@ -48,11 +48,23 @@ public class ConcreteAcc implements IAccount {
 	public JobAtom getTimedJob(long moment) {
 		timing.First();
 		for (JobAtom job : timing) {
-			logger.debug("id={} job : {}, moment : {}", this.AccID, Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
+			logger.debug("id={} job : {}, moment : {}", this.AccID,
+					Constants.dfm.format(job.timestamp),
+					Constants.dfm.format(moment));
 			if (job.timestamp <= moment && !job.IsFinished) {
 				job.IsFinished = true;
-				logger.info("ConcreteAcc id={} found job : {}, moment : {}", this.AccID, Constants.dfm.format(job.timestamp), Constants.dfm.format(moment));
-				return job;
+				if ((moment - job.timestamp) > late) {
+					logger.info(
+							"ConcreteAcc id={} found job too late : {}, moment : {}",
+							this.AccID, Constants.dfm.format(job.timestamp),
+							Constants.dfm.format(moment));
+				} else {
+					logger.info(
+							"ConcreteAcc id={} found job : {}, moment : {}",
+							this.AccID, Constants.dfm.format(job.timestamp),
+							Constants.dfm.format(moment));
+					return job;
+				}
 			}
 		}
 		return null;
