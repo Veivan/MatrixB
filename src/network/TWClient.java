@@ -35,6 +35,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 import service.Constants;
+import service.Constants.JobType;
 import service.Constants.ProxyType;
 
 import org.slf4j.Logger;
@@ -94,24 +95,40 @@ public class TWClient extends Thread {
 		this.job = theact.getJob();
 		this.acc = theact.getAcc();
 
-		// DEBUG
-		this.ip = "120.52.73.97";
-		this.port = 80;
-		this.proxyType = ProxyType.HTTP;
+		/*
+		 * / DEBUG this.ip = "120.52.73.97"; this.port = 80; this.proxyType =
+		 * ProxyType.HTTP;
+		 */
 	}
 
 	static Logger logger = LoggerFactory.getLogger(TWClient.class);
 
+	public boolean GetProxy() {
+		ElementProxy dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
+		if (dbproxy == null) {
+			logger.error("TWClient cant get proxy");
+			logger.debug("TWClient cant get proxy");
+			return false;
+		}
+
+		this.ip = dbproxy.ip;
+		this.port = dbproxy.port;
+		this.proxyType = dbproxy.proxyType;
+		return true;
+	}
+
 	@Override
 	public void run() {
+
+		// print internal state
+		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		// StatusPrinter.print(lc);
 
 		logger.info("TWClient run Action : {} {} accID = {} ID = {}",
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		// print internal state
-		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		// StatusPrinter.print(lc);
+		if (!GetProxy()) return;
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
 				ConsumerSecret);
@@ -154,7 +171,8 @@ public class TWClient extends Thread {
 				request.setHeader("User-Agent", "MySuperUserAgent");
 
 				// При обращении к сайту авторизация не обязательна
-				// consumer.sign(request);
+				if (this.job.Type != JobType.VISIT) 
+					consumer.sign(request);
 
 				CloseableHttpResponse response = httpclient.execute(request,
 						context);
@@ -191,7 +209,7 @@ public class TWClient extends Thread {
 
 	}
 
-	public static void main(String[] args) {
+/*/DEBUG	public static void main(String[] args) {
 
 		// TWClient client = new TWClient("212.174.226.105", 48111,
 		// ProxyType.SOCKS);
@@ -209,7 +227,8 @@ public class TWClient extends Thread {
 		logger.info("TWClient main");
 		client.run();
 	}
-
+*/
+	
 	private URI MakeURI(JobAtom job) {
 		URI uri = null;
 		Constants.JobType jobType = job.Type;
