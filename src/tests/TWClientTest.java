@@ -1,10 +1,10 @@
 package tests;
 
+import network.TWClient;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import main.TWClient;
 
 public class TWClientTest {
 

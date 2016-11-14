@@ -6,15 +6,19 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import network.ElementProxy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
+import service.Constants.ProxyType;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
@@ -84,6 +88,38 @@ public class DbConnectSingle {
 		 */
 
 		return accounts;
+	}
+
+	// Возвращает назначенный прокси для указанного аккаунта
+	public ElementProxy getProxy(long AccID) {
+		ElementProxy proxy = null;
+		try {
+			dbConnect();
+			String query ="{call [dbo].[spProxy4AccSelect](?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong(1, AccID);
+			ResultSet rs = sp.executeQuery();
+			// Читаем только первую запись
+			rs.next();
+			proxy = new ElementProxy();
+			proxy.ip = rs.getString(4);
+			proxy.port = rs.getInt(5);
+			proxy.proxyType = ProxyType.valueOf(rs.getString(7));
+			rs.close();
+			sp.close();
+			sp = null;
+		} catch (Exception e) {
+			logger.error("getProxy spProxy4AccSelect exception", e);
+			logger.debug("getProxy spProxy4AccSelect exception", e);
+		}
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("getProxy conn.close exception", e);
+				logger.debug("getProxy conn.close exception", e);
+			}
+		return proxy;
 	}
 
 	// Возвращает текущее расписание заданий.

@@ -1,4 +1,6 @@
-package main;
+package network;
+
+import inrtfs.IAccount;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import jobs.JobAtom;
+import main.MatrixAct;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
@@ -43,8 +47,14 @@ public class TWClient extends Thread {
 	static String ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
 	static String ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
 
-	private MatrixAct act;
-	private Constants.JobType jobType;
+	private long ID;
+	private JobAtom job;
+	private IAccount acc;
+
+	/*
+	 * // DEBUG private long AccID; private String ActionTXT; private MatrixAct
+	 * act; private Constants.JobType jobType;
+	 */
 
 	private CloseableHttpClient httpclient;
 	private String ip;
@@ -68,8 +78,10 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
-		this.act = new MatrixAct(0, "Test");
-		this.jobType = Constants.JobType.LIKE;
+		/*
+		 * // DEBUG this.act = new MatrixAct(0, "Test"); this.jobType =
+		 * Constants.JobType.LIKE;
+		 */
 
 		this.ip = ip;
 		this.port = port;
@@ -78,8 +90,9 @@ public class TWClient extends Thread {
 
 	public TWClient(MatrixAct theact) {
 
-		this.act = theact;
-		this.jobType = theact.getJob().Type;
+		this.ID = theact.getSelfID();
+		this.job = theact.getJob();
+		this.acc = theact.getAcc();
 
 		// DEBUG
 		this.ip = "120.52.73.97";
@@ -93,9 +106,8 @@ public class TWClient extends Thread {
 	public void run() {
 
 		logger.info("TWClient run Action : {} {} accID = {} ID = {}",
-				act.getActionTXT(),
-				Constants.dfm.format(act.getJob().timestamp), act.getAccID(),
-				act.getSelfID());
+				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
+				this.acc.getAccID(), this.ID);
 
 		// print internal state
 		// LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -120,7 +132,7 @@ public class TWClient extends Thread {
 		try {
 			HttpClientContext context = HttpClientContext.create();
 
-			URI uri = MakeURI(this.jobType);
+			URI uri = MakeURI(this.job);
 			if (uri != null) {
 				HttpGet request = new HttpGet(uri);
 
@@ -198,11 +210,14 @@ public class TWClient extends Thread {
 		client.run();
 	}
 
-	private URI MakeURI(Constants.JobType jobType) {
+	private URI MakeURI(JobAtom job) {
 		URI uri = null;
+		Constants.JobType jobType = job.Type;
 		try {
 			switch (jobType) {
 			case VISIT:
+				uri = new URIBuilder(job.TContent).build();
+
 				// uri = new
 				// URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
 				// uri = new URIBuilder("http://veivan.ucoz.ru").build();
