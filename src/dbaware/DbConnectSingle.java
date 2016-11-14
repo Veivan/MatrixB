@@ -65,28 +65,37 @@ public class DbConnectSingle {
 	public List<IAccount> getAccounts() {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 
-		// Debug
-		ConcreteAcc acc1 = new ConcreteAcc(1);
-		ConcreteAcc acc2 = new ConcreteAcc(2);
-		ConcreteAcc acc3 = new ConcreteAcc(3);
-		ConcreteAcc acc4 = new ConcreteAcc(4);
-		accounts.add(acc1);
-		accounts.add(acc2);
-		accounts.add(acc3);
-		accounts.add(acc4);
-
 		/*
-		 * / Accounts from DB try { dbConnect(); String query =
-		 * "SELECT [user_id] FROM [dbo].[mAccounts]"; PreparedStatement pstmt =
-		 * conn.prepareStatement(query); ResultSet rs = pstmt.executeQuery();
-		 * 
-		 * while (rs.next()) { ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
-		 * accounts.add(acc); } pstmt.close(); pstmt = null; if (conn != null)
-		 * conn.close(); conn = null; } catch (Exception e) {
-		 * e.printStackTrace(); } if (conn != null) try { conn.close(); } catch
-		 * (SQLException e) { e.printStackTrace(); } conn = null;
+		 * / Debug ConcreteAcc acc1 = new ConcreteAcc(1); ConcreteAcc acc2 = new
+		 * ConcreteAcc(2); ConcreteAcc acc3 = new ConcreteAcc(3); ConcreteAcc
+		 * acc4 = new ConcreteAcc(4); accounts.add(acc1); accounts.add(acc2);
+		 * accounts.add(acc3); accounts.add(acc4);
 		 */
 
+		// Accounts from DB
+		try {
+			dbConnect();
+			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
+				accounts.add(acc);
+			}
+			pstmt.close();
+			pstmt = null;
+		} catch (Exception e) {
+			logger.error("getAccounts exception", e);
+			logger.debug("getAccounts exception", e);
+		}
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("getAccounts conn.close exception", e);
+				logger.debug("getAccounts conn.close exception", e);
+			}
+		conn = null;
 		return accounts;
 	}
 
@@ -95,7 +104,7 @@ public class DbConnectSingle {
 		ElementProxy proxy = null;
 		try {
 			dbConnect();
-			String query ="{call [dbo].[spProxy4AccSelect](?)}";
+			String query = "{call [dbo].[spProxy4AccSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong(1, AccID);
 			ResultSet rs = sp.executeQuery();
