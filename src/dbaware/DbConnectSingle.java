@@ -6,7 +6,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -94,10 +93,6 @@ public class DbConnectSingle {
 
 		List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
 
-		// В БД надо хранить задания с конкретной датой выполнения
-		// Сделать признак повторения у задания
-		// Выбирать из БД задания только с датой, равной текущей или с признаком
-		// повторения
 		Date moment = new Date(System.currentTimeMillis());
 		// Tasks from DB
 		try {
@@ -114,9 +109,6 @@ public class DbConnectSingle {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
 		} catch (Exception e) {
 			logger.error("getHomeworks spTasksSelect exception", e);
 			logger.debug("getHomeworks spTasksSelect exception", e);
@@ -132,7 +124,7 @@ public class DbConnectSingle {
 
 		Homeworks newschedule = new Homeworks();
 		MakeHowmworks(newschedule, JobAtomList);
-		//MakeHowmworks(newschedule);
+		// MakeHowmworks(newschedule);
 		return newschedule;
 	}
 
