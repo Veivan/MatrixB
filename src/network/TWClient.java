@@ -69,7 +69,7 @@ public class TWClient extends Thread {
 	public boolean GetProxy(boolean IsDebug) {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
-		
+
 			dbproxy = new ElementProxy("195.46.163.139", 8080, ProxyType.HTTP);
 			// TWClient client = new TWClient("212.174.226.105", 48111,
 			// ProxyType.SOCKS);
@@ -80,11 +80,12 @@ public class TWClient extends Thread {
 			// ProxyType.SOCKS); // RU
 
 			// good
-			// TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
+			// TWClient client = new TWClient("120.52.73.97", 80,
+			// ProxyType.HTTP);
 			// bad
-			//TWClient client = new TWClient("82.195.17.129", 8080, ProxyType.HTTP);
+			// TWClient client = new TWClient("82.195.17.129", 8080,
+			// ProxyType.HTTP);
 
-			
 		} else {
 			dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
 			if (dbproxy == null) {
@@ -122,6 +123,13 @@ public class TWClient extends Thread {
 				ConsumerSecret);
 		consumer.setTokenWithSecret(AccessToken, AccessSecret);
 
+		final int CONNTECTION_TIMEOUT_MS = 20;
+		final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
+		final int SOCKET_TIMEOUT_MS = 20;
+		final RequestConfig requestConfig = RequestConfig.custom()
+				.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
+				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
+				.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
 		if (this.proxyType == ProxyType.SOCKS) {
 			// make SOCKS proxy
 			Registry<ConnectionSocketFactory> reg = RegistryBuilder
@@ -130,9 +138,10 @@ public class TWClient extends Thread {
 			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
 					reg);
 			this.httpclient = HttpClients.custom().setConnectionManager(cm)
-					.build();
+					.setDefaultRequestConfig(requestConfig).build();
 		} else
-			this.httpclient = HttpClients.custom().build();
+			this.httpclient = HttpClients.custom()
+					.setDefaultRequestConfig(requestConfig).build();
 
 		try {
 			HttpClientContext context = HttpClientContext.create();
@@ -195,7 +204,8 @@ public class TWClient extends Thread {
 
 	// DEBUG
 	public static void main(String[] args) {
-		JobAtom job = new JobAtom(5L, "VISIT", "http://geokot.com/reqwinfo/getreqwinfo?");
+		JobAtom job = new JobAtom(5L, "VISIT",
+				"http://geokot.com/reqwinfo/getreqwinfo?");
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
 
