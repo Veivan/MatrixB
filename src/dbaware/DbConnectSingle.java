@@ -110,7 +110,7 @@ public class DbConnectSingle {
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
 			rs.next();
-			proxy = new ElementProxy(rs.getString(4), rs.getInt(5), ProxyType.valueOf(rs.getString(7).trim()));
+			proxy = new ElementProxy(rs.getString(4), rs.getInt(5), ProxyType.valueOf(rs.getString(7)));
 			rs.close();
 			sp.close();
 			sp = null;

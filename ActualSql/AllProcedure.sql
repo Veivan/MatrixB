@@ -18,7 +18,7 @@ AS BEGIN
 		,P.[ip]
 		,P.[port]
 		,P.[prtypeID]
-		,D.[typename]
+		,[typename] = LTRIM(RTRIM(D.[typename]))
 	FROM [dbo].[mProxyAcc] PA
 		JOIN [dbo].[mProxies] P ON P.[ProxyID] = PA.[ProxyID]
 		JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
