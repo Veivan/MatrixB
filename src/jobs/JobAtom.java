@@ -31,11 +31,7 @@ public class JobAtom {
 		this.JobID = job.JobID;		
 		this.Type = job.Type; 
 		this.TContent = job.TContent;
+		this.timestamp = job.timestamp;
 	}
 
-	public JobAtom(long JobID, Constants.JobType Type) {
-		this.JobID = JobID;
-		this.Type = Type;
-	}
-	
 }

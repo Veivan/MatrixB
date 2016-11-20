@@ -15,14 +15,8 @@ public class MatrixAct {
 
 	private long ID;
 
-	public MatrixAct(int i, String string) {
-		this.AccID = i;
-		this.setActionTXT(string);
-	}
-
 	public MatrixAct(JobAtom ajob, IAccount acc) {
-		this.job = new JobAtom(ajob.JobID, ajob.Type);
-		this.job.timestamp = ajob.timestamp;
+		this.job = new JobAtom(ajob);
 		this.acc = acc;
 
 		this.AccID = acc.getAccID();

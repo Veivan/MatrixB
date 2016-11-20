@@ -7,7 +7,6 @@ import jobs.JobList;
 import org.junit.Before;
 import org.junit.Test;
 
-import service.Constants;
 import main.Timing;
 
 public class testTiming {
@@ -29,7 +28,7 @@ public class testTiming {
 
 	private static void MakeHowmworks(Homeworks homeworks) {
 		for (int i = 0; i < 5; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.TWIT);
+			JobAtom job = new JobAtom((long)i, "TWIT", "qq");
 			homeworks.AddJob(job);
 		}
 	}

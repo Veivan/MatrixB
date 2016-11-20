@@ -76,10 +76,13 @@ public class Engine implements Observable {
 	}
 
 	// for debug only
-	public void setUserAction(int user, String actiontxt) {
+	public void setUserAction(int user, String actiontxt, String tcontent) {
 		MatrixActList.clear();
-		MatrixAct act = new MatrixAct(0, "qq");
-		MatrixActList.add(act);
+		JobAtom job = new JobAtom(5L, actiontxt, tcontent);
+		ConcreteAcc acc = new ConcreteAcc(1L);
+
+		MatrixAct theact = new MatrixAct(job, acc);
+		MatrixActList.add(theact);
 		notifyObservers();
 	}
 

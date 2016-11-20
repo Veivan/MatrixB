@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import jobs.JobAtom;
+import main.ConcreteAcc;
 import main.MatrixAct;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
@@ -79,10 +80,15 @@ public class TWClient extends Thread {
 	}
 
 	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
-		/*
-		 * // DEBUG this.act = new MatrixAct(0, "Test"); this.jobType =
-		 * Constants.JobType.LIKE;
-		 */
+
+		// DEBUG
+		JobAtom job = new JobAtom(5L, "VISIT", "");
+		ConcreteAcc acc = new ConcreteAcc(1L);
+
+		MatrixAct theact = new MatrixAct(job, acc);
+		this.ID = theact.getSelfID();
+		this.job = theact.getJob();
+		this.acc = theact.getAcc();
 
 		this.ip = ip;
 		this.port = port;
@@ -128,7 +134,11 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		if (!GetProxy()) return;
+		if (!GetProxy())
+			return;
+
+		logger.info("TWClient got proxy : accID = {} ID = {}",
+				this.acc.getAccID(), this.ID);
 
 		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
 				ConsumerSecret);
@@ -171,7 +181,7 @@ public class TWClient extends Thread {
 				request.setHeader("User-Agent", "MySuperUserAgent");
 
 				// При обращении к сайту авторизация не обязательна
-				if (this.job.Type != JobType.VISIT) 
+				if (this.job.Type != JobType.VISIT)
 					consumer.sign(request);
 
 				CloseableHttpResponse response = httpclient.execute(request,
@@ -209,7 +219,8 @@ public class TWClient extends Thread {
 
 	}
 
-/*/DEBUG	public static void main(String[] args) {
+	// DEBUG
+	public static void main(String[] args) {
 
 		// TWClient client = new TWClient("212.174.226.105", 48111,
 		// ProxyType.SOCKS);
@@ -220,15 +231,14 @@ public class TWClient extends Thread {
 		// ProxyType.SOCKS); // RU
 
 		// good
-		TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
+		// TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
 		// bad
-		// TWClient client = new TWClient("85.26.146.169", 80, ProxyType.HTTP);
+		TWClient client = new TWClient("82.195.17.129", 8080, ProxyType.HTTP);
 
 		logger.info("TWClient main");
 		client.run();
 	}
-*/
-	
+
 	private URI MakeURI(JobAtom job) {
 		URI uri = null;
 		Constants.JobType jobType = job.Type;

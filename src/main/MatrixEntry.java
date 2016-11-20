@@ -34,8 +34,8 @@ public class MatrixEntry {
 		engine.setAccounts(accounts);
 
 		/*
-		 * engine.setUserAction(1, "Like"); engine.setUserAction(2, "act2");
-		 * engine.setUserAction(1, "act3");
+		 * engine.setUserAction(1, "Like", ""); engine.setUserAction(2, "act2", "");
+		 * engine.setUserAction(1, "act3", "");
 		 */
 	
 		try {

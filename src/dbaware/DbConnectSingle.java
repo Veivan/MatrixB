@@ -183,11 +183,11 @@ public class DbConnectSingle {
 
 	// 4 debug without DB
 	private static void MakeHowmworks(Homeworks homeworks) {
-		JobAtom job = new JobAtom(5, Constants.JobType.SETAVA);
+		JobAtom job = new JobAtom(5L, "SETAVA", "");
 		homeworks.AddJob(job);
 
 		for (int i = 0; i < 2; i++) {
-			job = new JobAtom(i, Constants.JobType.LIKE);
+			job = new JobAtom((long)i, "LIKE", "");
 			homeworks.AddJob(job);
 		}
 

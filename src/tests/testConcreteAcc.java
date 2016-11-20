@@ -7,8 +7,6 @@ import main.ConcreteAcc;
 import org.junit.Before;
 import org.junit.Test;
 
-import service.Constants;
-
 public class testConcreteAcc {
 	ConcreteAcc acc;
 
@@ -35,7 +33,7 @@ public class testConcreteAcc {
 
 	private static void MakeHowmworks(Homeworks howmworks) {
 		for (int i = 0; i < 50; i++) {
-			JobAtom job = new JobAtom(i, Constants.JobType.TWIT);
+			JobAtom job = new JobAtom((long)i, "TWIT", "qq");
 			howmworks.AddJob(job);
 		}
 	}
