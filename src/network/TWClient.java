@@ -53,31 +53,10 @@ public class TWClient extends Thread {
 	private JobAtom job;
 	private IAccount acc;
 
-	/*
-	 * // DEBUG private long AccID; private String ActionTXT; private MatrixAct
-	 * act; private Constants.JobType jobType;
-	 */
-
 	private CloseableHttpClient httpclient;
 	private String ip;
 	private int port;
 	private Constants.ProxyType proxyType;
-
-	private String str;
-
-	public String getData() {
-		return str;
-	}
-
-	public void setData(String str) {
-		this.str = str;
-	}
-
-	public String addData(String input) {
-		String add = str.concat(input);
-		this.setData(add);
-		return str;
-	}
 
 	public TWClient(MatrixAct theact) {
 		this.ID = theact.getSelfID();

@@ -2,7 +2,6 @@ package tests;
 
 import network.TWClient;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,19 +11,7 @@ public class TWClientTest {
 
 	@Before
 	public void setUp() throws Exception {
-//		client = new TWClient();
-		client.setData("MyData");
-	}
-
-	@Test
-	public void testGetData() {
-		Assert.assertEquals("MyData", client.getData());
-	}
-
-	@Test
-	public void testAddData() {
-		client.addData("Add");
-	    Assert.assertEquals("MyDataAdd", client.getData());
+		client = new TWClient(null);
 	}
 
 	@Test
