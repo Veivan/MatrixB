@@ -44,10 +44,14 @@ import org.slf4j.LoggerFactory;
 
 public class TWClient extends Thread {
 
-	static String AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
-	static String AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
-	static String ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
-	static String ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
+	final int CONNTECTION_TIMEOUT_MS = 20;
+	final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
+	final int SOCKET_TIMEOUT_MS = 20;
+
+	private String AccessToken;
+	private String AccessSecret;
+	private String ConsumerKey;
+	private String ConsumerSecret;
 
 	private long ID;
 	private JobAtom job;
@@ -119,13 +123,6 @@ public class TWClient extends Thread {
 		logger.info("TWClient got proxy : accID = {} ID = {}",
 				this.acc.getAccID(), this.ID);
 
-		OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
-				ConsumerSecret);
-		consumer.setTokenWithSecret(AccessToken, AccessSecret);
-
-		final int CONNTECTION_TIMEOUT_MS = 20;
-		final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
-		final int SOCKET_TIMEOUT_MS = 20;
 		final RequestConfig requestConfig = RequestConfig.custom()
 				.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
@@ -164,8 +161,13 @@ public class TWClient extends Thread {
 				request.setHeader("User-Agent", "MySuperUserAgent");
 
 				// При обращении к сайту авторизация не обязательна
-				if (this.job.Type != JobType.VISIT)
+				if (this.job.Type != JobType.VISIT){
+					SetAuth();
+					OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
+							ConsumerSecret);
+					consumer.setTokenWithSecret(AccessToken, AccessSecret);
 					consumer.sign(request);
+				}
 
 				CloseableHttpResponse response = httpclient.execute(request,
 						context);
@@ -237,7 +239,7 @@ public class TWClient extends Thread {
 			case TWIT:
 				uri = new URIBuilder(
 						"https://api.twitter.com/1.1/statuses/update.json")
-						.addParameter("track", "допинг").build();
+						.addParameter("status", job.TContent).build();
 				break;
 			case DIRECT:
 				break;
@@ -297,10 +299,17 @@ public class TWClient extends Thread {
 		}
 
 	}
-	/*
-	 * @Override public boolean Auth() { ReaderIni keys = new ReaderIni();
-	 * OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
-	 * keys.cConsumerSecret); consumer.setTokenWithSecret(keys.cAccessToken,
-	 * keys.cAccessSecret); return false; }
-	 */
+	
+	private void SetAuth() {
+		this.AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
+		this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
+		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
+		this.ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
+
+		/*	ReaderIni keys = new ReaderIni();
+	  OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
+	  keys.cConsumerSecret); consumer.setTokenWithSecret(keys.cAccessToken,
+	  keys.cAccessSecret); */ 
+	  }
+	 
 }
