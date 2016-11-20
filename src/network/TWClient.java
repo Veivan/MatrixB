@@ -79,47 +79,45 @@ public class TWClient extends Thread {
 		return str;
 	}
 
-	public TWClient(String ip, int port, Constants.ProxyType proxyType) {
-
-		// DEBUG
-		JobAtom job = new JobAtom(5L, "VISIT", "");
-		ConcreteAcc acc = new ConcreteAcc(1L);
-
-		MatrixAct theact = new MatrixAct(job, acc);
-		this.ID = theact.getSelfID();
-		this.job = theact.getJob();
-		this.acc = theact.getAcc();
-
-		this.ip = ip;
-		this.port = port;
-		this.proxyType = proxyType;
-	}
-
 	public TWClient(MatrixAct theact) {
-
 		this.ID = theact.getSelfID();
 		this.job = theact.getJob();
 		this.acc = theact.getAcc();
-
-		/*
-		 * / DEBUG this.ip = "120.52.73.97"; this.port = 80; this.proxyType =
-		 * ProxyType.HTTP;
-		 */
 	}
 
 	static Logger logger = LoggerFactory.getLogger(TWClient.class);
 
-	public boolean GetProxy() {
-		ElementProxy dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
-		if (dbproxy == null) {
-			logger.error("TWClient cant get proxy");
-			logger.debug("TWClient cant get proxy");
-			return false;
+	public boolean GetProxy(boolean IsDebug) {
+		ElementProxy dbproxy = null;
+		if (IsDebug) {
+		
+			dbproxy = new ElementProxy("195.46.163.139", 8080, ProxyType.HTTP);
+			// TWClient client = new TWClient("212.174.226.105", 48111,
+			// ProxyType.SOCKS);
+
+			// TWClient client = new TWClient("217.15.206.240", 48111,
+			// ProxyType.SOCKS); // RU
+			// TWClient client = new TWClient("213.79.120.82", 48111,
+			// ProxyType.SOCKS); // RU
+
+			// good
+			// TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
+			// bad
+			//TWClient client = new TWClient("82.195.17.129", 8080, ProxyType.HTTP);
+
+			
+		} else {
+			dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
+			if (dbproxy == null) {
+				logger.error("TWClient cant get proxy");
+				logger.debug("TWClient cant get proxy");
+				return false;
+			}
 		}
 
-		this.ip = dbproxy.ip;
-		this.port = dbproxy.port;
-		this.proxyType = dbproxy.proxyType;
+		this.ip = dbproxy.getIp();
+		this.port = dbproxy.getPort();
+		this.proxyType = dbproxy.getProxyType();
 		return true;
 	}
 
@@ -134,7 +132,8 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		if (!GetProxy())
+		boolean IsDebug = true;
+		if (!GetProxy(IsDebug))
 			return;
 
 		logger.info("TWClient got proxy : accID = {} ID = {}",
@@ -164,15 +163,11 @@ public class TWClient extends Thread {
 				HttpGet request = new HttpGet(uri);
 
 				if (this.proxyType == ProxyType.SOCKS) {
-					// InetSocketAddress socksaddr = new
-					// InetSocketAddress("212.174.226.105", 48111);
 					InetSocketAddress socksaddr = new InetSocketAddress(
 							this.ip, this.port);
 					context.setAttribute("socks.address", socksaddr);
 				} else {
 					// make HTTP proxy
-					// HttpHost proxy = new HttpHost("37.187.115.112", 80,
-					// "http");
 					HttpHost proxy = new HttpHost(this.ip, this.port, "http");
 					RequestConfig config = RequestConfig.custom()
 							.setProxy(proxy).build();
@@ -221,21 +216,13 @@ public class TWClient extends Thread {
 
 	// DEBUG
 	public static void main(String[] args) {
+		JobAtom job = new JobAtom(5L, "VISIT", "http://geokot.com/reqwinfo/getreqwinfo?");
+		ConcreteAcc acc = new ConcreteAcc(1L);
+		MatrixAct theact = new MatrixAct(job, acc);
 
-		// TWClient client = new TWClient("212.174.226.105", 48111,
-		// ProxyType.SOCKS);
+		TWClient client = new TWClient(theact);
 
-		// TWClient client = new TWClient("217.15.206.240", 48111,
-		// ProxyType.SOCKS); // RU
-		// TWClient client = new TWClient("213.79.120.82", 48111,
-		// ProxyType.SOCKS); // RU
-
-		// good
-		// TWClient client = new TWClient("120.52.73.97", 80, ProxyType.HTTP);
-		// bad
-		TWClient client = new TWClient("82.195.17.129", 8080, ProxyType.HTTP);
-
-		logger.info("TWClient main");
+		logger.info("TWClient debug main");
 		client.run();
 	}
 
