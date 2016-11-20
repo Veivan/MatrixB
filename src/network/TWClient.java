@@ -132,7 +132,7 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		boolean IsDebug = true;
+		boolean IsDebug = false;
 		if (!GetProxy(IsDebug))
 			return;
 
