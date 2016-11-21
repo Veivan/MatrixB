@@ -23,6 +23,8 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
@@ -38,6 +40,7 @@ import org.apache.http.util.EntityUtils;
 import service.Constants;
 import service.Constants.JobType;
 import service.Constants.ProxyType;
+import service.Constants.RequestType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,52 +146,54 @@ public class TWClient extends Thread {
 		try {
 			HttpClientContext context = HttpClientContext.create();
 
-			URI uri = MakeURI(this.job);
-			if (uri != null) {
-				HttpGet request = new HttpGet(uri);
+			TypedURI uricust = new TypedURI(this.job);
+			HttpRequestBase request;
+			if (uricust.getType() == RequestType.GET)
+				request = new HttpGet(uricust.getUri());
+			else
+				request = new HttpPost(uricust.getUri());
 
-				if (this.proxyType == ProxyType.SOCKS) {
-					InetSocketAddress socksaddr = new InetSocketAddress(
-							this.ip, this.port);
-					context.setAttribute("socks.address", socksaddr);
-				} else {
-					// make HTTP proxy
-					HttpHost proxy = new HttpHost(this.ip, this.port, "http");
-					RequestConfig config = RequestConfig.custom()
-							.setProxy(proxy).build();
-					request.setConfig(config);
+			if (this.proxyType == ProxyType.SOCKS) {
+				InetSocketAddress socksaddr = new InetSocketAddress(this.ip,
+						this.port);
+				context.setAttribute("socks.address", socksaddr);
+			} else {
+				// make HTTP proxy
+				HttpHost proxy = new HttpHost(this.ip, this.port, "http");
+				RequestConfig config = RequestConfig.custom().setProxy(proxy)
+						.build();
+				request.setConfig(config);
+			}
+			request.setHeader("User-Agent", "MySuperUserAgent");
+
+			// При обращении к сайту авторизация не обязательна
+			if (this.job.Type != JobType.VISIT) {
+				SetAuth();
+				OAuthConsumer consumer = new CommonsHttpOAuthConsumer(
+						ConsumerKey, ConsumerSecret);
+				consumer.setTokenWithSecret(AccessToken, AccessSecret);
+				consumer.sign(request);
+			}
+
+			CloseableHttpResponse response = httpclient.execute(request,
+					context);
+			try {
+				// System.out.println("----------------------------------------");
+				String message = response.getStatusLine().toString();
+				logger.info("ResponseStatus: {}", message);
+
+				HttpEntity httpEntity = response.getEntity();
+				BufferedReader br = new BufferedReader(new InputStreamReader(
+						httpEntity.getContent()));
+				String line;
+				while ((line = br.readLine()) != null) {
+					if (line.isEmpty())
+						continue;
+					System.out.println(line);
 				}
-				request.setHeader("User-Agent", "MySuperUserAgent");
-
-				// При обращении к сайту авторизация не обязательна
-				if (this.job.Type != JobType.VISIT){
-					SetAuth();
-					OAuthConsumer consumer = new CommonsHttpOAuthConsumer(ConsumerKey,
-							ConsumerSecret);
-					consumer.setTokenWithSecret(AccessToken, AccessSecret);
-					consumer.sign(request);
-				}
-
-				CloseableHttpResponse response = httpclient.execute(request,
-						context);
-				try {
-					// System.out.println("----------------------------------------");
-					String message = response.getStatusLine().toString();
-					logger.info("ResponseStatus: {}", message);
-
-					HttpEntity httpEntity = response.getEntity();
-					BufferedReader br = new BufferedReader(
-							new InputStreamReader(httpEntity.getContent()));
-					String line;
-					while ((line = br.readLine()) != null) {
-						if (line.isEmpty())
-							continue;
-						System.out.println(line);
-					}
-					EntityUtils.consume(httpEntity);
-				} finally {
-					response.close();
-				}
+				EntityUtils.consume(httpEntity);
+			} finally {
+				response.close();
 			}
 		} catch (Exception e) {
 			logger.error("TWClient run thrown exception", e);
@@ -206,12 +211,14 @@ public class TWClient extends Thread {
 
 	// DEBUG
 	public static void main(String[] args) {
-		/*JobAtom job = new JobAtom(5L, "VISIT",
-				//"http://geokot.com/reqwinfo/getreqwinfo?");
-				"http://veivan.ucoz.ru"); */
-		
+		/*
+		 * JobAtom job = new JobAtom(5L, "VISIT",
+		 * //"http://geokot.com/reqwinfo/getreqwinfo?");
+		 * "http://veivan.ucoz.ru");
+		 */
+
 		JobAtom job = new JobAtom(5L, "TWIT", "Hi people!");
-		
+
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
 
@@ -219,54 +226,6 @@ public class TWClient extends Thread {
 
 		logger.info("TWClient debug main");
 		client.run();
-	}
-
-	private URI MakeURI(JobAtom job) {
-		URI uri = null;
-		Constants.JobType jobType = job.Type;
-		try {
-			switch (jobType) {
-			case VISIT:
-				uri = new URIBuilder(job.TContent).build();
-
-				// uri = new
-				// URIBuilder("http://geokot.com/reqwinfo/getreqwinfo?")
-				// uri = new URIBuilder("http://veivan.ucoz.ru").build();
-				break;
-			case SETAVA:
-				/*
-				 * uri = new URIBuilder(
-				 * "https://stream.twitter.com/1.1/statuses/filter.json")
-				 * .addParameter("track", "допинг").build();
-				 */
-				break;
-			case TWIT:
-				uri = new URIBuilder(
-						"https://api.twitter.com/1.1/statuses/update.json")
-						.addParameter("status", job.TContent).build();
-				break;
-			case DIRECT:
-				break;
-			case LIKE:
-				break;
-			case RETWIT:
-				break;
-			case REPLAY:
-				break;
-			case SETBACKGROUND:
-				break;
-			case FOLLOW:
-				break;
-			case UNFOLLOW:
-				break;
-			default:
-				break;
-			}
-		} catch (URISyntaxException e) {
-			logger.error("MakeURI exception", e);
-			logger.debug("MakeURI exception", e);
-		}
-		return uri;
 	}
 
 	static class MyConnectionSocketFactory implements ConnectionSocketFactory {
@@ -303,17 +262,18 @@ public class TWClient extends Thread {
 		}
 
 	}
-	
+
 	private void SetAuth() {
 		this.AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
 		this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
 		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
 		this.ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
 
-		/*	ReaderIni keys = new ReaderIni();
-	  OAuthConsumer consumer = new CommonsHttpOAuthConsumer(keys.cConsumerKey,
-	  keys.cConsumerSecret); consumer.setTokenWithSecret(keys.cAccessToken,
-	  keys.cAccessSecret); */ 
-	  }
-	 
+		/*
+		 * ReaderIni keys = new ReaderIni(); OAuthConsumer consumer = new
+		 * CommonsHttpOAuthConsumer(keys.cConsumerKey, keys.cConsumerSecret);
+		 * consumer.setTokenWithSecret(keys.cAccessToken, keys.cAccessSecret);
+		 */
+	}
+
 }
