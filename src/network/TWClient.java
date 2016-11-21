@@ -130,10 +130,19 @@ public class TWClient extends Thread {
 				.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
 				.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
+			
 		if (this.proxyType == ProxyType.SOCKS) {
 			// make SOCKS proxy
-			Registry<ConnectionSocketFactory> reg = RegistryBuilder
-					.<ConnectionSocketFactory> create()
+
+/*			Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
+			        .register("http", PlainConnectionSocketFactory.INSTANCE)
+			        .register("https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
+			        .build();
+			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
+			CloseableHttpClient httpclient = HttpClients.custom()
+			        .setConnectionManager(cm)
+			        .build() */			
+			Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory> create()
 					.register("http", new MyConnectionSocketFactory()).build();
 			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
 					reg);
