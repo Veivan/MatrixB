@@ -9,9 +9,6 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import jobs.JobAtom;
 import main.ConcreteAcc;
 import main.MatrixAct;
@@ -26,7 +23,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
@@ -77,7 +73,10 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			dbproxy = new ElementProxy("195.46.163.139", 8080, ProxyType.HTTP);
+			// dbproxy = new ElementProxy("195.46.163.139", 8080,
+			// ProxyType.HTTP);
+			dbproxy = new ElementProxy("88.215.177.224", 8080, ProxyType.HTTP);
+
 			// TWClient client = new TWClient("212.174.226.105", 48111,
 			// ProxyType.SOCKS);
 
@@ -119,7 +118,7 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		boolean IsDebug = false;
+		boolean IsDebug = true;
 		if (!GetProxy(IsDebug))
 			return;
 
@@ -211,11 +210,10 @@ public class TWClient extends Thread {
 
 	// DEBUG
 	public static void main(String[] args) {
-		/*
-		 * JobAtom job = new JobAtom(5L, "VISIT",
-		 * //"http://geokot.com/reqwinfo/getreqwinfo?");
-		 * "http://veivan.ucoz.ru");
-		 */
+
+		// JobAtom job = new JobAtom(5L, "VISIT",
+		// "http://geokot.com/reqwinfo/getreqwinfo?");
+		// "http://veivan.ucoz.ru");
 
 		JobAtom job = new JobAtom(5L, "TWIT", "Hi people!");
 
