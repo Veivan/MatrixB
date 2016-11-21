@@ -26,6 +26,10 @@ public final class Constants {
 		HTTP, SOCKS
 	}
 
+	public enum RequestType {
+		GET, POST
+	}
+
 	private Constants() {
 	} // make clacc abstract
 }

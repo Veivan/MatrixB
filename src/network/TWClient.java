@@ -206,8 +206,12 @@ public class TWClient extends Thread {
 
 	// DEBUG
 	public static void main(String[] args) {
-		JobAtom job = new JobAtom(5L, "VISIT",
-				"http://geokot.com/reqwinfo/getreqwinfo?");
+		/*JobAtom job = new JobAtom(5L, "VISIT",
+				//"http://geokot.com/reqwinfo/getreqwinfo?");
+				"http://veivan.ucoz.ru"); */
+		
+		JobAtom job = new JobAtom(5L, "TWIT", "Hi people!");
+		
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
 
