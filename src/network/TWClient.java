@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+
 import jobs.JobAtom;
 import main.ConcreteAcc;
 import main.MatrixAct;
@@ -173,9 +174,21 @@ public class TWClient extends Thread {
 				consumer.setTokenWithSecret(AccessToken, AccessSecret);
 				consumer.sign(request);
 			}
+			
+			
+/*			HttpClient httpclient2 = new DefaultHttpClient();
 
-			CloseableHttpResponse response = httpclient.execute(request,
-					context);
+			HttpClient httpclient = new HttpClient();
+			HttpResponse response;
+			HttpPost httpget = new HttpPost(uricust.getUri()); 
+			  try { 
+				  response = httpclient.execute(httpget);
+			    System.out.println(response.getStatusLine().toString());
+			  } finally {
+			    httpget.releaseConnection();
+			  }*/
+			
+			CloseableHttpResponse response = httpclient.execute(request, context);
 			try {
 				// System.out.println("----------------------------------------");
 				String message = response.getStatusLine().toString();
@@ -214,8 +227,9 @@ public class TWClient extends Thread {
 		// JobAtom job = new JobAtom(5L, "VISIT",
 		// "http://geokot.com/reqwinfo/getreqwinfo?");
 		// "http://veivan.ucoz.ru");
-
-		JobAtom job = new JobAtom(5L, "TWIT", "Hi people!");
+		//"https://www.verisign.com/");
+		
+		JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
