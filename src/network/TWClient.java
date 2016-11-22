@@ -79,9 +79,11 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS);
+			//dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS);
+			
+			dbproxy = new ElementProxy("82.204.180.43", 38572, ProxyType.SOCKS);
 			 
-			//dbproxy = new ElementProxy("88.215.177.224", 8080, ProxyType.HTTP);
+			//dbproxy = new ElementProxy("213.171.46.186", 3128, ProxyType.HTTP);
 
 
 			// good
@@ -147,8 +149,7 @@ public class TWClient extends Thread {
 			 */
 			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
 					reg);
-			this.httpclient = HttpClients.custom().setConnectionManager(cm)
-					.setDefaultRequestConfig(requestConfig).build();
+			this.httpclient = HttpClients.custom().setConnectionManager(cm).build();
 		} else
 			this.httpclient = HttpClients.custom()
 					.setDefaultRequestConfig(requestConfig).build();
@@ -233,13 +234,13 @@ public class TWClient extends Thread {
 	public static void main(String[] args) {
 
 		JobAtom job = new JobAtom(5L, "VISIT",
-		 "http://geokot.com/reqwinfo/getreqwinfo?");
+		// "http://geokot.com/reqwinfo/getreqwinfo?");
 		// "http://veivan.ucoz.ru");
 		//		"https://www.verisign.com/");
 		// "https://publish.twitter.com/#");
-		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
+		 "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		// JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
+		//JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
