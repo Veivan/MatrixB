@@ -233,14 +233,14 @@ public class TWClient extends Thread {
 	// DEBUG
 	public static void main(String[] args) {
 
-		JobAtom job = new JobAtom(5L, "VISIT",
+		//JobAtom job = new JobAtom(5L, "VISIT",
 		// "http://geokot.com/reqwinfo/getreqwinfo?");
 		// "http://veivan.ucoz.ru");
 		//		"https://www.verisign.com/");
 		// "https://publish.twitter.com/#");
-		 "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
+		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		//JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
+		JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -298,10 +298,15 @@ public class TWClient extends Thread {
 	}
 
 	private void SetAuth() {
-		this.AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
-		this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
 		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
 		this.ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
+		this.AccessToken = "2936887497-voH4VfwhWGAMt2ur46ejogsY1wimD9k4qUGpMMp";
+		this.AccessSecret = "QYJS2HsxMcLbUcAipeaMhWc4EsxdYjEQH65ciG63U9fIX";
+
+		/* was read-only access
+		this.AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
+		this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
+		*/
 
 		/*
 		 * ReaderIni keys = new ReaderIni(); OAuthConsumer consumer = new
