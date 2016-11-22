@@ -10,6 +10,8 @@ import java.net.Proxy;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import javax.net.ssl.SSLContext;
+
 import jobs.JobAtom;
 import main.ConcreteAcc;
 import main.MatrixAct;
@@ -28,6 +30,9 @@ import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -74,17 +79,10 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			// dbproxy = new ElementProxy("195.46.163.139", 8080,
-			// ProxyType.HTTP);
-			dbproxy = new ElementProxy("88.215.177.224", 8080, ProxyType.HTTP);
+			dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS);
+			 
+			//dbproxy = new ElementProxy("88.215.177.224", 8080, ProxyType.HTTP);
 
-			// TWClient client = new TWClient("212.174.226.105", 48111,
-			// ProxyType.SOCKS);
-
-			// TWClient client = new TWClient("217.15.206.240", 48111,
-			// ProxyType.SOCKS); // RU
-			// TWClient client = new TWClient("213.79.120.82", 48111,
-			// ProxyType.SOCKS); // RU
 
 			// good
 			// TWClient client = new TWClient("120.52.73.97", 80,
@@ -123,27 +121,30 @@ public class TWClient extends Thread {
 		if (!GetProxy(IsDebug))
 			return;
 
-		logger.info("TWClient got proxy : accID = {} ID = {}",
-				this.acc.getAccID(), this.ID);
+		logger.info("TWClient got proxy {} : accID = {} ID = {}",
+				IsDebug ? "Debug" : "", this.acc.getAccID(), this.ID);
 
 		final RequestConfig requestConfig = RequestConfig.custom()
 				.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
 				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
 				.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
-			
+
 		if (this.proxyType == ProxyType.SOCKS) {
 			// make SOCKS proxy
 
-/*			Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory>create()
-			        .register("http", PlainConnectionSocketFactory.INSTANCE)
-			        .register("https", new MyConnectionSocketFactory(SSLContexts.createSystemDefault()))
-			        .build();
-			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(reg);
-			CloseableHttpClient httpclient = HttpClients.custom()
-			        .setConnectionManager(cm)
-			        .build() */			
-			Registry<ConnectionSocketFactory> reg = RegistryBuilder.<ConnectionSocketFactory> create()
-					.register("http", new MyConnectionSocketFactory()).build();
+			Registry<ConnectionSocketFactory> reg = RegistryBuilder
+					.<ConnectionSocketFactory> create()
+					.register("http", PlainConnectionSocketFactory.INSTANCE)
+					.register(
+							"https",
+							new MyConnectionSocketFactory(SSLContexts
+									.createSystemDefault())).build();
+
+			/*
+			 * Registry<ConnectionSocketFactory> reg =
+			 * RegistryBuilder.<ConnectionSocketFactory> create()
+			 * .register("http", new MyConnectionSocketFactory()).build();
+			 */
 			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
 					reg);
 			this.httpclient = HttpClients.custom().setConnectionManager(cm)
@@ -183,21 +184,19 @@ public class TWClient extends Thread {
 				consumer.setTokenWithSecret(AccessToken, AccessSecret);
 				consumer.sign(request);
 			}
-			
-			
-/*			HttpClient httpclient2 = new DefaultHttpClient();
 
-			HttpClient httpclient = new HttpClient();
-			HttpResponse response;
-			HttpPost httpget = new HttpPost(uricust.getUri()); 
-			  try { 
-				  response = httpclient.execute(httpget);
-			    System.out.println(response.getStatusLine().toString());
-			  } finally {
-			    httpget.releaseConnection();
-			  }*/
-			
-			CloseableHttpResponse response = httpclient.execute(request, context);
+			/*
+			 * HttpClient httpclient2 = new DefaultHttpClient();
+			 * 
+			 * HttpClient httpclient = new HttpClient(); HttpResponse response;
+			 * HttpPost httpget = new HttpPost(uricust.getUri()); try { response
+			 * = httpclient.execute(httpget);
+			 * System.out.println(response.getStatusLine().toString()); }
+			 * finally { httpget.releaseConnection(); }
+			 */
+
+			CloseableHttpResponse response = httpclient.execute(request,
+					context);
 			try {
 				// System.out.println("----------------------------------------");
 				String message = response.getStatusLine().toString();
@@ -233,14 +232,14 @@ public class TWClient extends Thread {
 	// DEBUG
 	public static void main(String[] args) {
 
-		 JobAtom job = new JobAtom(5L, "VISIT",
-		// "http://geokot.com/reqwinfo/getreqwinfo?");
+		JobAtom job = new JobAtom(5L, "VISIT",
+		 "http://geokot.com/reqwinfo/getreqwinfo?");
 		// "http://veivan.ucoz.ru");
-		 "https://www.verisign.com/");
+		//		"https://www.verisign.com/");
 		// "https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
-		 
-		//JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
+
+		// JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -251,9 +250,20 @@ public class TWClient extends Thread {
 		client.run();
 	}
 
-	static class MyConnectionSocketFactory implements ConnectionSocketFactory {
+	static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
 
-		public Socket createSocket(final HttpContext context)
+		public MyConnectionSocketFactory(final SSLContext sslContext) {
+			super(sslContext);
+		}
+
+	    @Override
+	    public Socket createSocket(final HttpContext context) throws IOException {
+	        InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
+	        Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
+	        return new Socket(proxy);
+	    }
+
+	    /*public Socket createSocket(final HttpContext context)
 				throws IOException {
 			InetSocketAddress socksaddr = (InetSocketAddress) context
 					.getAttribute("socks.address");
@@ -282,7 +292,7 @@ public class TWClient extends Thread {
 						remoteAddress.getAddress());
 			}
 			return sock;
-		}
+		}*/
 
 	}
 
