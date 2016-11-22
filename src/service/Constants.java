@@ -23,7 +23,7 @@ public final class Constants {
 	public static DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public enum ProxyType {
-		HTTP, SOCKS
+		HTTPS, SOCKS
 	}
 
 	public enum RequestType {

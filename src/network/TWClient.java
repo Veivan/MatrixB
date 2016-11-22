@@ -8,8 +8,6 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
-
 import javax.net.ssl.SSLContext;
 
 import jobs.JobAtom;
@@ -28,7 +26,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -79,19 +76,13 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			//dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS);
-			
-			dbproxy = new ElementProxy("82.204.180.43", 38572, ProxyType.SOCKS);
-			 
-			//dbproxy = new ElementProxy("213.171.46.186", 3128, ProxyType.HTTP);
+			// dbproxy = new ElementProxy("213.144.144.57", 45554,
+			// ProxyType.SOCKS);
 
+			//dbproxy = new ElementProxy("82.204.180.43", 38572, ProxyType.SOCKS);
 
-			// good
-			// TWClient client = new TWClient("120.52.73.97", 80,
-			// ProxyType.HTTP);
-			// bad
-			// TWClient client = new TWClient("82.195.17.129", 8080,
-			// ProxyType.HTTP);
+			 dbproxy = new ElementProxy("85.174.236.106", 3128,
+			 ProxyType.HTTPS);
 
 		} else {
 			dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
@@ -126,14 +117,8 @@ public class TWClient extends Thread {
 		logger.info("TWClient got proxy {} : accID = {} ID = {}",
 				IsDebug ? "Debug" : "", this.acc.getAccID(), this.ID);
 
-		final RequestConfig requestConfig = RequestConfig.custom()
-				.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
-				.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
-				.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
-
 		if (this.proxyType == ProxyType.SOCKS) {
 			// make SOCKS proxy
-
 			Registry<ConnectionSocketFactory> reg = RegistryBuilder
 					.<ConnectionSocketFactory> create()
 					.register("http", PlainConnectionSocketFactory.INSTANCE)
@@ -141,18 +126,18 @@ public class TWClient extends Thread {
 							"https",
 							new MyConnectionSocketFactory(SSLContexts
 									.createSystemDefault())).build();
-
-			/*
-			 * Registry<ConnectionSocketFactory> reg =
-			 * RegistryBuilder.<ConnectionSocketFactory> create()
-			 * .register("http", new MyConnectionSocketFactory()).build();
-			 */
 			PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager(
 					reg);
-			this.httpclient = HttpClients.custom().setConnectionManager(cm).build();
-		} else
+			this.httpclient = HttpClients.custom().setConnectionManager(cm)
+					.build();
+		} else {
+			final RequestConfig requestConfig = RequestConfig.custom()
+					.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
+					.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
+					.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
 			this.httpclient = HttpClients.custom()
 					.setDefaultRequestConfig(requestConfig).build();
+		}
 
 		try {
 			HttpClientContext context = HttpClientContext.create();
@@ -185,16 +170,6 @@ public class TWClient extends Thread {
 				consumer.setTokenWithSecret(AccessToken, AccessSecret);
 				consumer.sign(request);
 			}
-
-			/*
-			 * HttpClient httpclient2 = new DefaultHttpClient();
-			 * 
-			 * HttpClient httpclient = new HttpClient(); HttpResponse response;
-			 * HttpPost httpget = new HttpPost(uricust.getUri()); try { response
-			 * = httpclient.execute(httpget);
-			 * System.out.println(response.getStatusLine().toString()); }
-			 * finally { httpget.releaseConnection(); }
-			 */
 
 			CloseableHttpResponse response = httpclient.execute(request,
 					context);
@@ -233,14 +208,14 @@ public class TWClient extends Thread {
 	// DEBUG
 	public static void main(String[] args) {
 
-		//JobAtom job = new JobAtom(5L, "VISIT",
+		 JobAtom job = new JobAtom(5L, "VISIT",
 		// "http://geokot.com/reqwinfo/getreqwinfo?");
 		// "http://veivan.ucoz.ru");
-		//		"https://www.verisign.com/");
-		// "https://publish.twitter.com/#");
+		// "https://www.verisign.com/");
+		 "https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
+		//JobAtom job = new JobAtom(5L, "TWIT", "Hi_people");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -257,44 +232,14 @@ public class TWClient extends Thread {
 			super(sslContext);
 		}
 
-	    @Override
-	    public Socket createSocket(final HttpContext context) throws IOException {
-	        InetSocketAddress socksaddr = (InetSocketAddress) context.getAttribute("socks.address");
-	        Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
-	        return new Socket(proxy);
-	    }
-
-	    /*public Socket createSocket(final HttpContext context)
+		@Override
+		public Socket createSocket(final HttpContext context)
 				throws IOException {
 			InetSocketAddress socksaddr = (InetSocketAddress) context
 					.getAttribute("socks.address");
 			Proxy proxy = new Proxy(Proxy.Type.SOCKS, socksaddr);
 			return new Socket(proxy);
 		}
-
-		public Socket connectSocket(final int connectTimeout,
-				final Socket socket, final HttpHost host,
-				final InetSocketAddress remoteAddress,
-				final InetSocketAddress localAddress, final HttpContext context)
-				throws IOException, ConnectTimeoutException {
-			Socket sock;
-			if (socket != null) {
-				sock = socket;
-			} else {
-				sock = createSocket(context);
-			}
-			if (localAddress != null) {
-				sock.bind(localAddress);
-			}
-			try {
-				sock.connect(remoteAddress, connectTimeout);
-			} catch (SocketTimeoutException ex) {
-				throw new ConnectTimeoutException(ex, host,
-						remoteAddress.getAddress());
-			}
-			return sock;
-		}*/
-
 	}
 
 	private void SetAuth() {
@@ -303,10 +248,11 @@ public class TWClient extends Thread {
 		this.AccessToken = "2936887497-voH4VfwhWGAMt2ur46ejogsY1wimD9k4qUGpMMp";
 		this.AccessSecret = "QYJS2HsxMcLbUcAipeaMhWc4EsxdYjEQH65ciG63U9fIX";
 
-		/* was read-only access
-		this.AccessToken = "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
-		this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
-		*/
+		/*
+		 * was read-only access this.AccessToken =
+		 * "2936887497-j19YUO9hyhwNREQyfABs10wdt2XlfcXwuCVFYj0";
+		 * this.AccessSecret = "w0JscngvMK7FwgYvDreZjGkkULl5hNizV4oTJlRas5cRq";
+		 */
 
 		/*
 		 * ReaderIni keys = new ReaderIni(); OAuthConsumer consumer = new
