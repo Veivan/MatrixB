@@ -76,13 +76,11 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			// dbproxy = new ElementProxy("213.144.144.57", 45554,
-			// ProxyType.SOCKS);
+			dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS); // Socks5
 
-			// dbproxy = new ElementProxy("82.204.180.43", 38572,
-			// ProxyType.SOCKS);
+			//dbproxy = new ElementProxy("185.101.236.83", 1080, ProxyType.SOCKS); 	// Socks4
 
-			dbproxy = new ElementProxy("85.174.236.106", 3128, ProxyType.HTTPS);
+			//dbproxy = new ElementProxy("85.174.236.106", 3128, ProxyType.HTTPS);
 
 		} else {
 			dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
@@ -110,7 +108,7 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		boolean IsDebug = true;
+		boolean IsDebug = false;
 		if (!GetProxy(IsDebug))
 			return;
 
@@ -215,7 +213,7 @@ public class TWClient extends Thread {
 		//		"https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		 JobAtom job = new JobAtom(5L, "TWIT", "Nice_weather");
+		JobAtom job = new JobAtom(5L, "TWIT", "Nice_weather");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -244,18 +242,18 @@ public class TWClient extends Thread {
 
 	private void SetAuth() {
 
-		/* udm206 
+		/* udm206 */
 		this.ConsumerKey = "XNZFUzPAzVyFTynumqFc7ZiwF";
 		this.ConsumerSecret = "aJGrMxyCv8y8D1UPWN4Gs1Ym4dx3pBMSsxCjMnDAdMWc56DOjb";
-		this.AccessToken = " 753234721631502337-7UsYzcOAWIKUPLed2lc5Dtk3x4Il0jv";
+		this.AccessToken = "753234721631502337-7UsYzcOAWIKUPLed2lc5Dtk3x4Il0jv";
 		this.AccessSecret = "R50YINJ0FFAjx6fZKZfPxC2wsnMhpOyBbt9nqIK0zmqRS";
-		*/
-		/* karafuter*/
+		
+		/* karafuter
 		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
 		this.ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
 		this.AccessToken = "2936887497-voH4VfwhWGAMt2ur46ejogsY1wimD9k4qUGpMMp";
 		this.AccessSecret = "QYJS2HsxMcLbUcAipeaMhWc4EsxdYjEQH65ciG63U9fIX";
-		
+		*/
 		
 		/*
 		 * was read-only access this.AccessToken =

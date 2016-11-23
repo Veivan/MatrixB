@@ -30,8 +30,8 @@
 
 	<!-- Логгеры -->
 	<!-- Корневой логгер -->
-	<root level="debug">
-		<appender-ref ref="sout" />
+	<root level="info">
+		<appender-ref ref="file" />
 	</root>
 
 	<!-- Логгер нашего класса -->
