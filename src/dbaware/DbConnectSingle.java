@@ -35,10 +35,10 @@ public class DbConnectSingle {
 	private Connection conn = null;
 	private String db_connect_string =
 	// local
-	//"jdbc:sqlserver://KONSTANTIN-PC;instanceName=SQLEXPRESS14"
+	"jdbc:sqlserver://KONSTANTIN-PC;instanceName=SQLEXPRESS14"
 	// "jdbc:sqlserver://WIN-2TFLS2PJ38K;instanceName=MSSQL2008R2"
 	// AWS
-	"jdbc:sqlserver://WIN-2B897RSG769;instanceName=SQLEXPRESS2014"
+	//"jdbc:sqlserver://WIN-2B897RSG769;instanceName=SQLEXPRESS2014"
 	// office
 	// "jdbc:sqlserver://014-MSDN;instanceName=SQL12"
 			+ ";databaseName=MatrixB;";

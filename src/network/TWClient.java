@@ -213,7 +213,7 @@ public class TWClient extends Thread {
 		//		"https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		JobAtom job = new JobAtom(5L, "TWIT", "Nice_weather");
+		JobAtom job = new JobAtom(5L, "TWIT", "Hi_all");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
