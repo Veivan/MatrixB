@@ -213,7 +213,7 @@ public class TWClient extends Thread {
 		//		"https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		JobAtom job = new JobAtom(5L, "TWIT", "Hi_all");
+		JobAtom job = new JobAtom(5L, "TWIT", "good_night");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -245,8 +245,8 @@ public class TWClient extends Thread {
 		/* udm206 */
 		this.ConsumerKey = "XNZFUzPAzVyFTynumqFc7ZiwF";
 		this.ConsumerSecret = "aJGrMxyCv8y8D1UPWN4Gs1Ym4dx3pBMSsxCjMnDAdMWc56DOjb";
-		this.AccessToken = "753234721631502337-7UsYzcOAWIKUPLed2lc5Dtk3x4Il0jv";
-		this.AccessSecret = "R50YINJ0FFAjx6fZKZfPxC2wsnMhpOyBbt9nqIK0zmqRS";
+		this.AccessToken = "753234721631502337-qY75MD9v1CZOsIvoQOr9aEnCnHigFt3";
+		this.AccessSecret = "ahfBWwTEmqS98jagxQhRYk28ZWT95vx3a20wwfwRNGVpC";
 		
 		/* karafuter
 		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
