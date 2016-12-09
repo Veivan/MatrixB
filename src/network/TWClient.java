@@ -76,7 +76,7 @@ public class TWClient extends Thread {
 		ElementProxy dbproxy = null;
 		if (IsDebug) {
 
-			dbproxy = new ElementProxy("213.144.144.57", 45554, ProxyType.SOCKS); // Socks5
+			dbproxy = new ElementProxy("47.88.30.164", 1080, ProxyType.SOCKS); // Socks5
 
 			//dbproxy = new ElementProxy("185.101.236.83", 1080, ProxyType.SOCKS); 	// Socks4
 
@@ -108,7 +108,7 @@ public class TWClient extends Thread {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		boolean IsDebug = false;
+		boolean IsDebug = true;
 		if (!GetProxy(IsDebug))
 			return;
 
@@ -213,7 +213,7 @@ public class TWClient extends Thread {
 		//		"https://publish.twitter.com/#");
 		// "https://publish.twitter.com/oembed?url=https%3A%2F%2Ftwitter.com%2FInterior%2Fstatus%2F507185938620219395");
 
-		JobAtom job = new JobAtom(5L, "TWIT", "good_night");
+		JobAtom job = new JobAtom(5L, "TWIT", "its_very_cold");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
@@ -242,17 +242,24 @@ public class TWClient extends Thread {
 
 	private void SetAuth() {
 
-		/* udm206 */
+		/* karafuter with udm206 keys*/
+		this.ConsumerKey = "XNZFUzPAzVyFTynumqFc7ZiwF";
+		this.ConsumerSecret = "aJGrMxyCv8y8D1UPWN4Gs1Ym4dx3pBMSsxCjMnDAdMWc56DOjb";
+		this.AccessToken = "2936887497-zvzhnnLETN9xuH9zzDhBbPneFIH2ipfo73aTAfJ";
+		this.AccessSecret = "HjRhO4Nj52UXJvjbazgkjVBaMMIw6VFmB6rhSMOu2cxcq";
+
+		/* udm206 
 		this.ConsumerKey = "XNZFUzPAzVyFTynumqFc7ZiwF";
 		this.ConsumerSecret = "aJGrMxyCv8y8D1UPWN4Gs1Ym4dx3pBMSsxCjMnDAdMWc56DOjb";
 		this.AccessToken = "753234721631502337-qY75MD9v1CZOsIvoQOr9aEnCnHigFt3";
 		this.AccessSecret = "ahfBWwTEmqS98jagxQhRYk28ZWT95vx3a20wwfwRNGVpC";
+		*/
 		
 		/* karafuter
 		this.ConsumerKey = "YEgJkngnkDR7Ql3Uz5ZKkYgBU";
 		this.ConsumerSecret = "CsCz7WmytpUoWqIUp9qQPRS99kMk4w9QoSH3GcStnpPc4mf1Ai";
-		this.AccessToken = "2936887497-voH4VfwhWGAMt2ur46ejogsY1wimD9k4qUGpMMp";
-		this.AccessSecret = "QYJS2HsxMcLbUcAipeaMhWc4EsxdYjEQH65ciG63U9fIX";
+		this.AccessToken = "2936887497-5nk4yK5mRMpIVVZvzyAoog50EgQhr1rfFQLrpFG";
+		this.AccessSecret = "CQZdBCyLmqVRIMxj1sVHDvQsHcj8Nr2WVfPSggp7yi9sX";
 		*/
 		
 		/*
