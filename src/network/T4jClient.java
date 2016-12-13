@@ -48,6 +48,7 @@ public class T4jClient implements IJobExecutor {
 	private CloseableHttpClient httpclient;
 
 	private ElementCredentials creds;
+	private Twitter twitter = new TwitterFactory().getInstance();
 
 	public T4jClient(MatrixAct theact, ElementProxy dbproxy) {
 		this.ID = theact.getSelfID();
@@ -66,6 +67,8 @@ public class T4jClient implements IJobExecutor {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
+		if (!GetCredentials()) return;
+		
 	}
 
 	/**
@@ -93,26 +96,9 @@ public class T4jClient implements IJobExecutor {
 		return cb.build();
 	}
 
-	private boolean GetCredentials(boolean IsDebug) {
+	private boolean GetCredentials() {
 		if (Constants.IsDebugCreds) {
-
-			try {
-				ReadINI();
-			} catch (FileNotFoundException e) {
-				logger.error("ReaderIni FileNotFoundException : ", e);
-				logger.debug("ReaderIni FileNotFoundException : ", e);
-			} catch (IOException e) {
-				logger.error("ReaderIni IOException : ", e);
-				logger.debug("ReaderIni IOException : ", e);
-			}
-
-			if (this.creds == null)
-			{
-				logger.error("Can't get credentials for acc =  : {}", this.acc.getAccID());
-				logger.debug("Can't get credentials for acc =  : {}", this.acc.getAccID());
-				return false;
-			}
-
+			ReadINI();
 		} 
 		
 		// TODO Read from DB
@@ -124,89 +110,33 @@ public class T4jClient implements IJobExecutor {
 				return false;
 			}
 		} */
-		
-/*		if (this.creds.getACCESS_TOKEN().isEmpty())
-			getOAuthAccessTokenSilent();
-*/		
+
+		try {
+			if (this.creds == null)
+				throw new AuthenticationException( String.format("Cannot get credentials for acc = {}", this.acc.getAccID()) ); 
+			
+			if (this.creds.getCONSUMER_KEY().isEmpty() || this.creds.getCONSUMER_SECRET().isEmpty() || this.creds.getUSER().isEmpty() || this.creds.getUSER_PASS().isEmpty())
+				throw new AuthenticationException( String.format("Empty incoming credentials for acc = {}", this.acc.getAccID()) ); 
+
+			if (this.creds.getACCESS_TOKEN().isEmpty() && this.creds.getACCESS_TOKEN_SECRET().isEmpty())
+				getOAuthAccessTokenSilent();
+				
+		} catch (AuthenticationException e) {
+			return false;			
+		} catch (Exception e) {
+			logger.error("ERROR : ", e);
+			logger.debug("ERROR : ", e);
+			return false;
+		}
+
 		return true;
 	}
 
-	/*/ Getting token without PIN
-	public void getOAuthAccessTokenSilent() throws Exception {
-		try {
-			ReadINI();
-			Twitter twitter = new TwitterFactory().getInstance();
-			twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET);
-			final RequestToken requestToken = twitter.getOAuthRequestToken(DEFAULT_OAUTH_CALLBACK);
-			//final RequestToken requestToken = twitter.getOAuthRequestToken();
-			final String oauth_token = requestToken.getToken();
-			System.out.println("Got request token.");
-			System.out.println("Request token: " + oauth_token);
-			System.out.println("Request token secret: "
-					+ requestToken.getTokenSecret());
-			AccessToken accessToken = null;
 
-						
-			// make sure cookies is turn on
-			CookieHandler.setDefault(new CookieManager());
 
-			String page = GetPageContent(requestToken.getAuthorizationURL());
-//			List<NameValuePair> postParams = Utils.getFormParams(page, USER, USER_PASS);
-
-			String authenticity_token = Utils.readAuthenticityToken(page);
-			if (authenticity_token.isEmpty())
-				throw new AuthenticationException(
-						"Cannot get authenticity_token.");
-
-			final Configuration conf = twitter.getConfiguration();
-			System.out.println("OAuthAuthorizationURL : " + conf.getOAuthAuthorizationURL());
-		
-			List<NameValuePair> paramList = new ArrayList<NameValuePair>();
-
-			paramList.add(new  BasicNameValuePair("oauth_token", URLEncoder.encode(oauth_token, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("session[username_or_email]", URLEncoder.encode(USER, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("session[password]", URLEncoder.encode(USER_PASS, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("authenticity_token", URLEncoder.encode(authenticity_token, "UTF-8")));
-
-			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(), paramList);
-
-			final String oauth_verifier = Utils.readOauthVerifier(page2);
-			// parseParameters(callback_url.substring(callback_url.indexOf("?")
-			// + 1)).get(OAUTH_VERIFIER);
-
-			if (oauth_verifier.isEmpty())
-				throw new AuthenticationException("Cannot get OAuth verifier.");
-
-			try {
-				accessToken = twitter.getOAuthAccessToken(requestToken,
-						oauth_verifier);
-			} catch (TwitterException te) {
-				if (401 == te.getStatusCode()) {
-					System.out.println("Unable to get the access token.");
-				} else {
-					te.printStackTrace();
-				}
-			}
-
-			System.out.println("Got access token.");
-			System.out.println("Access token: " + accessToken.getToken());
-			System.out.println("Access token secret: "
-					+ accessToken.getTokenSecret());
-			SetPropsINI(accessToken);
-			System.exit(0);
-		} catch (TwitterException te) {
-			te.printStackTrace();
-			System.out.println("Failed to get accessToken: " + te.getMessage());
-			System.exit(-1);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			System.out.println("Failed to read the system input.");
-			System.exit(-1);
-		}
-	}
-*/
-	private void ReadINI() throws FileNotFoundException, IOException {
+	private void ReadINI() {
 		Properties props = new Properties();
+		try {
 			props.load(new FileInputStream(new File("example.ini")));
 			String CONSUMER_KEY = props.getProperty("CONSUMER_KEY");
 			String CONSUMER_SECRET = props.getProperty("CONSUMER_SECRET");
@@ -217,28 +147,45 @@ public class T4jClient implements IJobExecutor {
 					.getProperty("ACCESS_TOKEN_SECRET");
 			
 			this.creds = new ElementCredentials(CONSUMER_KEY, CONSUMER_SECRET, USER, USER_PASS, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
+		} catch (Exception e) {
+			logger.error("ERROR ReaderIni : ", e);
+			logger.debug("ERROR ReaderIni: ", e);
+		}
 	}
 
 	public static class AuthenticationException extends IOException {
+
+		private static final long serialVersionUID = -104987171972968260L;
+
 		AuthenticationException() {
 		}
 
 		AuthenticationException(final Exception cause) {
 			super(cause);
+			logger.error(cause.getMessage());
+			logger.debug(cause.getMessage());
 		}
 
 		AuthenticationException(final String message) {
 			super(message);
+			logger.error(message);
+			logger.debug(message);
 		}
 	}
 
 	public static final class AuthenticityTokenException extends AuthenticationException {
+
+		private static final long serialVersionUID = 410500716069698968L;
+
 		AuthenticityTokenException() {
 			super("Can't get authenticity token.");
 		}
 	}
 
 	public static final class InvalidOAuthTokenException extends AuthenticationException {
+
+		private static final long serialVersionUID = -2338352601674116348L;
+
 		InvalidOAuthTokenException() {
 			super("Invalid OAuth token.");
 		}
