@@ -46,10 +46,6 @@ import org.slf4j.LoggerFactory;
 
 public class TWClient extends Thread {
 
-	final int CONNTECTION_TIMEOUT_MS = 20;
-	final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
-	final int SOCKET_TIMEOUT_MS = 20;
-
 	private String AccessToken;
 	private String AccessSecret;
 	private String ConsumerKey;
@@ -130,9 +126,9 @@ public class TWClient extends Thread {
 					.build();
 		} else {
 			final RequestConfig requestConfig = RequestConfig.custom()
-					.setConnectTimeout(CONNTECTION_TIMEOUT_MS)
-					.setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT_MS)
-					.setSocketTimeout(SOCKET_TIMEOUT_MS).build();
+					.setConnectTimeout(Constants.CONNECTION_TIMEOUT_MS)
+					.setConnectionRequestTimeout(Constants.CONNECTION_REQUEST_TIMEOUT_MS)
+					.setSocketTimeout(Constants.SOCKET_TIMEOUT_MS).build();
 			this.httpclient = HttpClients.custom()
 					.setDefaultRequestConfig(requestConfig).build();
 		}

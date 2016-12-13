@@ -30,6 +30,11 @@ public final class Constants {
 		GET, POST
 	}
 
+	public static final int CONNECTION_TIMEOUT_MS = 20;
+	public static final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
+	public static final int SOCKET_TIMEOUT_MS = 20;
+	public static final String USER_AGENT = "Mozilla/5.0";
+
 	private Constants() {
 	} // make clacc abstract
 }
