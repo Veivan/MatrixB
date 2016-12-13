@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import inrtfs.IJobExecutor;
+import service.Constants;
 import service.Constants.JobType;
 import service.Constants.ProxyType;
-import main.MatrixAct;
+import model.ElementProxy;
+import model.MatrixAct;
 
 public class ExecAssistant extends Thread {
 	
@@ -43,7 +45,7 @@ public class ExecAssistant extends Thread {
 	@Override
 	public void run() {
 		
-		boolean IsDebug = true;
+		boolean IsDebug = Constants.IsDebugProxy;
 		if (!GetProxy(IsDebug))
 			return;
 		logger.info("TWClient got proxy {} : accID = {} ID = {}",

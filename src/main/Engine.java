@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import network.TWClient;
-
+import model.MatrixAct;
+import network.ExecAssistant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +66,7 @@ public class Engine implements Observable {
 
 	public void Execute() {
 		for (MatrixAct act : MatrixActList) {
-			cachedPool.submit(new TWClient(act));
+			cachedPool.submit(new ExecAssistant(act));
 		}
 	}
 

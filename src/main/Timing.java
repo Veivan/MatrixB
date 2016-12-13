@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
 
+import model.Regimen;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,6 @@
 package inrtfs;
 
-import main.MatrixAct;
+import model.MatrixAct;
 
 public interface IJobExecutor {
 	MatrixAct theact = null;

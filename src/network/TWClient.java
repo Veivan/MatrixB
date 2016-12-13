@@ -8,11 +8,13 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
+
 import javax.net.ssl.SSLContext;
 
 import jobs.JobAtom;
 import main.ConcreteAcc;
-import main.MatrixAct;
+import model.ElementProxy;
+import model.MatrixAct;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 

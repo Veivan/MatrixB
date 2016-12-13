@@ -12,8 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import network.ElementProxy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +21,7 @@ import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
 import main.ConcreteAcc;
+import model.ElementProxy;
 
 public class DbConnectSingle {
 	private static volatile DbConnectSingle instance;

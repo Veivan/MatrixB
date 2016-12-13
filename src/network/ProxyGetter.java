@@ -1,5 +1,6 @@
 package network;
 
+import model.ElementProxy;
 import dbaware.DbConnectSingle;
 
 public class ProxyGetter {

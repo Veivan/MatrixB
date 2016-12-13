@@ -6,6 +6,7 @@ import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import inrtfs.IAccount;
+import model.Regimen;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

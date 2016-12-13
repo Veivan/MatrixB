@@ -3,7 +3,7 @@ package inrtfs;
 import java.util.List;
 
 import jobs.Homeworks;
-import main.MatrixAct;
+import model.MatrixAct;
 
 public interface Observer {
 

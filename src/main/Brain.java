@@ -3,6 +3,8 @@ package main;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.MatrixAct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

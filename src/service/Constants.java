@@ -34,6 +34,10 @@ public final class Constants {
 	public static final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
 	public static final int SOCKET_TIMEOUT_MS = 20;
 	public static final String USER_AGENT = "Mozilla/5.0";
+	public static final String DEFAULT_OAUTH_CALLBACK = "http://www.ya.ru"; 
+
+	public static final boolean IsDebugProxy = true;
+	public static final boolean IsDebugCreds = true;
 
 	private Constants() {
 	} // make clacc abstract
