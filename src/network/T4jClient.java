@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
+import service.Utils;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -59,19 +60,19 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	private boolean GetCredentials() {
-		if (Constants.IsDebugCreds) {
-			ReadINI();
-		}
-
-		// TODO Read from DB
-		/*
-		 * else { dbproxy =
-		 * ProxyGetter.getProxy(this.theact.getAcc().getAccID()); if (dbproxy ==
-		 * null) { logger.error("TWClient cant get proxy");
-		 * logger.debug("TWClient cant get proxy"); return false; } }
-		 */
-
 		try {
+			if (Constants.IsDebugCreds) {
+				this.creds = Utils.ReadINI();
+			}
+
+			// TODO Read from DB
+			/*
+			 * else { dbproxy =
+			 * ProxyGetter.getProxy(this.theact.getAcc().getAccID()); if (dbproxy ==
+			 * null) { logger.error("TWClient cant get proxy");
+			 * logger.debug("TWClient cant get proxy"); return false; } }
+			 */
+
 			if (this.creds == null)
 				throw new AuthenticationException(String.format(
 						"Cannot get credentials for acc = {}",
@@ -85,37 +86,36 @@ public class T4jClient implements IJobExecutor {
 						"Empty incoming credentials for acc = {}",
 						this.acc.getAccID()));
 
+			SocketAddress addr = new InetSocketAddress(this.ip, this.port);
+			Proxy proxy = new Proxy(
+					this.proxyType == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
+							: Proxy.Type.SOCKS, addr);
+			// Creating twitter
+			Configuration conf = buildTwitterConfiguration(creds, proxy);
+			TwitterFactory tf = new TwitterFactory(conf);
+			this.twitter = tf.getInstance();
+
 			if (this.creds.getACCESS_TOKEN().isEmpty()
 					&& this.creds.getACCESS_TOKEN_SECRET().isEmpty()) {
-				SocketAddress addr = new InetSocketAddress(this.ip, this.port);
-				Proxy proxy = new Proxy(
-						this.proxyType == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
-								: Proxy.Type.SOCKS, addr);
 				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
 						proxy, creds);
 				AccessToken accessToken = auth.getOAuthAccessTokenSilent();
 				if (accessToken != null) {
 					creds.setACCESS_TOKEN(accessToken.getToken());
 					creds.setACCESS_TOKEN_SECRET(accessToken.getTokenSecret());
-					Configuration conf = buildTwitterConfiguration(creds);
-					TwitterFactory tf = new TwitterFactory(conf);
-					this.twitter = tf.getInstance();
-					
-					// Можно заранее создать twitter, а затем передать его в OAuthPasswordAuthenticator
-					// После получени AccessToken уже послать его в twitter
-					// twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(),	this.creds.getCONSUMER_SECRET());
 
+					// TODO Need save accessToken in DB
+					twitter.setOAuthAccessToken(accessToken);
 					logger.info(
 							"T4jClient got twitter instance : {} {} accID = {} ID = {}",
 							this.job.Type.name(),
 							Constants.dfm.format(this.job.timestamp),
 							this.acc.getAccID(), this.ID);
-				}
-				else
+				} else
 					throw new AuthenticationException(String.format(
 							"AccessToken is null for acc = {}",
 							this.acc.getAccID()));
-}
+			}
 		} catch (AuthenticationException e) {
 			return false;
 		} catch (Exception e) {
@@ -132,7 +132,8 @@ public class T4jClient implements IJobExecutor {
 	 * 
 	 * @return
 	 */
-	private Configuration buildTwitterConfiguration(ElementCredentials creds) {
+	private Configuration buildTwitterConfiguration(
+			final ElementCredentials creds, final Proxy proxy) {
 		logger.debug("creating twitter configuration");
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
@@ -153,30 +154,10 @@ public class T4jClient implements IJobExecutor {
 		return cb.build();
 	}
 
-	private void ReadINI() {
-		Properties props = new Properties();
-		try {
-			props.load(new FileInputStream(new File("example.ini")));
-			String CONSUMER_KEY = props.getProperty("CONSUMER_KEY");
-			String CONSUMER_SECRET = props.getProperty("CONSUMER_SECRET");
-			String USER = props.getProperty("USER");
-			String USER_PASS = props.getProperty("USER_PASS");
-			String ACCESS_TOKEN = props.getProperty("ACCESS_TOKEN");
-			String ACCESS_TOKEN_SECRET = props
-					.getProperty("ACCESS_TOKEN_SECRET");
-
-			this.creds = new ElementCredentials(CONSUMER_KEY, CONSUMER_SECRET,
-					USER, USER_PASS, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
-		} catch (Exception e) {
-			logger.error("ERROR ReaderIni : ", e);
-			logger.debug("ERROR ReaderIni: ", e);
-		}
-	}
-
 	public static class AuthenticationException extends IOException {
 		private static final long serialVersionUID = -104987171972968260L;
-		private final String ident = "AuthenticationException : "; 
-		
+		private final String ident = "AuthenticationException : ";
+
 		AuthenticationException() {
 		}
 
