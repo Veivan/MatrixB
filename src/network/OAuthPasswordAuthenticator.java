@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.Proxy;
@@ -23,6 +24,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import service.Constants;
 import twitter4j.Twitter;
@@ -38,8 +45,9 @@ public class OAuthPasswordAuthenticator {
 	private Twitter twitter = new TwitterFactory().getInstance();
 	private final Proxy proxy; 
 	private ElementCredentials creds;
-	private AccessToken accessToken;
 	private String cookies;
+
+	static Logger logger = LoggerFactory.getLogger(OAuthPasswordAuthenticator.class);
 
 	public OAuthPasswordAuthenticator(final Proxy proxy, final ElementCredentials creds) { 
 		this.proxy = proxy; 
@@ -52,7 +60,6 @@ public class OAuthPasswordAuthenticator {
 	 * @return
 	 */
 	public AccessToken getOAuthAccessTokenSilent() throws Exception {
-		try {
 			twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(), this.creds.getCONSUMER_SECRET());
 			final RequestToken requestToken = twitter.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
 			final String oauth_token = requestToken.getToken();
@@ -67,7 +74,7 @@ public class OAuthPasswordAuthenticator {
 			String page = GetPageContent(requestToken.getAuthorizationURL());
 //			List<NameValuePair> postParams = Utils.getFormParams(page, USER, USER_PASS);
 
-			String authenticity_token = Utils.readAuthenticityToken(page);
+			String authenticity_token = readAuthenticityToken(page);
 			if (authenticity_token.isEmpty())
 				throw new AuthenticationException(
 						"Cannot get authenticity_token.");
@@ -77,10 +84,10 @@ public class OAuthPasswordAuthenticator {
 		
 			List<NameValuePair> paramList = new ArrayList<NameValuePair>();
 
-			paramList.add(new  BasicNameValuePair("oauth_token", URLEncoder.encode(oauth_token, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("session[username_or_email]", URLEncoder.encode(USER, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("session[password]", URLEncoder.encode(USER_PASS, "UTF-8")));
-			paramList.add(new  BasicNameValuePair("authenticity_token", URLEncoder.encode(authenticity_token, "UTF-8")));
+			paramList.add(new BasicNameValuePair("oauth_token", URLEncoder.encode(oauth_token, "UTF-8")));
+			paramList.add(new BasicNameValuePair("session[username_or_email]", URLEncoder.encode(this.creds.getUSER(), "UTF-8")));
+			paramList.add(new BasicNameValuePair("session[password]", URLEncoder.encode(this.creds.getUSER_PASS(), "UTF-8")));
+			paramList.add(new BasicNameValuePair("authenticity_token", URLEncoder.encode(authenticity_token, "UTF-8")));
 
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(), paramList);
 
@@ -91,32 +98,15 @@ public class OAuthPasswordAuthenticator {
 			if (oauth_verifier.isEmpty())
 				throw new AuthenticationException("Cannot get OAuth verifier.");
 
-			try {
-				accessToken = twitter.getOAuthAccessToken(requestToken,
+			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken,
 						oauth_verifier);
-			} catch (TwitterException te) {
-				if (401 == te.getStatusCode()) {
-					System.out.println("Unable to get the access token.");
-				} else {
-					te.printStackTrace();
-				}
-			}
 
 			System.out.println("Got access token.");
 			System.out.println("Access token: " + accessToken.getToken());
 			System.out.println("Access token secret: "
 					+ accessToken.getTokenSecret());
-			SetPropsINI(accessToken);
-			System.exit(0);
-		} catch (TwitterException te) {
-			te.printStackTrace();
-			System.out.println("Failed to get accessToken: " + te.getMessage());
-			System.exit(-1);
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			System.out.println("Failed to read the system input.");
-			System.exit(-1);
-		}
+			
+			return accessToken;
 	}
 
 	private String GetPageContent(String url) throws Exception {
@@ -174,4 +164,23 @@ public class OAuthPasswordAuthenticator {
 		return buf.toString();
 	}
 
+	public static String readAuthenticityToken(String html)
+			throws UnsupportedEncodingException {
+		System.out.println("Extracting authenticity_token...");
+		Document doc = Jsoup.parse(html);
+		String result = "";
+		// Login form id
+		Element loginform = doc.getElementById("oauth_form");
+		Elements inputElements = loginform.getElementsByTag("input");
+
+		for (Element inputElement : inputElements) {
+			String key = inputElement.attr("name");
+			String value = inputElement.attr("value");
+			if (key.equals("authenticity_token")) {
+				result = value;
+				break;
+			}
+		}
+		return result;
+	}
 }
