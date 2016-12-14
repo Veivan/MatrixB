@@ -1,27 +1,25 @@
 package network;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.Proxy;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-import model.ElementCredentials;
-import network.T4jClient.AuthenticationException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
 import org.jsoup.Jsoup;
@@ -31,48 +29,57 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import service.Constants;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
+import model.ElementCredentials;
+import network.T4jClient.AuthenticationException;
+import service.Constants;
 
 public class OAuthPasswordAuthenticator {
 
-	private HttpClient client = HttpClientBuilder.create().setUserAgent(Constants.USER_AGENT).build();
+	private HttpClient client = HttpClientBuilder.create()
+			.setUserAgent(Constants.USER_AGENT).build();
 	private Twitter twitter = new TwitterFactory().getInstance();
-	private final Proxy proxy; 
+	private final Proxy proxy;
 	private ElementCredentials creds;
 	private String cookies;
 
-	static Logger logger = LoggerFactory.getLogger(OAuthPasswordAuthenticator.class);
+	static Logger logger = LoggerFactory
+			.getLogger(OAuthPasswordAuthenticator.class);
 
-	public OAuthPasswordAuthenticator(final Proxy proxy, final ElementCredentials creds) { 
-		this.proxy = proxy; 
-		this.creds = creds; 
-	} 
-	 
-	 /**
+	public OAuthPasswordAuthenticator(final Proxy proxy,
+			final ElementCredentials creds) {
+		this.proxy = proxy;
+		this.creds = creds;
+	}
+
+	/**
 	 * Getting token without PIN
 	 * 
 	 * @return
 	 */
 	public AccessToken getOAuthAccessTokenSilent() throws Exception {
-			twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(), this.creds.getCONSUMER_SECRET());
-			final RequestToken requestToken = twitter.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
+		try {
+			twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(),
+					this.creds.getCONSUMER_SECRET());
+			final RequestToken requestToken = twitter
+					.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
 			final String oauth_token = requestToken.getToken();
-			
+
 			System.out.println("Got request token.");
 			System.out.println("Request token: " + oauth_token);
-			System.out.println("Request token secret: "	+ requestToken.getTokenSecret());
-							
+			System.out.println("Request token secret: "
+					+ requestToken.getTokenSecret());
+
 			// make sure cookies is turn on
 			CookieHandler.setDefault(new CookieManager());
 
 			String page = GetPageContent(requestToken.getAuthorizationURL());
-//			List<NameValuePair> postParams = Utils.getFormParams(page, USER, USER_PASS);
+			// List<NameValuePair> postParams = Utils.getFormParams(page, USER,
+			// USER_PASS);
 
 			String authenticity_token = readAuthenticityToken(page);
 			if (authenticity_token.isEmpty())
@@ -80,40 +87,47 @@ public class OAuthPasswordAuthenticator {
 						"Cannot get authenticity_token.");
 
 			final Configuration conf = twitter.getConfiguration();
-			System.out.println("OAuthAuthorizationURL : " + conf.getOAuthAuthorizationURL());
-		
+			System.out.println("OAuthAuthorizationURL : "
+					+ conf.getOAuthAuthorizationURL());
+
 			List<NameValuePair> paramList = new ArrayList<NameValuePair>();
 
-			paramList.add(new BasicNameValuePair("oauth_token", URLEncoder.encode(oauth_token, "UTF-8")));
-			paramList.add(new BasicNameValuePair("session[username_or_email]", URLEncoder.encode(this.creds.getUSER(), "UTF-8")));
-			paramList.add(new BasicNameValuePair("session[password]", URLEncoder.encode(this.creds.getUSER_PASS(), "UTF-8")));
-			paramList.add(new BasicNameValuePair("authenticity_token", URLEncoder.encode(authenticity_token, "UTF-8")));
+			paramList.add(new BasicNameValuePair("oauth_token", URLEncoder
+					.encode(oauth_token, "UTF-8")));
+			paramList.add(new BasicNameValuePair("session[username_or_email]",
+					URLEncoder.encode(this.creds.getUSER(), "UTF-8")));
+			paramList.add(new BasicNameValuePair("session[password]",
+					URLEncoder.encode(this.creds.getUSER_PASS(), "UTF-8")));
+			paramList.add(new BasicNameValuePair("authenticity_token",
+					URLEncoder.encode(authenticity_token, "UTF-8")));
 
-			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(), paramList);
+			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
+					paramList);
 
-			final String oauth_verifier = Utils.readOauthVerifier(page2);
-			// parseParameters(callback_url.substring(callback_url.indexOf("?")
-			// + 1)).get(OAUTH_VERIFIER);
+			final String oauth_verifier = readOauthVerifier(page2);
 
 			if (oauth_verifier.isEmpty())
 				throw new AuthenticationException("Cannot get OAuth verifier.");
 
 			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken,
-						oauth_verifier);
+					oauth_verifier);
 
 			System.out.println("Got access token.");
 			System.out.println("Access token: " + accessToken.getToken());
 			System.out.println("Access token secret: "
 					+ accessToken.getTokenSecret());
-			
+
 			return accessToken;
+		} catch (Exception e) {
+			throw new AuthenticationException(e);
+		}
 	}
 
 	private String GetPageContent(String url) throws Exception {
 		String result = "";
 		HttpGet request = new HttpGet(url);
 
-		//request.setHeader("User-Agent", Constants.USER_AGENT);
+		// request.setHeader("User-Agent", Constants.USER_AGENT);
 		request.setHeader("Accept",
 				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		request.setHeader("Accept-Language",
@@ -128,6 +142,38 @@ public class OAuthPasswordAuthenticator {
 		// set cookies
 		setCookies(response.getFirstHeader("set-cookie") == null ? ""
 				: collectCookiesresponse(response.getHeaders("set-cookie")));
+
+		result = ReadStream(response.getEntity().getContent());
+		return result;
+	}
+
+	private String sendPost(String url, List<NameValuePair> postParams)
+			throws Exception {
+
+		HttpResponse response = null;
+		String result = "";
+
+		HttpPost post = new HttpPost(url);
+
+		// add header
+		post.setHeader("Host", "twitter.com");
+		// post.setHeader("User-Agent", USER_AGENT);
+		post.setHeader("Accept",
+				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+		post.setHeader("Accept-Language",
+				"ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4,bg;q=0.2");
+		post.setHeader("Cookie", getCookies());
+		post.setHeader("Connection", "keep-alive");
+		post.setHeader("Referer", "https://twitter.com");
+		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+
+		post.setEntity(new UrlEncodedFormEntity(postParams, "UTF-8"));
+		response = client.execute(post);
+		int responseCode = response.getStatusLine().getStatusCode();
+
+		System.out.println("\nSending 'POST' request to URL : " + url);
+		System.out.println("Post parameters : " + postParams);
+		System.out.println("Response Code : " + responseCode);
 
 		result = ReadStream(response.getEntity().getContent());
 		return result;
@@ -164,8 +210,8 @@ public class OAuthPasswordAuthenticator {
 		return buf.toString();
 	}
 
-	public static String readAuthenticityToken(String html)
-			throws UnsupportedEncodingException {
+	private static String readAuthenticityToken(String html)
+			throws Exception {
 		System.out.println("Extracting authenticity_token...");
 		Document doc = Jsoup.parse(html);
 		String result = "";
@@ -182,5 +228,22 @@ public class OAuthPasswordAuthenticator {
 			}
 		}
 		return result;
+	}
+	
+	private static String readOauthVerifier(String html) {
+		Document document = Jsoup.parse(html);
+		String result = "";
+		Elements metalinks = document.select("meta[http-equiv=refresh]");
+		try {
+			String content = metalinks.attr("content").split(";")[1];
+			Pattern pattern = Pattern.compile(".*oauth_verifier=?(.*)$",
+					Pattern.CASE_INSENSITIVE);
+			Matcher m = pattern.matcher(content);
+			result = m.matches() ? m.group(1) : null;
+			System.out.println(result);
+			return result;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

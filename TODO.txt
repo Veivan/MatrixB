@@ -1,7 +1,8 @@
 109.252.14.59 home
 213.79.120.82 office
 
-1. Переставить часы на сервере на +3
+1. Refactor - заменить ElementProxy на стандартный Proxy
+1.1 Передавать в OAuthPasswordAuthenticator готовый twitter, а не создавать свой
 
 2. Делать MakeURI и можно запускать
 
