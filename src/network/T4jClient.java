@@ -87,7 +87,6 @@ public class T4jClient implements IJobExecutor {
 
 			if (this.creds.getACCESS_TOKEN().isEmpty()
 					&& this.creds.getACCESS_TOKEN_SECRET().isEmpty()) {
-
 				SocketAddress addr = new InetSocketAddress(this.ip, this.port);
 				Proxy proxy = new Proxy(
 						this.proxyType == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
@@ -101,6 +100,11 @@ public class T4jClient implements IJobExecutor {
 					Configuration conf = buildTwitterConfiguration(creds);
 					TwitterFactory tf = new TwitterFactory(conf);
 					this.twitter = tf.getInstance();
+					
+					// Можно заранее создать twitter, а затем передать его в OAuthPasswordAuthenticator
+					// После получени AccessToken уже послать его в twitter
+					// twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(),	this.creds.getCONSUMER_SECRET());
+
 					logger.info(
 							"T4jClient got twitter instance : {} {} accID = {} ID = {}",
 							this.job.Type.name(),
@@ -170,44 +174,22 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	public static class AuthenticationException extends IOException {
-
 		private static final long serialVersionUID = -104987171972968260L;
-
+		private final String ident = "AuthenticationException : "; 
+		
 		AuthenticationException() {
 		}
 
 		AuthenticationException(final Exception cause) {
 			super(cause);
-			logger.error(cause.getMessage());
-			logger.debug(cause.getMessage());
+			logger.error(ident + cause.getMessage());
+			logger.debug(ident + cause.getMessage());
 		}
 
 		AuthenticationException(final String message) {
 			super(message);
-			logger.error(message);
-			logger.debug(message);
+			logger.error(ident + message);
+			logger.debug(ident + message);
 		}
 	}
-
-	public static final class AuthenticityTokenException extends
-			AuthenticationException {
-
-		private static final long serialVersionUID = 410500716069698968L;
-
-		AuthenticityTokenException() {
-			super("Can't get authenticity token.");
-		}
-	}
-
-	public static final class InvalidOAuthTokenException extends
-			AuthenticationException {
-
-		private static final long serialVersionUID = -2338352601674116348L;
-
-		InvalidOAuthTokenException() {
-			super("Invalid OAuth token.");
-		}
-
-	}
-
 }
