@@ -56,6 +56,11 @@ public class T4jClient implements IJobExecutor {
 
 		if (!GetCredentials())
 			return;
+		logger.info(
+				"T4jClient got twitter instance : {} {} accID = {} ID = {}",
+				this.job.Type.name(),
+				Constants.dfm.format(this.job.timestamp),
+				this.acc.getAccID(), this.ID);
 
 	}
 
@@ -105,12 +110,7 @@ public class T4jClient implements IJobExecutor {
 					creds.setACCESS_TOKEN_SECRET(accessToken.getTokenSecret());
 
 					// TODO Need save accessToken in DB
-					twitter.setOAuthAccessToken(accessToken);
-					logger.info(
-							"T4jClient got twitter instance : {} {} accID = {} ID = {}",
-							this.job.Type.name(),
-							Constants.dfm.format(this.job.timestamp),
-							this.acc.getAccID(), this.ID);
+					this.twitter.setOAuthAccessToken(accessToken);
 				} else
 					throw new AuthenticationException(String.format(
 							"AccessToken is null for acc = {}",
