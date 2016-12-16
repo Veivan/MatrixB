@@ -14,7 +14,11 @@ import model.ElementCredentials;
 import network.OAuthPasswordAuthenticator;
 import service.Constants;
 import service.Utils;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 public class testOAuthPasswordAuthenticator {
 	OAuthPasswordAuthenticator auth;
@@ -37,12 +41,39 @@ public class testOAuthPasswordAuthenticator {
 		this.creds = Utils.ReadINI();
 		if (this.creds == null)
 			fail("Cannot get credentials");
-		auth = new OAuthPasswordAuthenticator(proxy, creds);
+
+		// Creating twitter
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(creds.getCONSUMER_KEY())
+				.setOAuthConsumerSecret(creds.getCONSUMER_SECRET())
+				.setOAuthAccessToken(creds.getACCESS_TOKEN())
+				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
+
+		/*
+		 * if (proxyHost != null) cb.setHttpProxyHost(proxyHost); if (proxyPort
+		 * != null) cb.setHttpProxyPort(Integer.parseInt(proxyPort)); if
+		 * (proxyUser != null) cb.setHttpProxyUser(proxyUser); if (proxyPassword
+		 * != null) cb.setHttpProxyPassword(proxyPassword); if (raw)
+		 * cb.setJSONStoreEnabled(true);
+		 */
+		
+		Configuration conf = cb.build();
+		TwitterFactory tf = new TwitterFactory(conf);
+		Twitter twitter = tf.getInstance();
+
+		auth = new OAuthPasswordAuthenticator(twitter, creds);
 	}
 
 	@Test
-	public void test() throws Exception {
-		AccessToken accessToken = auth.getOAuthAccessTokenSilent();
+	public void test() {
+		
+		AccessToken accessToken = null;
+		try {
+			accessToken = auth.getOAuthAccessTokenSilent();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertNotNull(accessToken);
 	}
 

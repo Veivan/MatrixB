@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
-import java.net.Proxy;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
@@ -42,17 +40,15 @@ public class OAuthPasswordAuthenticator {
 
 	private HttpClient client = HttpClientBuilder.create()
 			.setUserAgent(Constants.USER_AGENT).build();
-	private Twitter twitter = new TwitterFactory().getInstance();
-	private final Proxy proxy;
+	private Twitter twitter; // = new TwitterFactory().getInstance();
 	private ElementCredentials creds;
 	private String cookies;
 
 	static Logger logger = LoggerFactory
 			.getLogger(OAuthPasswordAuthenticator.class);
 
-	public OAuthPasswordAuthenticator(final Proxy proxy,
-			final ElementCredentials creds) {
-		this.proxy = proxy;
+	public OAuthPasswordAuthenticator(final Twitter twitter, final ElementCredentials creds) {
+		this.twitter = twitter;
 		this.creds = creds;
 	}
 
@@ -63,8 +59,6 @@ public class OAuthPasswordAuthenticator {
 	 */
 	public AccessToken getOAuthAccessTokenSilent() throws Exception {
 		try {
-			twitter.setOAuthConsumer(this.creds.getCONSUMER_KEY(),
-					this.creds.getCONSUMER_SECRET());
 			final RequestToken requestToken = twitter
 					.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
 			final String oauth_token = requestToken.getToken();
@@ -78,8 +72,6 @@ public class OAuthPasswordAuthenticator {
 			CookieHandler.setDefault(new CookieManager());
 
 			String page = GetPageContent(requestToken.getAuthorizationURL());
-			// List<NameValuePair> postParams = Utils.getFormParams(page, USER,
-			// USER_PASS);
 
 			String authenticity_token = readAuthenticityToken(page);
 			if (authenticity_token.isEmpty())
@@ -127,7 +119,6 @@ public class OAuthPasswordAuthenticator {
 		String result = "";
 		HttpGet request = new HttpGet(url);
 
-		// request.setHeader("User-Agent", Constants.USER_AGENT);
 		request.setHeader("Accept",
 				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		request.setHeader("Accept-Language",
@@ -157,7 +148,6 @@ public class OAuthPasswordAuthenticator {
 
 		// add header
 		post.setHeader("Host", "twitter.com");
-		// post.setHeader("User-Agent", USER_AGENT);
 		post.setHeader("Accept",
 				"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
 		post.setHeader("Accept-Language",

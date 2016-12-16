@@ -35,7 +35,7 @@ public class T4jClient implements IJobExecutor {
 	private int port;
 	private Constants.ProxyType proxyType;
 	private ElementCredentials creds;
-	private Twitter twitter; // = new TwitterFactory().getInstance();
+	private Twitter twitter; 
 
 	public T4jClient(MatrixAct theact, ElementProxy dbproxy) {
 		this.ID = theact.getSelfID();
@@ -102,8 +102,7 @@ public class T4jClient implements IJobExecutor {
 
 			if (this.creds.getACCESS_TOKEN().isEmpty()
 					&& this.creds.getACCESS_TOKEN_SECRET().isEmpty()) {
-				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
-						proxy, creds);
+				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(this.twitter, this.creds);
 				AccessToken accessToken = auth.getOAuthAccessTokenSilent();
 				if (accessToken != null) {
 					creds.setACCESS_TOKEN(accessToken.getToken());

@@ -2,7 +2,7 @@
 213.79.120.82 office
 
 1. Refactor - заменить ElementProxy на стандартный Proxy
-1.1 Передавать в OAuthPasswordAuthenticator готовый twitter, а не создавать свой
+1.1 
 
 2. Делать MakeURI и можно запускать
 
