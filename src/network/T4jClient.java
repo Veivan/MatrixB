@@ -1,16 +1,14 @@
 package network;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
-import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnectSingle;
 import service.Constants;
 import service.Utils;
 import twitter4j.Twitter;
@@ -35,7 +33,7 @@ public class T4jClient implements IJobExecutor {
 	private int port;
 	private Constants.ProxyType proxyType;
 	private ElementCredentials creds;
-	private Twitter twitter; 
+	private Twitter twitter;
 
 	public T4jClient(MatrixAct theact, ElementProxy dbproxy) {
 		this.ID = theact.getSelfID();
@@ -47,6 +45,7 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(T4jClient.class);
+	DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 
 	@Override
 	public void Execute() {
@@ -54,12 +53,17 @@ public class T4jClient implements IJobExecutor {
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
-		if (!GetCredentials())
+		if (!GetCredentials()) {
+			logger.info(
+					"T4jClient can't got credentials : {} {} accID = {} ID = {}",
+					this.job.Type.name(),
+					Constants.dfm.format(this.job.timestamp),
+					this.acc.getAccID(), this.ID);
 			return;
+		}
 		logger.info(
 				"T4jClient got twitter instance : {} {} accID = {} ID = {}",
-				this.job.Type.name(),
-				Constants.dfm.format(this.job.timestamp),
+				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
 
 	}
@@ -68,15 +72,9 @@ public class T4jClient implements IJobExecutor {
 		try {
 			if (Constants.IsDebugCreds) {
 				this.creds = Utils.ReadINI();
+			} else {
+				this.creds = dbConnector.getCredentials(this.acc.getAccID());
 			}
-
-			// TODO Read from DB
-			/*
-			 * else { dbproxy =
-			 * ProxyGetter.getProxy(this.theact.getAcc().getAccID()); if (dbproxy ==
-			 * null) { logger.error("TWClient cant get proxy");
-			 * logger.debug("TWClient cant get proxy"); return false; } }
-			 */
 
 			if (this.creds == null)
 				throw new AuthenticationException(String.format(
@@ -102,7 +100,8 @@ public class T4jClient implements IJobExecutor {
 
 			if (this.creds.getACCESS_TOKEN().isEmpty()
 					&& this.creds.getACCESS_TOKEN_SECRET().isEmpty()) {
-				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(this.twitter, this.creds);
+				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
+						this.twitter, this.creds);
 				AccessToken accessToken = auth.getOAuthAccessTokenSilent();
 				if (accessToken != null) {
 					creds.setACCESS_TOKEN(accessToken.getToken());

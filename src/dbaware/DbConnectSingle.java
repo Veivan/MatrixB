@@ -21,6 +21,7 @@ import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
 import main.ConcreteAcc;
+import model.ElementCredentials;
 import model.ElementProxy;
 
 public class DbConnectSingle {
@@ -125,6 +126,36 @@ public class DbConnectSingle {
 				logger.debug("getProxy conn.close exception", e);
 			}
 		return proxy;
+	}
+
+	// Возвращает токены для указанного аккаунта
+	public ElementCredentials getCredentials(long AccID) {
+		ElementCredentials creds = null;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spCredsSelect](?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong(1, AccID);
+			ResultSet rs = sp.executeQuery();
+			// Читаем только первую запись
+			rs.next();
+			creds = new ElementCredentials(rs.getString(6), rs.getString(7), rs.getString(2), rs.getString(3), 
+					rs.getString(4), rs.getString(5));		
+			rs.close();
+			sp.close();
+			sp = null;
+		} catch (Exception e) {
+			logger.error("getCredentials spCredsSelect exception", e);
+			logger.debug("getCredentials spCredsSelect exception", e);
+		}
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("getCredentials conn.close exception", e);
+				logger.debug("getCredentials conn.close exception", e);
+			}
+		return creds;
 	}
 
 	// Возвращает текущее расписание заданий.

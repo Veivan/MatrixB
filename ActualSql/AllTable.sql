@@ -56,6 +56,19 @@ CREATE TABLE [dbo].[mAccounts](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mApplications](
+	[id_app] [bigint] IDENTITY(1,1) NOT NULL,
+	[cons_key] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
+	[cons_secret] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
+	[user_id] [bigint] NOT NULL
+) ON [PRIMARY]
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer key' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_key'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer secret' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_secret'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Application owner' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'user_id'
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mProxies](
 	[ProxyID] [bigint] IDENTITY(1,1) NOT NULL,
 	[ip] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
@@ -85,3 +98,16 @@ CREATE TABLE [dbo].[mTasks](
 	[IsRepeat] [bit] NOT NULL
 ) ON [PRIMARY]
 
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mTokens](
+	[id_creds] [bigint] IDENTITY(1,1) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[id_app] [bigint] NOT NULL,
+	[token] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
+	[token_secret] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Access token' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mTokens', @level2type=N'COLUMN',@level2name=N'token'
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Access token secret' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mTokens', @level2type=N'COLUMN',@level2name=N'token_secret'
