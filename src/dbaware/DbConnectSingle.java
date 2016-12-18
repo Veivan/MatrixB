@@ -23,6 +23,7 @@ import jobs.JobList;
 import main.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
+import model.MatrixAct;
 
 public class DbConnectSingle {
 	private static volatile DbConnectSingle instance;
@@ -38,7 +39,7 @@ public class DbConnectSingle {
 	"jdbc:sqlserver://KONSTANTIN-PC;instanceName=SQLEXPRESS14"
 	// "jdbc:sqlserver://WIN-2TFLS2PJ38K;instanceName=MSSQL2008R2"
 	// AWS
-	//"jdbc:sqlserver://WIN-2B897RSG769;instanceName=SQLEXPRESS2014"
+	// "jdbc:sqlserver://WIN-2B897RSG769;instanceName=SQLEXPRESS2014"
 	// office
 	// "jdbc:sqlserver://014-MSDN;instanceName=SQL12"
 			+ ";databaseName=MatrixB;";
@@ -110,7 +111,8 @@ public class DbConnectSingle {
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
 			rs.next();
-			proxy = new ElementProxy(rs.getString(4), rs.getInt(5), ProxyType.valueOf(rs.getString(7)));
+			proxy = new ElementProxy(rs.getString(4), rs.getInt(5),
+					ProxyType.valueOf(rs.getString(7)));
 			rs.close();
 			sp.close();
 			sp = null;
@@ -139,8 +141,9 @@ public class DbConnectSingle {
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
 			rs.next();
-			creds = new ElementCredentials(rs.getString(6), rs.getString(7), rs.getString(2), rs.getString(3), 
-					rs.getString(4), rs.getString(5));		
+			creds = new ElementCredentials(rs.getString(6), rs.getString(7),
+					rs.getString(2), rs.getString(3), rs.getString(4),
+					rs.getString(5));
 			rs.close();
 			sp.close();
 			sp = null;
@@ -156,6 +159,28 @@ public class DbConnectSingle {
 				logger.debug("getCredentials conn.close exception", e);
 			}
 		return creds;
+	}
+
+	public void StoreActResult(MatrixAct act, boolean result, String failreason) {
+		try {
+			dbConnect();
+			String query = "INSERT INTO [dbo].[mExecution] ([user_id],[id_task],[act_id],[result],[failreason]) VALUES (?,?,?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setLong(1, act.getAcc().getAccID());
+			pstmt.setLong(2, act.getJob().JobID);
+			pstmt.setLong(3, act.getSelfID());
+			pstmt.setBoolean(4, result);
+			pstmt.setString(5, failreason);
+			pstmt.execute();
+			pstmt.close();
+			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("StoreActResult failed", e);
+			logger.debug("StoreActResult failed", e);
+		}
 	}
 
 	// Возвращает текущее расписание заданий.
@@ -214,7 +239,7 @@ public class DbConnectSingle {
 		homeworks.AddJob(job);
 
 		for (int i = 0; i < 2; i++) {
-			job = new JobAtom((long)i, "LIKE", "");
+			job = new JobAtom((long) i, "LIKE", "");
 			homeworks.AddJob(job);
 		}
 

@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import dbaware.DbConnectSingle;
 import service.Constants;
 import service.Utils;
+import twitter4j.Status;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
@@ -25,6 +27,7 @@ import inrtfs.IJobExecutor;
 
 public class T4jClient implements IJobExecutor {
 
+	private MatrixAct act;
 	private long ID;
 	private JobAtom job;
 	private IAccount acc;
@@ -34,8 +37,10 @@ public class T4jClient implements IJobExecutor {
 	private Constants.ProxyType proxyType;
 	private ElementCredentials creds;
 	private Twitter twitter;
+	private String failreason = "";
 
 	public T4jClient(MatrixAct theact, ElementProxy dbproxy) {
+		this.act = theact;
 		this.ID = theact.getSelfID();
 		this.job = theact.getJob();
 		this.acc = theact.getAcc();
@@ -49,6 +54,7 @@ public class T4jClient implements IJobExecutor {
 
 	@Override
 	public void Execute() {
+		boolean result = false;
 		logger.info("T4jClient run Action : {} {} accID = {} ID = {}",
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
@@ -59,13 +65,17 @@ public class T4jClient implements IJobExecutor {
 					this.job.Type.name(),
 					Constants.dfm.format(this.job.timestamp),
 					this.acc.getAccID(), this.ID);
-			return;
-		}
-		logger.info(
-				"T4jClient got twitter instance : {} {} accID = {} ID = {}",
-				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
-				this.acc.getAccID(), this.ID);
+			failreason = "T4jClient can't got credentials";
+		} else {
+			logger.info(
+					"T4jClient got twitter instance : {} {} accID = {} ID = {}",
+					this.job.Type.name(),
+					Constants.dfm.format(this.job.timestamp),
+					this.acc.getAccID(), this.ID);
 
+			result = OperateTwitter(this.job);
+		}
+		dbConnector.StoreActResult(this.act, result, failreason);
 	}
 
 	private boolean GetCredentials() {
@@ -123,6 +133,64 @@ public class T4jClient implements IJobExecutor {
 		}
 
 		return true;
+	}
+
+	private boolean OperateTwitter(JobAtom job) {
+		Constants.JobType jobType = job.Type;
+		boolean result = false;
+		try {
+			switch (jobType) {
+			case TWIT:
+				Status status = twitter.updateStatus(job.TContent);
+
+				// TweetsResources twitter.tweets()
+				// Status updateStatus(StatusUpdate latestStatus)
+				// setLocation(GeoLocation location)
+				result = true;
+				break;
+			case SETAVA:
+				// User updateProfileImage(File image) throws TwitterException;
+				// void updateProfileBanner(File image) throws TwitterException;
+				/*
+				 * try { // Get timeline // gets Twitter instance with default
+				 * credentials Twitter twitter = new
+				 * TwitterFactory().getInstance(); User user =
+				 * twitter.verifyCredentials(); List<Status> statuses =
+				 * twitter.getHomeTimeline(); System.out.println("Showing @" +
+				 * user.getScreenName() + "'s home timeline."); for (Status
+				 * status : statuses) { System.out.println("@" +
+				 * status.getUser().getScreenName() + " - " + status.getText());
+				 * } } catch (TwitterException te) { te.printStackTrace();
+				 * System.out.println("Failed to get timeline: " +
+				 * te.getMessage()); System.exit(-1); }
+				 */
+				break;
+			case DIRECT:
+				break;
+			case LIKE:
+				break;
+			case RETWIT:
+				break;
+			case REPLAY:
+				break;
+			case SETBACKGROUND:
+				// User updateProfileBackgroundImage(File image, boolean tile)
+				break;
+			case FOLLOW:
+				break;
+			case UNFOLLOW:
+				break;
+			default:
+				break;
+			}
+		} catch (TwitterException e) {
+			String premess = "Failed to OperateTwitter";
+			logger.error(premess, e);
+			logger.debug(premess, e);
+			result = false;
+			failreason = premess + " : " + e.getMessage();
+		}
+		return result;
 	}
 
 	/**
