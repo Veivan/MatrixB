@@ -17,6 +17,8 @@ public class testDates {
 
 		String time = "2016-10-20 ";
 
+		//System.out.printf("%s", System.currentTimeMillis() / 1000);
+
 		while (true) {
 			System.out.print("Enter something:");
 			String input = System.console().readLine();
@@ -25,6 +27,7 @@ public class testDates {
 
 			System.out.printf("%s - %s \n", dfm.format(unixtime), unixtime);
 		}
+		
 		/*
 		 * GregorianCalendar calendar = new GregorianCalendar(1975,
 		 * Calendar.DECEMBER, 31); calendar.set(1976, Calendar.FEBRUARY, 23); //

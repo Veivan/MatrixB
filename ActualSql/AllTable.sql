@@ -76,7 +76,8 @@ CREATE TABLE [dbo].[mExecution](
 	[id_task] [bigint] NOT NULL,
 	[act_id] [bigint] NOT NULL,
 	[result] [bit] NOT NULL,
-	[failreason] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL
+	[failreason] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
+	[execdate] [bigint] NOT NULL
 ) ON [PRIMARY]
 
 
