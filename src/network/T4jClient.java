@@ -208,9 +208,11 @@ public class T4jClient implements IJobExecutor {
 				.setOAuthAccessToken(creds.getACCESS_TOKEN())
 				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
 
+		if (this.ip != null) cb.setHttpProxyHost(this.ip); 
+		if (this.port != 0) cb.setHttpProxyPort(this.port);		
+		
 		/*
-		 * if (proxyHost != null) cb.setHttpProxyHost(proxyHost); if (proxyPort
-		 * != null) cb.setHttpProxyPort(Integer.parseInt(proxyPort)); if
+		 *  if
 		 * (proxyUser != null) cb.setHttpProxyUser(proxyUser); if (proxyPassword
 		 * != null) cb.setHttpProxyPassword(proxyPassword); if (raw)
 		 * cb.setJSONStoreEnabled(true);

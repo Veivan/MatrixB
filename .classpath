@@ -18,6 +18,10 @@
 	<classpathentry kind="lib" path="C:/java/logback-1.1.7/logback-core-1.1.7.jar"/>
 	<classpathentry kind="lib" path="C:/java/sqljdbc_4.0/rus/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="C:/java/jsoup-1.10.1.jar"/>
-	<classpathentry kind="lib" path="C:/java/twitter4j/lib/twitter4j-core-4.0.4.jar" sourcepath="C:/java/twitter4j/twitter4j-core/src"/>
+	<classpathentry kind="lib" path="C:/java/twitter4j-4.0.4/lib/twitter4j-core-4.0.4.jar" sourcepath="C:/java/twitter4j-4.0.4/twitter4j-core/src">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/java/twitter4j-4.0.4/twitter4j-core/twitter4j-core-4.0.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
