@@ -1,10 +1,14 @@
 package network;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.SocketAddress;
+import java.util.Base64;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +16,8 @@ import dbaware.DbConnectSingle;
 import service.Constants;
 import service.Utils;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
@@ -75,6 +79,12 @@ public class T4jClient implements IJobExecutor {
 
 			result = OperateTwitter(this.job);
 		}
+		logger.info(
+				"T4jClient Action result is {} : {} {} accID = {} ID = {}",
+				result,
+				this.job.Type.name(),
+				Constants.dfm.format(this.job.timestamp),
+				this.acc.getAccID(), this.ID);
 		dbConnector.StoreActResult(this.act, result, failreason);
 	}
 
@@ -141,11 +151,33 @@ public class T4jClient implements IJobExecutor {
 		try {
 			switch (jobType) {
 			case TWIT:
-				Status status = twitter.updateStatus(job.TContent);
+				Status status = null;
+				StatusUpdate latestStatus = null;
+				if (job.TContent.contains("#helpchildren")) {
+					// Получение id и картинки
+					String page = Utils
+							.GetPageContent(Constants.URL_RANDOM_SERVLET);
+					JSONObject json = new JSONObject(page);
+					int id = json.getInt("id");
+					String picenc = json.getString("picture");
+					byte[] decodedBytes = Base64.getDecoder().decode(
+							picenc.getBytes());
 
-				// TweetsResources twitter.tweets()
-				// Status updateStatus(StatusUpdate latestStatus)
-				// setLocation(GeoLocation location)
+					// UploadedMedia upmedia = twitter.uploadMedia(fileName,
+					// is);
+					// Формирование Статуса
+					InputStream is = new ByteArrayInputStream(decodedBytes);
+					String fileName = Integer.toString(id) + ".jpg";
+					String message = job.TContent + Integer.toString(id);
+					latestStatus = new StatusUpdate(message);
+					// Загрузка картинки в твиттер
+					latestStatus.setMedia(fileName, is);
+					// setLocation(GeoLocation location)
+				} else
+					latestStatus = new StatusUpdate(job.TContent);
+				// Твиттинг
+				status = twitter.updateStatus(latestStatus);
+
 				result = true;
 				break;
 			case SETAVA:
@@ -183,7 +215,7 @@ public class T4jClient implements IJobExecutor {
 			default:
 				break;
 			}
-		} catch (TwitterException e) {
+		} catch (Exception e) {
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
 			logger.debug(premess, e);
@@ -208,14 +240,15 @@ public class T4jClient implements IJobExecutor {
 				.setOAuthAccessToken(creds.getACCESS_TOKEN())
 				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
 
-		if (this.ip != null) cb.setHttpProxyHost(this.ip); 
-		if (this.port != 0) cb.setHttpProxyPort(this.port);		
-		
+		if (this.ip != null)
+			cb.setHttpProxyHost(this.ip);
+		if (this.port != 0)
+			cb.setHttpProxyPort(this.port);
+
 		/*
-		 *  if
-		 * (proxyUser != null) cb.setHttpProxyUser(proxyUser); if (proxyPassword
-		 * != null) cb.setHttpProxyPassword(proxyPassword); if (raw)
-		 * cb.setJSONStoreEnabled(true);
+		 * if (proxyUser != null) cb.setHttpProxyUser(proxyUser); if
+		 * (proxyPassword != null) cb.setHttpProxyPassword(proxyPassword); if
+		 * (raw) cb.setJSONStoreEnabled(true);
 		 */
 
 		logger.debug("twitter configuration created");

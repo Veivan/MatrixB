@@ -22,14 +22,16 @@ public class testT4jClient {
 
 	@Before
 	public void setUp() throws Exception {
-		JobAtom job = new JobAtom(5L, "TWIT", "thht2");
+		JobAtom job = new JobAtom(5L, "TWIT", "Вы можете помочь. #helpchildren http://helpchildren.online/?id=");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//t4wclient = new T4jClient(theact, new ElementProxy("103.59.57.218", 45554, Constants.ProxyType.SOCKS));
-		//t4wclient = new T4jClient(theact, new ElementProxy("183.232.25.100", 1080, Constants.ProxyType.SOCKS));
-		t4wclient = new T4jClient(theact, new ElementProxy("178.215.111.70", 9999, Constants.ProxyType.HTTPS));
+		
+		t4wclient = new T4jClient(theact, new ElementProxy("181.39.11.132", 80, Constants.ProxyType.HTTPS));
+		
+		//t4wclient = new T4jClient(theact, new ElementProxy("178.215.111.70", 9999, Constants.ProxyType.HTTPS)); //good
 	}
 
 	@Test

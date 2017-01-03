@@ -23,5 +23,6 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/java/twitter4j-4.0.4/twitter4j-core/twitter4j-core-4.0.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="C:/java/org.json-20120521.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
