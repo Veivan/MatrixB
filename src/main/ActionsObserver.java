@@ -6,11 +6,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import model.MatrixAct;
-import network.TWClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import deprecated.TWClient;
 import service.Constants;
 import jobs.Homeworks;
 import inrtfs.Observer;

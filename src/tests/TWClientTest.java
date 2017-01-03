@@ -1,9 +1,9 @@
 package tests;
 
-import network.TWClient;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import deprecated.TWClient;
 
 public class TWClientTest {
 

@@ -1,4 +1,4 @@
-package network;
+package deprecated;
 
 import inrtfs.IAccount;
 
@@ -15,6 +15,8 @@ import jobs.JobAtom;
 import main.ConcreteAcc;
 import model.ElementProxy;
 import model.MatrixAct;
+import network.ProxyGetter;
+import network.TypedURI;
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 
