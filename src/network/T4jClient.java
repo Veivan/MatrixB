@@ -79,12 +79,10 @@ public class T4jClient implements IJobExecutor {
 
 			result = OperateTwitter(this.job);
 		}
-		logger.info(
-				"T4jClient Action result is {} : {} {} accID = {} ID = {}",
-				result,
-				this.job.Type.name(),
-				Constants.dfm.format(this.job.timestamp),
-				this.acc.getAccID(), this.ID);
+		logger.info("T4jClient Action result is {} : {} {} accID = {} ID = {}",
+				result, this.job.Type.name(),
+				Constants.dfm.format(this.job.timestamp), this.acc.getAccID(),
+				this.ID);
 		dbConnector.StoreActResult(this.act, result, failreason);
 	}
 
@@ -159,16 +157,19 @@ public class T4jClient implements IJobExecutor {
 							.GetPageContent(Constants.URL_RANDOM_SERVLET);
 					JSONObject json = new JSONObject(page);
 					int id = json.getInt("id");
+					String pname = json.getString("name");
+					String ppage = json.getString("age");
 					String picenc = json.getString("picture");
 					byte[] decodedBytes = Base64.getDecoder().decode(
 							picenc.getBytes());
 
-					// UploadedMedia upmedia = twitter.uploadMedia(fileName,
-					// is);
 					// Формирование Статуса
 					InputStream is = new ByteArrayInputStream(decodedBytes);
 					String fileName = Integer.toString(id) + ".jpg";
-					String message = job.TContent + Integer.toString(id);
+
+					String message = String.format("%s %s. Вы можете помочь.%n", pname, ppage)
+							+ "http://helpchildren.online/?id=" + id + " "
+							+ job.TContent; // + #подарижизнь
 					latestStatus = new StatusUpdate(message);
 					// Загрузка картинки в твиттер
 					latestStatus.setMedia(fileName, is);

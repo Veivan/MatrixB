@@ -22,7 +22,7 @@ public class testT4jClient {
 
 	@Before
 	public void setUp() throws Exception {
-		JobAtom job = new JobAtom(5L, "TWIT", "Вы можете помочь. #helpchildren http://helpchildren.online/?id=");
+		JobAtom job = new JobAtom(5L, "TWIT", "#helpchildren");
 
 		ConcreteAcc acc = new ConcreteAcc(1L);
 		MatrixAct theact = new MatrixAct(job, acc);
