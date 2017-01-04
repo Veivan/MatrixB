@@ -29,7 +29,7 @@ public class testT4jClient {
 		
 		//t4wclient = new T4jClient(theact, new ElementProxy("103.59.57.218", 45554, Constants.ProxyType.SOCKS));
 		
-		t4wclient = new T4jClient(theact, new ElementProxy("181.39.11.132", 80, Constants.ProxyType.HTTPS));
+		t4wclient = new T4jClient(theact, new ElementProxy("181.39.11.132", 80, Constants.ProxyType.HTTP));
 		
 		//t4wclient = new T4jClient(theact, new ElementProxy("178.215.111.70", 9999, Constants.ProxyType.HTTPS)); //good
 	}

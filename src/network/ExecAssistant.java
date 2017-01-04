@@ -29,7 +29,7 @@ public class ExecAssistant extends Thread {
 
 			//dbproxy = new ElementProxy("185.101.236.83", 1080, ProxyType.SOCKS); 	// Socks4
 
-			//dbproxy = new ElementProxy("85.174.236.106", 3128, ProxyType.HTTPS);
+			//dbproxy = new ElementProxy("85.174.236.106", 3128, ProxyType.HTTP);
 
 		} else { 
 			dbproxy = ProxyGetter.getProxy(this.theact.getAcc().getAccID());

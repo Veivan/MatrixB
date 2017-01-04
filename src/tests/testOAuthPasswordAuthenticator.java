@@ -29,10 +29,10 @@ public class testOAuthPasswordAuthenticator {
 	public static void setUpBeforeClass() throws Exception {
 		String ip = "1.2.3.5";
 		int port = 8080;
-		Constants.ProxyType proxyType = Constants.ProxyType.HTTPS;
+		Constants.ProxyType proxyType = Constants.ProxyType.HTTP;
 		SocketAddress addr = new InetSocketAddress(ip, port);
 		proxy = new Proxy(
-				proxyType == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
+				proxyType == Constants.ProxyType.HTTP ? Proxy.Type.HTTP
 						: Proxy.Type.SOCKS, addr);
 	}
 

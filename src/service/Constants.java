@@ -23,21 +23,28 @@ public final class Constants {
 	public static DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public enum ProxyType {
-		HTTPS, SOCKS
+		HTTP, SOCKS
 	}
 
 	public enum RequestType {
 		GET, POST
 	}
 
+	// Константы для SimpleVisitor
 	public static final int CONNECTION_TIMEOUT_MS = 20;
 	public static final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
 	public static final int SOCKET_TIMEOUT_MS = 20;
+	
 	public static final String USER_AGENT = "Mozilla/5.0";
 	public static final String DEFAULT_OAUTH_CALLBACK = "http://www.ya.ru"; 
 
 	public static final String URL_RANDOM_SERVLET = "http://localhost:8080/HelpChildren/getrandomid"; 
 	//public static final String URL_RANDOM_SERVLET = "http://helpchildren.online/getrandomid";
+	
+	// Константы для проверки прокси
+	public static final String testLink = "http://google.ru";
+	public static final int prxchcktimeout = 5000; // время ожидания ответа (в милисекундах)
+
 
 	public static final boolean IsDebugProxy = true;
 	public static final boolean IsDebugCreds = true;

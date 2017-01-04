@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
-import service.Constants.ProxyType;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
@@ -63,6 +62,9 @@ public class DbConnectSingle {
 				db_password);
 	}
 
+	/**
+	 * Returns Accounts from DB
+	 */
 	public List<IAccount> getAccounts() {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 
@@ -73,7 +75,6 @@ public class DbConnectSingle {
 		 * accounts.add(acc3); accounts.add(acc4);
 		 */
 
-		// Accounts from DB
 		try {
 			dbConnect();
 			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
@@ -100,6 +101,39 @@ public class DbConnectSingle {
 		return accounts;
 	}
 
+	/**
+	 * Returns free proxies from DB
+	 */
+	public List<ElementProxy> getFreeProxies() {
+		List<ElementProxy> proxylist = new ArrayList<ElementProxy>();
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spProxyFreeSelect]}";
+			CallableStatement sp = conn.prepareCall(query);
+			ResultSet rs = sp.executeQuery();
+			while (rs.next()) {
+				ElementProxy proxy = new ElementProxy(rs.getString("ip"), rs.getInt("port"),
+						Constants.ProxyType.valueOf(rs.getString("typename")));
+				proxylist.add(proxy);
+			}
+			rs.close();
+			sp.close();
+			sp = null;
+		} catch (Exception e) {
+			logger.error("getFreeProxies spProxyFreeSelect exception", e);
+			logger.debug("getFreeProxies spProxyFreeSelect exception", e);
+		}
+		if (conn != null)
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				logger.error("getFreeProxies conn.close exception", e);
+				logger.debug("getFreeProxies conn.close exception", e);
+			}
+		return proxylist;
+	}
+
+
 	// Возвращает назначенный прокси для указанного аккаунта
 	public ElementProxy getProxy(long AccID) {
 		ElementProxy proxy = null;
@@ -112,7 +146,7 @@ public class DbConnectSingle {
 			// Читаем только первую запись
 			rs.next();
 			proxy = new ElementProxy(rs.getString(4), rs.getInt(5),
-					ProxyType.valueOf(rs.getString(7)));
+					Constants.ProxyType.valueOf(rs.getString(7)));
 			rs.close();
 			sp.close();
 			sp = null;
