@@ -166,13 +166,28 @@ public class DbConnectSingle {
 	 * Устанавливает прокси для указанного аккаунта
 	 */
 	public void setProxy4Acc(long accID, ElementProxy accproxy) {
-		String query = "UPDATE [dbo].[mProxyAcc] SET [ProxyID] = ? WHERE [user_id] = ?";
-		if (accproxy == null) {
-			;
-			// delete
-		} else //TODO Сделать процедуру update + insert if not exists
-			// update
-			;
+		long ProxyID = (accproxy == null) ? 0 : accproxy.getProxyID();
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spProxy4AccUpdate](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong(1, accID);
+			sp.setLong(2, ProxyID);
+			sp.execute();
+			sp.close();
+			sp = null;
+		} catch (Exception e) {
+			logger.error("setProxy4Acc spProxy4AccUpdate exception", e);
+			logger.debug("setProxy4Acc spProxy4AccUpdate exception", e);
+		} finally {
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("setProxy4Acc conn.close exception", e);
+					logger.debug("setProxy4Acc conn.close exception", e);
+				}
+		}
 	}
 
 	/**
@@ -197,14 +212,15 @@ public class DbConnectSingle {
 		} catch (Exception e) {
 			logger.error("getProxy spProxy4AccSelect exception", e);
 			logger.debug("getProxy spProxy4AccSelect exception", e);
+		} finally {
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("getProxy conn.close exception", e);
+					logger.debug("getProxy conn.close exception", e);
+				}
 		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.error("getProxy conn.close exception", e);
-				logger.debug("getProxy conn.close exception", e);
-			}
 		return proxy;
 	}
 
