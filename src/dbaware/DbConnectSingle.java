@@ -112,8 +112,9 @@ public class DbConnectSingle {
 			CallableStatement sp = conn.prepareCall(query);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				ElementProxy proxy = new ElementProxy(rs.getString("ip"), rs.getInt("port"),
-						Constants.ProxyType.valueOf(rs.getString("typename")));
+				ElementProxy proxy = new ElementProxy(rs.getString("ip"),
+						rs.getInt("port"), Constants.ProxyType.valueOf(rs
+								.getString("typename")), rs.getLong("ProxyID"));
 				proxylist.add(proxy);
 			}
 			rs.close();
@@ -133,9 +134,51 @@ public class DbConnectSingle {
 		return proxylist;
 	}
 
+	/**
+	 * Set proxy is "alive" = false
+	 */
+	public void setProxyIsAlive(long ProxyID, boolean IsAlive) {
+		try {
+			dbConnect();
+			String query = "UPDATE [dbo].[mProxies] SET [alive] = ? WHERE [ProxyID] = ?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, IsAlive ? 1 : 0);
+			pstmt.setLong(2, ProxyID);
+			pstmt.execute();
+			pstmt.close();
+			pstmt = null;
+		} catch (Exception e) {
+			logger.error("setProxyDead exception", e);
+			logger.debug("setProxyDead exception", e);
+		} finally {
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("setProxyDead conn.close exception", e);
+					logger.debug("setProxyDead conn.close exception", e);
+				}
+			conn = null;
+		}
+	}
 
-	// Возвращает назначенный прокси для указанного аккаунта
-	public ElementProxy getProxy(long AccID) {
+	/**
+	 * Устанавливает прокси для указанного аккаунта
+	 */
+	public void setProxy4Acc(long accID, ElementProxy accproxy) {
+		String query = "UPDATE [dbo].[mProxyAcc] SET [ProxyID] = ? WHERE [user_id] = ?";
+		if (accproxy == null) {
+			;
+			// delete
+		} else //TODO Сделать процедуру update + insert if not exists
+			// update
+			;
+	}
+
+	/**
+	 * Возвращает назначенный прокси для указанного аккаунта
+	 */
+	public ElementProxy getProxy4Acc(long AccID) {
 		ElementProxy proxy = null;
 		try {
 			dbConnect();
@@ -144,9 +187,10 @@ public class DbConnectSingle {
 			sp.setLong(1, AccID);
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
-			rs.next();
-			proxy = new ElementProxy(rs.getString(4), rs.getInt(5),
-					Constants.ProxyType.valueOf(rs.getString(7)));
+			if (rs.next())
+				proxy = new ElementProxy(rs.getString("ip"), rs.getInt("port"),
+						Constants.ProxyType.valueOf(rs.getString("typename")),
+						rs.getLong("ProxyID"));
 			rs.close();
 			sp.close();
 			sp = null;
@@ -164,7 +208,9 @@ public class DbConnectSingle {
 		return proxy;
 	}
 
-	// Возвращает токены для указанного аккаунта
+	/**
+	 * Возвращает токены для указанного аккаунта
+	 */
 	public ElementCredentials getCredentials(long AccID) {
 		ElementCredentials creds = null;
 		try {
@@ -195,6 +241,9 @@ public class DbConnectSingle {
 		return creds;
 	}
 
+	/**
+	 * Сохраняет результат выполнения задания
+	 */
 	public void StoreActResult(MatrixAct act, boolean result, String failreason) {
 		try {
 			dbConnect();
@@ -205,7 +254,8 @@ public class DbConnectSingle {
 			pstmt.setLong(3, act.getSelfID());
 			pstmt.setBoolean(4, result);
 			pstmt.setString(5, failreason);
-			long dt = act.getJob().timestamp == 0l ? System.currentTimeMillis() / 1000  : act.getJob().timestamp;
+			long dt = act.getJob().timestamp == 0l ? System.currentTimeMillis() / 1000
+					: act.getJob().timestamp;
 			pstmt.setLong(6, dt);
 			pstmt.execute();
 			pstmt.close();
@@ -219,9 +269,10 @@ public class DbConnectSingle {
 		}
 	}
 
-	// Возвращает текущее расписание заданий.
-	// Надо сортировать элементы в списках по одному алгоритму для правильного
-	// сравнения
+	/**
+	 * Возвращает текущее расписание заданий. Надо сортировать элементы в
+	 * списках по одному алгоритму для правильного сравнения
+	 */
 	public Homeworks getHomeworks() {
 
 		List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
@@ -287,4 +338,5 @@ public class DbConnectSingle {
 		}
 
 	}
+
 }

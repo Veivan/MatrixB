@@ -25,7 +25,7 @@ public class ExecAssistant extends Thread {
 	private boolean GetProxy(boolean IsDebug) {
 		if (IsDebug) {
 
-			dbproxy = new ElementProxy("47.88.30.164", 1080, ProxyType.SOCKS); // Socks5
+			dbproxy = new ElementProxy("47.88.30.164", 1080, ProxyType.SOCKS, -1); // Socks5
 
 			//dbproxy = new ElementProxy("185.101.236.83", 1080, ProxyType.SOCKS); 	// Socks4
 

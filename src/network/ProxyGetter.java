@@ -10,37 +10,44 @@ import java.net.URL;
 import java.util.List;
 
 import service.Constants;
-import inrtfs.IAccount;
 import model.ElementProxy;
 import dbaware.DbConnectSingle;
 
 public class ProxyGetter {
-	//TODO Временно берём прокси напрямую из ДБ
-	// Далее надо сделать обращение к сервису.  
 	
 	public static ElementProxy getProxy(long AccID)
 	{
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
-		ElementProxy accproxy = dbConnector.getProxy(AccID);
-		if (accproxy.getIp().isEmpty())
+		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
+		if (!CheckProxy(accproxy))
 		{
+			if (accproxy != null) {
+				dbConnector.setProxyIsAlive(accproxy.getProxyID(), false);
+				accproxy = null;
+			}
+
 			List<ElementProxy> proxylist = dbConnector.getFreeProxies();
 			
 			for (ElementProxy proxy : proxylist) {
 				if (CheckProxy(proxy))
 				{
-					;
-				}			
+					accproxy = proxy;
+					break;
+				}	
+				else
+					dbConnector.setProxyIsAlive(proxy.getProxyID(), false);
 			}
 			
+			// Refresh proxy 4 account
+			dbConnector.setProxy4Acc(AccID, accproxy);			
 		}
-		else
-		{;}
 		
 		return accproxy;		
 	}
 
 	private static boolean CheckProxy(ElementProxy proxy) {
+		if (proxy == null) return false;
+		
 		String pHost = proxy.getIp();
 		int pPort = proxy.getPort();
 		SocketAddress addr = new InetSocketAddress(pHost, pPort);
