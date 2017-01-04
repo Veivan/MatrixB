@@ -70,6 +70,13 @@ EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Application ow
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mDBversion](
+	[version] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mExecution](
 	[ae_id] [bigint] IDENTITY(1,1) NOT NULL,
 	[user_id] [bigint] NOT NULL,

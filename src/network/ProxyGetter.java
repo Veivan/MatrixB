@@ -10,7 +10,14 @@ public class ProxyGetter {
 	public static ElementProxy getProxy(long AccID)
 	{
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
-		return dbConnector.getProxy(AccID);
+		ElementProxy accproxy = dbConnector.getProxy(AccID);
+		if (accproxy.getIp().isEmpty())
+		{
+			
+		}
+		else
+		{}
 		
+		return accproxy;		
 	}
 }

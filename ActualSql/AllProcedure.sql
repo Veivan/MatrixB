@@ -52,6 +52,7 @@ AS BEGIN
 		JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
 	WHERE 
 		PA.[user_id] = @user_id
+		AND P.[alive] = 1
 END
 GO
 
