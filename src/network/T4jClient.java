@@ -3,9 +3,6 @@ package network;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
 import java.util.Base64;
 
 import org.json.JSONObject;
@@ -36,9 +33,7 @@ public class T4jClient implements IJobExecutor {
 	private JobAtom job;
 	private IAccount acc;
 
-	private String ip;
-	private int port;
-	private Constants.ProxyType proxyType;
+	private ElementProxy dbproxy;
 	private ElementCredentials creds;
 	private Twitter twitter;
 	private String failreason = "";
@@ -48,9 +43,7 @@ public class T4jClient implements IJobExecutor {
 		this.ID = theact.getSelfID();
 		this.job = theact.getJob();
 		this.acc = theact.getAcc();
-		this.ip = dbproxy.getIp();
-		this.port = dbproxy.getPort();
-		this.proxyType = dbproxy.getProxyType();
+		this.dbproxy = dbproxy;
 	}
 
 	static Logger logger = LoggerFactory.getLogger(T4jClient.class);
@@ -107,12 +100,8 @@ public class T4jClient implements IJobExecutor {
 						"Empty incoming credentials for acc = {}",
 						this.acc.getAccID()));
 
-			SocketAddress addr = new InetSocketAddress(this.ip, this.port);
-			Proxy proxy = new Proxy(
-					this.proxyType == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
-							: Proxy.Type.SOCKS, addr);
 			// Creating twitter
-			Configuration conf = buildTwitterConfiguration(creds, proxy);
+			Configuration conf = buildTwitterConfiguration(creds, dbproxy);
 			TwitterFactory tf = new TwitterFactory(conf);
 			this.twitter = tf.getInstance();
 
@@ -149,7 +138,6 @@ public class T4jClient implements IJobExecutor {
 		try {
 			switch (jobType) {
 			case TWIT:
-				Status status = null;
 				StatusUpdate latestStatus = null;
 				if (job.TContent.contains("#helpchildren")) {
 					// Получение id и картинки
@@ -177,7 +165,7 @@ public class T4jClient implements IJobExecutor {
 				} else
 					latestStatus = new StatusUpdate(job.TContent);
 				// Твиттинг
-				status = twitter.updateStatus(latestStatus);
+				Status status = twitter.updateStatus(latestStatus);
 
 				result = true;
 				break;
@@ -232,7 +220,13 @@ public class T4jClient implements IJobExecutor {
 	 * @return
 	 */
 	private Configuration buildTwitterConfiguration(
-			final ElementCredentials creds, final Proxy proxy) {
+			final ElementCredentials creds, final ElementProxy dbproxy) {
+
+		/* Создание прокси - не используется
+		SocketAddress addr = new InetSocketAddress(dbproxy.getIp(), dbproxy.getPort());
+		Proxy proxy = new Proxy(dbproxy.getProxyType() == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
+						: Proxy.Type.SOCKS, addr); */
+	
 		logger.debug("creating twitter configuration");
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
@@ -241,10 +235,12 @@ public class T4jClient implements IJobExecutor {
 				.setOAuthAccessToken(creds.getACCESS_TOKEN())
 				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
 
-		if (this.ip != null)
-			cb.setHttpProxyHost(this.ip);
-		if (this.port != 0)
-			cb.setHttpProxyPort(this.port);
+		String ip = dbproxy.getIp();
+		int port = dbproxy.getPort();
+		if (ip != null)
+			cb.setHttpProxyHost(ip);
+		if (port != 0)
+			cb.setHttpProxyPort(port);
 
 		/*
 		 * if (proxyUser != null) cb.setHttpProxyUser(proxyUser); if
