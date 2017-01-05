@@ -8,16 +8,21 @@ public class ElementCredentials {
 
 	private String ACCESS_TOKEN;
 	private String ACCESS_TOKEN_SECRET;
+	
+	private long user_id;
+	private long id_app;
 
 	public ElementCredentials(String ConsumerKey, String ConsumerSecret,
 			String User, String UserPass, String AccessToken,
-			String AccessTokenSecret) {
+			String AccessTokenSecret, long user_id, long id_app) {
 		this.setCONSUMER_KEY(ConsumerKey);
 		this.setCONSUMER_SECRET(ConsumerSecret);
 		this.setUSER(User);
 		this.setUSER_PASS(UserPass);
 		this.setACCESS_TOKEN(AccessToken);
 		this.setACCESS_TOKEN_SECRET(AccessTokenSecret);
+		this.setUser_id(user_id);
+		this.setId_app(id_app);
 	}
 
 	public String getCONSUMER_KEY() {
@@ -66,6 +71,22 @@ public class ElementCredentials {
 
 	public void setACCESS_TOKEN_SECRET(String aCCESS_TOKEN_SECRET) {
 		ACCESS_TOKEN_SECRET = aCCESS_TOKEN_SECRET;
+	}
+
+	public long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(long user_id) {
+		this.user_id = user_id;
+	}
+
+	public long getId_app() {
+		return id_app;
+	}
+
+	public void setId_app(long id_app) {
+		this.id_app = id_app;
 	}
 
 }

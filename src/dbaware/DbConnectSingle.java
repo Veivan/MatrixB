@@ -81,23 +81,18 @@ public class DbConnectSingle {
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				ConcreteAcc acc = new ConcreteAcc(rs.getLong(1));
+				ConcreteAcc acc = new ConcreteAcc(rs.getLong("user_id"));
 				accounts.add(acc);
 			}
 			pstmt.close();
 			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("getAccounts exception", e);
 			logger.debug("getAccounts exception", e);
 		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.error("getAccounts conn.close exception", e);
-				logger.debug("getAccounts conn.close exception", e);
-			}
-		conn = null;
 		return accounts;
 	}
 
@@ -120,17 +115,13 @@ public class DbConnectSingle {
 			rs.close();
 			sp.close();
 			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("getFreeProxies spProxyFreeSelect exception", e);
 			logger.debug("getFreeProxies spProxyFreeSelect exception", e);
 		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.error("getFreeProxies conn.close exception", e);
-				logger.debug("getFreeProxies conn.close exception", e);
-			}
 		return proxylist;
 	}
 
@@ -147,19 +138,13 @@ public class DbConnectSingle {
 			pstmt.execute();
 			pstmt.close();
 			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("setProxyDead exception", e);
 			logger.debug("setProxyDead exception", e);
-		} finally {
-			if (conn != null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					logger.error("setProxyDead conn.close exception", e);
-					logger.debug("setProxyDead conn.close exception", e);
-				}
-			conn = null;
-		}
+		} 
 	}
 
 	/**
@@ -176,18 +161,13 @@ public class DbConnectSingle {
 			sp.execute();
 			sp.close();
 			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("setProxy4Acc spProxy4AccUpdate exception", e);
 			logger.debug("setProxy4Acc spProxy4AccUpdate exception", e);
-		} finally {
-			if (conn != null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					logger.error("setProxy4Acc conn.close exception", e);
-					logger.debug("setProxy4Acc conn.close exception", e);
-				}
-		}
+		} 
 	}
 
 	/**
@@ -209,18 +189,13 @@ public class DbConnectSingle {
 			rs.close();
 			sp.close();
 			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("getProxy spProxy4AccSelect exception", e);
 			logger.debug("getProxy spProxy4AccSelect exception", e);
-		} finally {
-			if (conn != null)
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					logger.error("getProxy conn.close exception", e);
-					logger.debug("getProxy conn.close exception", e);
-				}
-		}
+		} 
 		return proxy;
 	}
 
@@ -237,24 +212,45 @@ public class DbConnectSingle {
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
 			rs.next();
-			creds = new ElementCredentials(rs.getString(6), rs.getString(7),
-					rs.getString(2), rs.getString(3), rs.getString(4),
-					rs.getString(5));
+			creds = new ElementCredentials(rs.getString("cons_key"), rs.getString("cons_secret"),
+					rs.getString("name"), rs.getString("pass"), rs.getString("token"),
+					rs.getString("token_secret"), rs.getInt("user_id"), rs.getInt("id_app"));
 			rs.close();
 			sp.close();
 			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("getCredentials spCredsSelect exception", e);
 			logger.debug("getCredentials spCredsSelect exception", e);
 		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.error("getCredentials conn.close exception", e);
-				logger.debug("getCredentials conn.close exception", e);
-			}
 		return creds;
+	}
+
+	/**
+	 * Сохраняет токены для указанного аккаунта
+	 */
+	public void SaveToken(long accID, long id_app, String token,
+			String tokenSecret) {
+		try {
+			dbConnect();
+			String query = "INSERT INTO [dbo].[mTokens] ([user_id],[id_app],[token],[token_secret]) VALUES (?,?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setLong(1, accID);
+			pstmt.setLong(2, id_app);
+			pstmt.setString(3, token);
+			pstmt.setString(4, tokenSecret);
+			pstmt.execute();
+			pstmt.close();
+			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("StoreActResult failed", e);
+			logger.debug("StoreActResult failed", e);
+		}
 	}
 
 	/**
@@ -302,25 +298,20 @@ public class DbConnectSingle {
 			sp.setDate(1, moment);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				JobAtom job = new JobAtom(rs.getLong(1), rs.getString(6),
-						rs.getString(4));
+				JobAtom job = new JobAtom(rs.getLong("id_Task"), rs.getString("TypeMean"),
+						rs.getString("TContent"));
 				JobAtomList.add(job);
 			}
 			rs.close();
 			sp.close();
 			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
 		} catch (Exception e) {
 			logger.error("getHomeworks spTasksSelect exception", e);
 			logger.debug("getHomeworks spTasksSelect exception", e);
 		}
-		if (conn != null)
-			try {
-				conn.close();
-			} catch (SQLException e) {
-				logger.error("getHomeworks conn.close exception", e);
-				logger.debug("getHomeworks conn.close exception", e);
-			}
-		conn = null;
 
 		Homeworks newschedule = new Homeworks();
 		MakeHowmworks(newschedule, JobAtomList);
@@ -352,7 +343,6 @@ public class DbConnectSingle {
 			logger.debug("joblist : {} {}", jobList.getType(),
 					jobList.getPriority());
 		}
-
 	}
 
 }

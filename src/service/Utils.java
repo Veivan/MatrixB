@@ -26,7 +26,7 @@ public class Utils {
 					.getProperty("ACCESS_TOKEN_SECRET");
 
 			creds = new ElementCredentials(CONSUMER_KEY, CONSUMER_SECRET, USER,
-					USER_PASS, ACCESS_TOKEN, ACCESS_TOKEN_SECRET);
+					USER_PASS, ACCESS_TOKEN, ACCESS_TOKEN_SECRET, 0, 0);
 		} catch (Exception e) {
 			throw new Exception("ERROR ReaderIni : ", e);
 		}

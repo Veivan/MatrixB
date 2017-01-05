@@ -114,8 +114,9 @@ public class T4jClient implements IJobExecutor {
 					creds.setACCESS_TOKEN(accessToken.getToken());
 					creds.setACCESS_TOKEN_SECRET(accessToken.getTokenSecret());
 
-					// TODO Need save accessToken in DB
 					this.twitter.setOAuthAccessToken(accessToken);
+					dbConnector.SaveToken(this.acc.getAccID(), this.creds.getId_app(),
+							accessToken.getToken(), accessToken.getTokenSecret());
 				} else
 					throw new AuthenticationException(String.format(
 							"AccessToken is null for acc = {}",
