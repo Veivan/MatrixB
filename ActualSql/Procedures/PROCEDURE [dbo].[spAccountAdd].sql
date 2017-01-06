@@ -19,8 +19,9 @@ AS BEGIN
 	SET NOCOUNT ON
 
 	IF @screen_name IS NULL SET @screen_name = @name
+	IF @twitter_id = -1 SET @twitter_id = NULL
 
-	IF (@user_id IS NULL) BEGIN
+	IF (@user_id IS NULL OR @user_id = -1) BEGIN
 		INSERT INTO [dbo].[mAccounts]
 			   ([name]
 			   ,[screen_name]

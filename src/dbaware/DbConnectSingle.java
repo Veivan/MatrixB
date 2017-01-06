@@ -42,6 +42,14 @@ public class DbConnectSingle {
 	// office
 	// "jdbc:sqlserver://014-MSDN;instanceName=SQL12"
 			+ ";databaseName=MatrixB;";
+	
+	/**
+	 * @return the conn
+	 */
+	public Connection getConn() {
+		return conn;
+	}
+
 	private String db_userid = "sa";
 	private String db_password = "123456";
 
@@ -56,7 +64,7 @@ public class DbConnectSingle {
 		return instance;
 	}
 
-	private void dbConnect() throws ClassNotFoundException, SQLException {
+	void dbConnect() throws ClassNotFoundException, SQLException {
 		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		conn = DriverManager.getConnection(db_connect_string, db_userid,
 				db_password);
