@@ -11,8 +11,8 @@ CREATE TABLE [dbo].[DicCountry](
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicGroups](
-	[GroupID] [int] IDENTITY(1,1) NOT NULL,
-	[GroupName] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+	[group_id] [int] IDENTITY(1,1) NOT NULL,
+	[group_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
 ) ON [PRIMARY]
 
 
@@ -81,7 +81,7 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mBelong2](
 	[bg_id] [bigint] IDENTITY(1,1) NOT NULL,
-	[GroupID] [int] NOT NULL,
+	[group_id] [int] NOT NULL,
 	[user_id] [bigint] NOT NULL
 ) ON [PRIMARY]
 
