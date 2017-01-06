@@ -2,17 +2,11 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.SocketAddress;
-
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import model.ElementCredentials;
 import network.OAuthPasswordAuthenticator;
-import service.Constants;
 import service.Utils;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -23,18 +17,8 @@ import twitter4j.conf.ConfigurationBuilder;
 public class testOAuthPasswordAuthenticator {
 	OAuthPasswordAuthenticator auth;
 	ElementCredentials creds;
-	static Proxy proxy;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		String ip = "1.2.3.5";
-		int port = 8080;
-		Constants.ProxyType proxyType = Constants.ProxyType.HTTP;
-		SocketAddress addr = new InetSocketAddress(ip, port);
-		proxy = new Proxy(
-				proxyType == Constants.ProxyType.HTTP ? Proxy.Type.HTTP
-						: Proxy.Type.SOCKS, addr);
-	}
+	String proxyHost = "89.249.253.10";
+	int proxyPort = 80;
 
 	@Before
 	public void setUp() throws Exception {
@@ -46,12 +30,15 @@ public class testOAuthPasswordAuthenticator {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(creds.getCONSUMER_KEY())
 				.setOAuthConsumerSecret(creds.getCONSUMER_SECRET())
-				.setOAuthAccessToken(creds.getACCESS_TOKEN())
-				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
+				.setHttpConnectionTimeout(30000)
+				//.setOAuthAccessToken(creds.getACCESS_TOKEN())
+				//.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET())
+				;
 
-		/*
-		 * if (proxyHost != null) cb.setHttpProxyHost(proxyHost); if (proxyPort
-		 * != null) cb.setHttpProxyPort(Integer.parseInt(proxyPort)); if
+		
+		 if (proxyHost != null) cb.setHttpProxyHost(proxyHost); 
+		 if (proxyPort != 0) cb.setHttpProxyPort(proxyPort); 
+		 /*if
 		 * (proxyUser != null) cb.setHttpProxyUser(proxyUser); if (proxyPassword
 		 * != null) cb.setHttpProxyPassword(proxyPassword); if (raw)
 		 * cb.setJSONStoreEnabled(true);

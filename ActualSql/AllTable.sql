@@ -10,6 +10,14 @@ CREATE TABLE [dbo].[DicCountry](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicGroups](
+	[GroupID] [int] IDENTITY(1,1) NOT NULL,
+	[GroupName] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicProxyType](
 	[prtypeID] [tinyint] IDENTITY(1,1) NOT NULL,
 	[typename] [nchar](10) COLLATE Cyrillic_General_CI_AS NOT NULL
@@ -27,7 +35,7 @@ CREATE TABLE [dbo].[DicTaskType](
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mAccounts](
-	[user_id] [bigint] NOT NULL,
+	[user_id] [bigint] IDENTITY(1,1) NOT NULL,
 	[name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
 	[screen_name] [nvarchar](150) COLLATE Cyrillic_General_CI_AS NOT NULL,
 	[location] [nvarchar](250) COLLATE Cyrillic_General_CI_AS NULL,
@@ -50,7 +58,8 @@ CREATE TABLE [dbo].[mAccounts](
 	[sinsert] [datetime] NULL,
 	[email] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[phone] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
-	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
+	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[twitter_id] [bigint] NULL
 ) ON [PRIMARY]
 
 
@@ -67,6 +76,16 @@ CREATE TABLE [dbo].[mApplications](
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer key' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_key'
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer secret' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_secret'
 EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Application owner' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'user_id'
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mBelong2](
+	[bg_id] [bigint] IDENTITY(1,1) NOT NULL,
+	[GroupID] [int] NOT NULL,
+	[user_id] [bigint] NOT NULL
+) ON [PRIMARY]
+
+EXEC sys.sp_addextendedproperty @name=N'Description', @value=N'Accounts belongs 2 Groups' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mBelong2'
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON

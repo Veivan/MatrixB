@@ -2,7 +2,7 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mAccounts](
-	[user_id] [bigint] NOT NULL,
+	[user_id] [bigint] IDENTITY(1,1) NOT NULL,
 	[name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
 	[screen_name] [nvarchar](150) COLLATE Cyrillic_General_CI_AS NOT NULL,
 	[location] [nvarchar](250) COLLATE Cyrillic_General_CI_AS NULL,
@@ -25,6 +25,7 @@ CREATE TABLE [dbo].[mAccounts](
 	[sinsert] [datetime] NULL,
 	[email] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[phone] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
-	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
+	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[twitter_id] [bigint] NULL
 ) ON [PRIMARY]
 
