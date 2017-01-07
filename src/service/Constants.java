@@ -46,8 +46,8 @@ public final class Constants {
 	public static final int prxchcktimeout = 5000; // время ожидания ответа (в милисекундах)
 
 
-	public static final boolean IsDebugProxy = true;
-	public static final boolean IsDebugCreds = true;
+	public static final boolean IsDebugProxy = false;
+	public static final boolean IsDebugCreds = false;
 
 	private Constants() {
 	} // make clacc abstract

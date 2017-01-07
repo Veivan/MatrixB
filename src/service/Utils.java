@@ -34,7 +34,7 @@ public class Utils {
 	}
 
 	/**
-	 * Чтение содержимого страницы 
+	 * Чтение содержимого страницы
 	 * 
 	 * @return String
 	 */
@@ -57,4 +57,8 @@ public class Utils {
 		}
 	}
 
+	public static boolean empty(final String s) {
+		// Null-safe, short-circuit evaluation.
+		return s == null || s.trim().isEmpty();
+	}
 }

@@ -6,7 +6,17 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import jobs.JobAtom;
+import network.ProxyGetter;
+import network.T4jClient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import main.ConcreteAcc;
 import model.AccIdent;
+import model.ElementProxy;
+import model.MatrixAct;
 import dbaware.DbConnect4ImportAccsSingle;
 
 /**
@@ -18,6 +28,8 @@ public class AccImporter  extends Thread{
 	private String email;
 	private String pass;    
 	private String name; 
+
+	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
 
 	public AccImporter(String data)
 	{
@@ -33,6 +45,19 @@ public class AccImporter  extends Thread{
 	public void run() {
 		long user_id = SaveAcc();
 		System.out.println (user_id); 
+		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
+		if (dbproxy == null) {
+			logger.error("AccImporter cant get proxy");
+			logger.debug("AccImporter cant get proxy");
+		}
+		else {
+			JobAtom job = new JobAtom(5L, "TWIT", "Hello!");
+			ConcreteAcc acc = new ConcreteAcc(user_id);
+			MatrixAct theact = new MatrixAct(job, acc);
+			T4jClient t4wclient = new T4jClient(theact, dbproxy); 
+			t4wclient.Execute();
+		}
+
 	}
 
 	private long SaveAcc() {

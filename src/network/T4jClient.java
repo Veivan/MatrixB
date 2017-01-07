@@ -92,10 +92,10 @@ public class T4jClient implements IJobExecutor {
 						"Cannot get credentials for acc = {}",
 						this.acc.getAccID()));
 
-			if (this.creds.getCONSUMER_KEY().isEmpty()
-					|| this.creds.getCONSUMER_SECRET().isEmpty()
-					|| this.creds.getUSER().isEmpty()
-					|| this.creds.getUSER_PASS().isEmpty())
+			if (Utils.empty(this.creds.getCONSUMER_KEY())
+					|| Utils.empty(this.creds.getCONSUMER_SECRET())
+					|| Utils.empty(this.creds.getUSER())
+					|| Utils.empty(this.creds.getUSER_PASS()))
 				throw new AuthenticationException(String.format(
 						"Empty incoming credentials for acc = {}",
 						this.acc.getAccID()));
@@ -105,18 +105,30 @@ public class T4jClient implements IJobExecutor {
 			TwitterFactory tf = new TwitterFactory(conf);
 			this.twitter = tf.getInstance();
 
-			if (this.creds.getACCESS_TOKEN().isEmpty()
-					&& this.creds.getACCESS_TOKEN_SECRET().isEmpty()) {
+			if (Utils.empty(this.creds.getACCESS_TOKEN())
+					&& Utils.empty(this.creds.getACCESS_TOKEN_SECRET())) {
 				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
 						this.twitter, this.creds);
-				AccessToken accessToken = auth.getOAuthAccessTokenSilent();
+				AccessToken accessToken = null;
+				for (int i = 0; i < 3; i++) {
+					try {
+						accessToken = auth.getOAuthAccessTokenSilent();
+						if (accessToken != null) break;						
+					} catch (Exception e) {
+						String msg = String.format(
+								"Get accessToken shot %d ERROR : ", i);
+						logger.error(msg, e);
+					}
+				}
+
 				if (accessToken != null) {
 					creds.setACCESS_TOKEN(accessToken.getToken());
 					creds.setACCESS_TOKEN_SECRET(accessToken.getTokenSecret());
 
 					this.twitter.setOAuthAccessToken(accessToken);
-					dbConnector.SaveToken(this.acc.getAccID(), this.creds.getId_app(),
-							accessToken.getToken(), accessToken.getTokenSecret());
+					dbConnector.SaveToken(this.acc.getAccID(),
+							this.creds.getId_app(), accessToken.getToken(),
+							accessToken.getTokenSecret());
 				} else
 					throw new AuthenticationException(String.format(
 							"AccessToken is null for acc = {}",
@@ -156,8 +168,11 @@ public class T4jClient implements IJobExecutor {
 					InputStream is = new ByteArrayInputStream(decodedBytes);
 					String fileName = Integer.toString(id) + ".jpg";
 
-					String message = String.format("%s %s. Вы можете помочь.%n", pname, ppage)
-							+ "http://helpchildren.online/?id=" + id + " "
+					String message = String.format(
+							"%s %s. Вы можете помочь.%n", pname, ppage)
+							+ "http://helpchildren.online/?id="
+							+ id
+							+ " "
 							+ job.TContent; // + #подарижизнь
 					latestStatus = new StatusUpdate(message);
 					// Загрузка картинки в твиттер
@@ -222,12 +237,6 @@ public class T4jClient implements IJobExecutor {
 	 */
 	private Configuration buildTwitterConfiguration(
 			final ElementCredentials creds, final ElementProxy dbproxy) {
-
-		/* Создание прокси - не используется
-		SocketAddress addr = new InetSocketAddress(dbproxy.getIp(), dbproxy.getPort());
-		Proxy proxy = new Proxy(dbproxy.getProxyType() == Constants.ProxyType.HTTPS ? Proxy.Type.HTTP
-						: Proxy.Type.SOCKS, addr); */
-	
 		logger.debug("creating twitter configuration");
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 
