@@ -63,9 +63,9 @@ public class OAuthPasswordAuthenticator {
 					.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
 			final String oauth_token = requestToken.getToken();
 
-			System.out.println("Got request token.");
-			System.out.println("Request token: " + oauth_token);
-			System.out.println("Request token secret: "
+			logger.debug("Got request token.");
+			logger.debug("Request token: " + oauth_token);
+			logger.debug("Request token secret: "
 					+ requestToken.getTokenSecret());
 
 			// make sure cookies is turn on
@@ -79,7 +79,7 @@ public class OAuthPasswordAuthenticator {
 						"Cannot get authenticity_token.");
 
 			final Configuration conf = twitter.getConfiguration();
-			System.out.println("OAuthAuthorizationURL : "
+			logger.debug("OAuthAuthorizationURL : "
 					+ conf.getOAuthAuthorizationURL());
 
 			List<NameValuePair> paramList = new ArrayList<NameValuePair>();
@@ -104,9 +104,9 @@ public class OAuthPasswordAuthenticator {
 			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken,
 					oauth_verifier);
 
-			System.out.println("Got access token.");
-			System.out.println("Access token: " + accessToken.getToken());
-			System.out.println("Access token secret: "
+			logger.debug("Got access token.");
+			logger.debug("Access token: " + accessToken.getToken());
+			logger.debug("Access token secret: "
 					+ accessToken.getTokenSecret());
 
 			return accessToken;
@@ -127,8 +127,8 @@ public class OAuthPasswordAuthenticator {
 		HttpResponse response = client.execute(request);
 		int responseCode = response.getStatusLine().getStatusCode();
 
-		System.out.println("\nSending 'GET' request to URL : " + url);
-		System.out.println("Response Code : " + responseCode);
+		logger.debug("\nSending 'GET' request to URL : " + url);
+		logger.debug("Response Code : " + responseCode);
 
 		// set cookies
 		setCookies(response.getFirstHeader("set-cookie") == null ? ""
@@ -161,9 +161,9 @@ public class OAuthPasswordAuthenticator {
 		response = client.execute(post);
 		int responseCode = response.getStatusLine().getStatusCode();
 
-		System.out.println("\nSending 'POST' request to URL : " + url);
-		System.out.println("Post parameters : " + postParams);
-		System.out.println("Response Code : " + responseCode);
+		logger.debug("\nSending 'POST' request to URL : " + url);
+		logger.debug("Post parameters : " + postParams);
+		logger.debug("Response Code : " + responseCode);
 
 		result = ReadStream(response.getEntity().getContent());
 		return result;
@@ -202,7 +202,7 @@ public class OAuthPasswordAuthenticator {
 
 	private static String readAuthenticityToken(String html)
 			throws Exception {
-		System.out.println("Extracting authenticity_token...");
+		logger.debug("Extracting authenticity_token...");
 		Document doc = Jsoup.parse(html);
 		String result = "";
 		// Login form id
@@ -230,7 +230,7 @@ public class OAuthPasswordAuthenticator {
 					Pattern.CASE_INSENSITIVE);
 			Matcher m = pattern.matcher(content);
 			result = m.matches() ? m.group(1) : null;
-			System.out.println(result);
+			logger.debug(result);
 			return result;
 		} catch (Exception e) {
 			return null;

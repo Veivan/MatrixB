@@ -134,8 +134,6 @@ public class T4jClient implements IJobExecutor {
 							"AccessToken is null for acc = {}",
 							this.acc.getAccID()));
 			}
-		} catch (AuthenticationException e) {
-			return false;
 		} catch (Exception e) {
 			logger.error("ERROR : ", e);
 			logger.debug("ERROR : ", e);

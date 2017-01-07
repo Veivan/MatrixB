@@ -3,30 +3,40 @@ package tests;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class testDates {
 
 	public static void main(String[] args) throws ParseException {
+
+		Logger logger = LoggerFactory.getLogger(testDates.class);
+
+		logger.info("start");
+
 		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		dfm.setTimeZone(TimeZone.getTimeZone("GMT+3"));// Specify your timezone
 
 		String time = "2016-10-20 ";
 
-		//System.out.printf("%s", System.currentTimeMillis() / 1000);
+		logger.error(String.format("%s", System.currentTimeMillis() / 1000));
+		String input = "10:30";
+		long unixtime = dfm.parse(time + input + ":00").getTime();
+		logger.debug(String.format("%s - %s \n", dfm.format(unixtime), unixtime));
+		logger.info("finish");
 
-		while (true) {
+/*		while (true) {
 			System.out.print("Enter something:");
 			String input = System.console().readLine();
+			
 
 			long unixtime = dfm.parse(time + input + ":00").getTime();
 
-			System.out.printf("%s - %s \n", dfm.format(unixtime), unixtime);
-		}
+			logger.debug(String.format("%s - %s \n", dfm.format(unixtime), unixtime));
+		} */
 		
 		/*
 		 * GregorianCalendar calendar = new GregorianCalendar(1975,

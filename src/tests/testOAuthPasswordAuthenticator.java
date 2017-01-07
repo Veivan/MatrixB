@@ -17,7 +17,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class testOAuthPasswordAuthenticator {
 	OAuthPasswordAuthenticator auth;
 	ElementCredentials creds;
-	String proxyHost = "89.249.253.10";
+	String proxyHost = "194.171.38.134";
 	int proxyPort = 80;
 
 	@Before

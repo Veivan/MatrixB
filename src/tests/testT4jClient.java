@@ -22,9 +22,9 @@ public class testT4jClient {
 
 	@Before
 	public void setUp() throws Exception {
-		JobAtom job = new JobAtom(5L, "TWIT", "#helpchildren");
+		JobAtom job = new JobAtom(5L, "TWIT", "Hello!");
 
-		ConcreteAcc acc = new ConcreteAcc(1L);
+		ConcreteAcc acc = new ConcreteAcc(20L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//t4wclient = new T4jClient(theact, new ElementProxy("103.59.57.218", 45554, Constants.ProxyType.SOCKS));
