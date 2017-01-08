@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[mProxies](
 	[port] [int] NOT NULL,
 	[prtypeID] [tinyint] NOT NULL,
 	[id_cn] [int] NOT NULL,
-	[alive] [bit] NOT NULL
+	[alive] [bit] NOT NULL,
+	[blocked] [bit] NULL
 ) ON [PRIMARY]
 

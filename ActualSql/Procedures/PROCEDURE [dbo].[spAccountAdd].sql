@@ -21,7 +21,11 @@ AS BEGIN
 	IF @screen_name IS NULL SET @screen_name = @name
 	IF @twitter_id = -1 SET @twitter_id = NULL
 
-	IF (@user_id IS NULL OR @user_id = -1) BEGIN
+	IF (@user_id = -1) 
+		SELECT @user_id = [user_id] FROM [dbo].[mAccounts]
+		WHERE [name] = @name AND [email] = @email AND [pass] = @pass
+
+	IF (@user_id IS NULL) BEGIN
 		INSERT INTO [dbo].[mAccounts]
 			   ([name]
 			   ,[screen_name]

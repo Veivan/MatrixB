@@ -43,6 +43,10 @@ public class ProxyGetter {
 			
 			// Refresh proxy 4 account
 			dbConnector.setProxy4Acc(AccID, accproxy);			
+			// Unblock temporary blocked proxies
+			for (ElementProxy proxy : proxylist) {
+				dbConnector.setProxyIsBlocked(proxy.getProxyID(), false);
+			}
 		}
 		
 		return accproxy;		

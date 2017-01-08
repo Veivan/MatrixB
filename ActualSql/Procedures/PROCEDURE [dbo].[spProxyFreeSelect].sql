@@ -9,6 +9,10 @@ GO
 ALTER PROCEDURE [dbo].[spProxyFreeSelect]
 AS BEGIN
 	SET NOCOUNT ON;
+	CREATE TABLE #tmp([acprID] BIGINT, [user_id] BIGINT, [ProxyID] BIGINT, 
+		[ip] NVARCHAR(50), [port] INT, [prtypeID] TINYINT, [typename] NVARCHAR(50))
+
+	INSERT INTO #tmp([acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename])
 	SELECT TOP 5
 		PA.[acprID]
 		,PA.[user_id]
@@ -22,6 +26,14 @@ AS BEGIN
 		JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
 	WHERE 
 		P.[alive] = 1
+		AND ISNULL(P.[blocked], 0) <> 1
 		AND PA.[acprID] IS NULL
+
+	UPDATE P
+			SET P.[blocked] = 1
+	FROM [dbo].[mProxies] P
+		INNER JOIN #tmp T ON T.[ProxyID] = P.[ProxyID]
+	
+	SELECT [acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename] FROM #tmp
 END
 GO

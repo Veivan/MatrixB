@@ -134,7 +134,7 @@ public class DbConnectSingle {
 	}
 
 	/**
-	 * Set proxy is "alive" = false
+	 * Set proxy "alive" 
 	 */
 	public void setProxyIsAlive(long ProxyID, boolean IsAlive) {
 		try {
@@ -150,8 +150,30 @@ public class DbConnectSingle {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("setProxyDead exception", e);
-			logger.debug("setProxyDead exception", e);
+			logger.error("setProxyIsAlive exception", e);
+			logger.debug("setProxyIsAlive exception", e);
+		} 
+	}
+
+	/**
+	 * Set proxy "blocked" 
+	 */
+	public void setProxyIsBlocked(long ProxyID, boolean Isblocked) {
+		try {
+			dbConnect();
+			String query = "UPDATE [dbo].[mProxies] SET [blocked] = ? WHERE [ProxyID] = ?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, Isblocked ? 1 : 0);
+			pstmt.setLong(2, ProxyID);
+			pstmt.execute();
+			pstmt.close();
+			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("setProxyIsBlocked exception", e);
+			logger.debug("setProxyIsBlocked exception", e);
 		} 
 	}
 

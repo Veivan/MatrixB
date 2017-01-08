@@ -21,7 +21,11 @@ AS BEGIN
 	IF @screen_name IS NULL SET @screen_name = @name
 	IF @twitter_id = -1 SET @twitter_id = NULL
 
-	IF (@user_id IS NULL OR @user_id = -1) BEGIN
+	IF (@user_id = -1) 
+		SELECT @user_id = [user_id] FROM [dbo].[mAccounts]
+		WHERE [name] = @name AND [email] = @email AND [pass] = @pass
+
+	IF (@user_id IS NULL) BEGIN
 		INSERT INTO [dbo].[mAccounts]
 			   ([name]
 			   ,[screen_name]
@@ -175,6 +179,10 @@ GO
 ALTER PROCEDURE [dbo].[spProxyFreeSelect]
 AS BEGIN
 	SET NOCOUNT ON;
+	CREATE TABLE #tmp([acprID] BIGINT, [user_id] BIGINT, [ProxyID] BIGINT, 
+		[ip] NVARCHAR(50), [port] INT, [prtypeID] TINYINT, [typename] NVARCHAR(50))
+
+	INSERT INTO #tmp([acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename])
 	SELECT TOP 5
 		PA.[acprID]
 		,PA.[user_id]
@@ -188,7 +196,42 @@ AS BEGIN
 		JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
 	WHERE 
 		P.[alive] = 1
+		AND ISNULL(P.[blocked], 0) <> 1
 		AND PA.[acprID] IS NULL
+
+	UPDATE P
+			SET P.[blocked] = 1
+	FROM [dbo].[mProxies] P
+		INNER JOIN #tmp T ON T.[ProxyID] = P.[ProxyID]
+	
+	SELECT [acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename] FROM #tmp
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- ================================================
+-- Author:	Vetrov
+-- Description:	Saving proxies 2 DB
+-- ================================================
+ALTER PROCEDURE [dbo].[spSaveProxy]
+	@ip NVARCHAR(50)
+	,@port INT 
+	,@prtypeID INT 
+	,@id_cn INT 
+	,@alive INT 
+AS BEGIN
+	SET NOCOUNT ON;
+		MERGE [dbo].[mProxies] P
+		USING (SELECT [ip] = @ip, [port] = @port) I 
+			ON P.[ip] = I.[ip] AND P.[port] = I.[port]
+		WHEN NOT MATCHED BY TARGET THEN INSERT
+			([ip], [port], [prtypeID], [id_cn], [alive])
+		VALUES
+			(@ip, @port, @prtypeID, @id_cn, @alive)
+		;
 END
 GO
 

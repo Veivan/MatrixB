@@ -124,6 +124,8 @@ public class T4jClient implements IJobExecutor {
 						} catch (ProxyException e) {
 							logger.error(msg, e);
 
+							dbConnector.setProxyIsAlive(dbproxy.getProxyID(), false);
+							
 							// Getting twitter with another proxy
 							dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
 							if (dbproxy == null) {
