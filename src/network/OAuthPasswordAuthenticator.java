@@ -34,6 +34,7 @@ import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import model.ElementCredentials;
 import service.CustExeptions.AuthenticationException;
+import service.CustExeptions.ProxyException;
 import service.Constants;
 
 public class OAuthPasswordAuthenticator {
@@ -58,9 +59,14 @@ public class OAuthPasswordAuthenticator {
 	 * @return
 	 */
 	public AccessToken getOAuthAccessTokenSilent() throws Exception {
+		RequestToken requestToken = null;
 		try {
-			final RequestToken requestToken = twitter
+			requestToken = twitter
 					.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
+		} catch (Exception e) {
+			throw new ProxyException(e);
+		}
+		try {
 			final String oauth_token = requestToken.getToken();
 
 			logger.debug("Got request token.");
@@ -230,7 +236,7 @@ public class OAuthPasswordAuthenticator {
 					Pattern.CASE_INSENSITIVE);
 			Matcher m = pattern.matcher(content);
 			result = m.matches() ? m.group(1) : null;
-			logger.debug(result);
+			//logger.debug(result);
 			return result;
 		} catch (Exception e) {
 			return null;

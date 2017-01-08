@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnectSingle;
 import service.CustExeptions.AuthenticationException;
+import service.CustExeptions.ProxyException;
 import service.Constants;
 import service.Utils;
 import twitter4j.Status;
@@ -107,18 +108,42 @@ public class T4jClient implements IJobExecutor {
 
 			if (Utils.empty(this.creds.getACCESS_TOKEN())
 					&& Utils.empty(this.creds.getACCESS_TOKEN_SECRET())) {
+
+				AccessToken accessToken = null;
 				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
 						this.twitter, this.creds);
-				AccessToken accessToken = null;
-				for (int i = 0; i < 3; i++) {
-					try {
-						accessToken = auth.getOAuthAccessTokenSilent();
-						if (accessToken != null) break;						
-					} catch (Exception e) {
-						String msg = String.format(
-								"Get accessToken shot %d ERROR : ", i);
-						logger.error(msg, e);
+				for (int j = 0; j < Constants.cTryProxyCount; j++) {
+					for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
+						String msg = String
+								.format("Get accessToken shot %d with proxy %d ERROR : ",
+										i, j);
+						try {
+							accessToken = auth.getOAuthAccessTokenSilent();
+							if (accessToken != null)
+								break;
+						} catch (ProxyException e) {
+							logger.error(msg, e);
+
+							// Getting twitter with another proxy
+							dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
+							if (dbproxy == null) {
+								throw new AuthenticationException(
+										String.format(
+												" cant get proxy for acc = {}",
+												this.acc.getAccID()));
+							} else {
+								// Creating twitter
+								conf = buildTwitterConfiguration(creds, dbproxy);
+								tf = new TwitterFactory(conf);
+								this.twitter = tf.getInstance();
+							}
+							break;
+						} catch (Exception e) {
+							logger.error(msg, e);
+						}
 					}
+					if (accessToken != null)
+						break;
 				}
 
 				if (accessToken != null) {

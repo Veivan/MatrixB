@@ -28,4 +28,19 @@ public class CustExeptions {
 		}
 	}
 
+	public static class ProxyException extends IOException {
+		private static final long serialVersionUID = -3327581775717381785L;
+		private final String ident = "ProxyException : ";
+		static Logger logger = LoggerFactory.getLogger(ProxyException.class);
+
+		ProxyException() {
+		}
+
+		public ProxyException(final Exception cause) {
+			super(cause);
+			logger.error(ident + cause.getMessage());
+			logger.debug(ident + cause.getMessage());
+		}
+	}
+
 }

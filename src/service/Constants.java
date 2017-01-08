@@ -21,6 +21,11 @@ public final class Constants {
 	}
 
 	public static DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	// Число попыток смены прокси при авторизации
+	public static int cTryProxyCount = 3;
+	// Число попыток авторизации с одним прокси
+	public static int cTrySameProxyCount = 3;
 
 	public enum ProxyType {
 		HTTP, SOCKS

@@ -15,6 +15,9 @@ import dbaware.DbConnectSingle;
 
 public class ProxyGetter {
 	
+	/**
+	 * Первичное получение прокси для акка из БД
+	 */
 	public static ElementProxy getProxy(long AccID)
 	{
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
@@ -41,6 +44,34 @@ public class ProxyGetter {
 			// Refresh proxy 4 account
 			dbConnector.setProxy4Acc(AccID, accproxy);			
 		}
+		
+		return accproxy;		
+	}
+
+	/**
+	 * Получение другого прокси для акка из БД, в случае если использование существующего приводит к ошибке
+	 */
+	public static ElementProxy getAnotherProxy(long AccID)
+	{
+		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
+		// Баним старый прокси
+		if (accproxy != null) {
+			dbConnector.setProxyIsAlive(accproxy.getProxyID(), false);
+			accproxy = null;
+		}
+		// Ищем другой свободный прокси
+		List<ElementProxy> proxylist = dbConnector.getFreeProxies();
+		for (ElementProxy proxy : proxylist) {
+			if (CheckProxy(proxy)) {
+				accproxy = proxy;
+				break;
+			} else
+				dbConnector.setProxyIsAlive(proxy.getProxyID(), false);
+		}
+
+		// Refresh proxy 4 account
+		dbConnector.setProxy4Acc(AccID, accproxy);
 		
 		return accproxy;		
 	}
