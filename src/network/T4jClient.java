@@ -1,7 +1,6 @@
 package network;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
@@ -10,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnectSingle;
+import service.CustExeptions.AuthenticationException;
 import service.Constants;
 import service.Utils;
 import twitter4j.Status;
@@ -260,23 +260,4 @@ public class T4jClient implements IJobExecutor {
 		return cb.build();
 	}
 
-	public static class AuthenticationException extends IOException {
-		private static final long serialVersionUID = -104987171972968260L;
-		private final String ident = "AuthenticationException : ";
-
-		AuthenticationException() {
-		}
-
-		AuthenticationException(final Exception cause) {
-			super(cause);
-			logger.error(ident + cause.getMessage());
-			logger.debug(ident + cause.getMessage());
-		}
-
-		AuthenticationException(final String message) {
-			super(message);
-			logger.error(ident + message);
-			logger.debug(ident + message);
-		}
-	}
 }

@@ -33,7 +33,7 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import model.ElementCredentials;
-import network.T4jClient.AuthenticationException;
+import service.CustExeptions.AuthenticationException;
 import service.Constants;
 
 public class OAuthPasswordAuthenticator {
