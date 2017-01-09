@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
+import service.Utils;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
@@ -27,21 +28,27 @@ import model.MatrixAct;
 public class DbConnectSingle {
 	private static volatile DbConnectSingle instance;
 
-	static Logger logger = LoggerFactory.getLogger(DbConnectSingle.class);
-
-	private DbConnectSingle() {
-	}
-
 	private Connection conn = null;
-	private String db_connect_string =
-	// local
+	private String db_connect_string = ";databaseName=MatrixB;";
+	/*/ local
 	"jdbc:sqlserver://KONSTANTIN-PC;instanceName=SQLEXPRESS14"
 	// "jdbc:sqlserver://WIN-2TFLS2PJ38K;instanceName=MSSQL2008R2"
 	// AWS
 	// "jdbc:sqlserver://WIN-2B897RSG769;instanceName=SQLEXPRESS2014"
 	// office
 	// "jdbc:sqlserver://014-MSDN;instanceName=SQL12"
-			+ ";databaseName=MatrixB;";
+			+ ";databaseName=MatrixB;"; */
+
+	static Logger logger = LoggerFactory.getLogger(DbConnectSingle.class);
+
+	private DbConnectSingle() {
+		try {
+			this.db_connect_string = Utils.ReadConnStrINI() + this.db_connect_string;
+		} catch (Exception e) {
+			logger.error("DbConnectSingle exception", e);
+			logger.debug("DbConnectSingle exception", e);
+		}
+	}
 	
 	/**
 	 * @return the conn

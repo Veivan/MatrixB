@@ -9,6 +9,3 @@ CREATE TABLE [dbo].[mApplications](
 	[appname] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
 ) ON [PRIMARY]
 
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer key' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_key'
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Consumer secret' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'cons_secret'
-EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Application owner' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mApplications', @level2type=N'COLUMN',@level2name=N'user_id'

@@ -14,7 +14,8 @@ ALTER PROCEDURE [dbo].[spAccountAdd]
 	@phone NVARCHAR(50),  
 	@pass NVARCHAR(50),  
 	@twitter_id BIGINT,
-	@group_id INT
+	@group_id INT,
+	@mailpass NVARCHAR(50) 
 AS BEGIN
 	SET NOCOUNT ON
 
@@ -33,9 +34,10 @@ AS BEGIN
 			   ,[phone]
 			   ,[pass]
 			   ,[twitter_id]
+			   ,[mailpass]
 			   ,[finsert])
 		 VALUES
-			   (@name, @screen_name, @email, @phone, @pass, @twitter_id, GETDATE())
+			   (@name, @screen_name, @email, @phone, @pass, @twitter_id, @mailpass, GETDATE())
 		SET @user_id = @@IDENTITY
 	END
 	ELSE 
@@ -46,6 +48,7 @@ AS BEGIN
 			  ,[phone] = @phone
 			  ,[pass] = @pass
 			  ,[twitter_id] = @twitter_id
+			  ,[mailpass] = @mailpass
 		 WHERE [user_id] = @user_id
 
 	MERGE [dbo].[mBelong2] B

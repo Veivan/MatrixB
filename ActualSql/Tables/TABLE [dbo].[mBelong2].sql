@@ -7,4 +7,3 @@ CREATE TABLE [dbo].[mBelong2](
 	[user_id] [bigint] NOT NULL
 ) ON [PRIMARY]
 
-EXEC sys.sp_addextendedproperty @name=N'Description', @value=N'Accounts belongs 2 Groups' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mBelong2'

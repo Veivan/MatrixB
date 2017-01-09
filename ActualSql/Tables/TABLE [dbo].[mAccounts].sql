@@ -12,20 +12,21 @@ CREATE TABLE [dbo].[mAccounts](
 	[statuses_count] [int] NULL,
 	[url] [nvarchar](250) COLLATE Cyrillic_General_CI_AS NULL,
 	[description] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
-	[created_at] [datetimeoffset](4) NULL,
+	[created_at] [sql_variant] NULL,
 	[utc_offset] [int] NULL,
 	[time_zone] [nvarchar](150) COLLATE Cyrillic_General_CI_AS NULL,
 	[lang_id] [int] NULL,
 	[geo_enabled] [bit] NULL,
-	[lasttweet_at] [datetime] NULL,
+	[lasttweet_at] [smalldatetime] NULL,
 	[default_profile] [bit] NULL,
 	[default_profile_image] [bit] NULL,
 	[verified] [bit] NULL,
-	[finsert] [datetime] NULL,
-	[sinsert] [datetime] NULL,
+	[finsert] [smalldatetime] NULL,
+	[sinsert] [smalldatetime] NULL,
 	[email] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[phone] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
-	[twitter_id] [bigint] NULL
+	[twitter_id] [bigint] NULL,
+	[mailpass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
 ) ON [PRIMARY]
 

@@ -8,6 +8,8 @@ public class AccIdent {
 	private String email;
 	private String pass;    
 	private String name; 
+	private String phone;
+	private String mailpass;
 
 	public AccIdent(long user_id, String email, String pass, String name) {
 		super();
@@ -15,6 +17,16 @@ public class AccIdent {
 		this.email = email;
 		this.pass = pass;
 		this.name = name;
+	}
+	
+	public AccIdent(long user_id, String email, String pass, String name, String phone, String mailpass) {
+		super();
+		this.user_id = user_id;
+		this.email = email;
+		this.pass = pass;
+		this.name = name;
+		this.phone = phone;
+		this.mailpass = mailpass;
 	}
 	
 	/**
@@ -45,4 +57,17 @@ public class AccIdent {
 		return name;
 	}
 
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * @return the email pass
+	 */
+	public String getMailpass() {
+		return mailpass;
+	}
 }

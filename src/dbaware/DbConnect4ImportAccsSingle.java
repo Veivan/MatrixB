@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 
 import model.AccIdent;
-import model.ElementProxy;
 
 /**
  * Использует композицию - включает DbConnectSingle.
@@ -27,7 +26,7 @@ public class DbConnect4ImportAccsSingle {
 		try {
 			dbConnector.dbConnect();
 			conn = dbConnector.getConn();
-			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?)}";
+			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.registerOutParameter(1, java.sql.Types.BIGINT);
 
@@ -35,10 +34,11 @@ public class DbConnect4ImportAccsSingle {
 			sp.setString(2, acc.getName());
 			sp.setString(3, null);
 			sp.setString(4, acc.getEmail());
-			sp.setString(5, null);
+			sp.setString(5, acc.getPhone());
 			sp.setString(6, acc.getPass());
 			sp.setLong(7, -1);
 			sp.setInt(8, group_id);
+			sp.setString(9, acc.getMailpass());
 				
 			sp.executeUpdate();
 			user_id = sp.getLong(1);

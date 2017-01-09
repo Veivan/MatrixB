@@ -11,12 +11,13 @@ import java.util.Properties;
 import model.ElementCredentials;
 
 public class Utils {
-
+	private final static String inifile = "matrixb.ini";
+	
 	public static ElementCredentials ReadINI() throws Exception {
 		ElementCredentials creds;
 		Properties props = new Properties();
 		try {
-			props.load(new FileInputStream(new File("example.ini")));
+			props.load(new FileInputStream(new File(inifile)));
 			String CONSUMER_KEY = props.getProperty("CONSUMER_KEY");
 			String CONSUMER_SECRET = props.getProperty("CONSUMER_SECRET");
 			String USER = props.getProperty("USER");
@@ -31,6 +32,18 @@ public class Utils {
 			throw new Exception("ERROR ReaderIni : ", e);
 		}
 		return creds;
+	}
+
+	public static String ReadConnStrINI() throws Exception {
+		String connstring = null;
+		Properties props = new Properties();
+		try {
+			props.load(new FileInputStream(new File(inifile)));
+			connstring = props.getProperty("CONNECT_STRING");
+		} catch (Exception e) {
+			throw new Exception("ERROR ReaderIni : ", e);
+		}
+		return connstring;
 	}
 
 	/**

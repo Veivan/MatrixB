@@ -59,6 +59,7 @@ public class ProxyGetter {
 	{
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
+		accproxy = dbConnector.getProxy4Acc(AccID);
 		// Баним старый прокси
 		if (accproxy != null) {
 			dbConnector.setProxyIsAlive(accproxy.getProxyID(), false);
