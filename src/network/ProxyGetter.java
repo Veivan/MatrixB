@@ -9,12 +9,17 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import service.Constants;
 import model.ElementProxy;
 import dbaware.DbConnectSingle;
 
 public class ProxyGetter {
 	
+	static Logger logger = LoggerFactory.getLogger(ProxyGetter.class);
+
 	/**
 	 * Первичное получение прокси для акка из БД
 	 */
@@ -48,6 +53,7 @@ public class ProxyGetter {
 				dbConnector.setProxyIsBlocked(proxy.getProxyID(), false);
 			}
 		}
+		logger.info("Selected Proxy : " + accproxy == null ? " - " : accproxy.getIp());
 		
 		return accproxy;		
 	}
@@ -84,6 +90,8 @@ public class ProxyGetter {
 	private static boolean CheckProxy(ElementProxy proxy) {
 		if (proxy == null) return false;
 		
+		logger.info("CheckProxy : " + proxy.getIp());
+
 		String pHost = proxy.getIp();
 		int pPort = proxy.getPort();
 		SocketAddress addr = new InetSocketAddress(pHost, pPort);
@@ -99,11 +107,13 @@ public class ProxyGetter {
 			urlConn.connect();
 			return (urlConn.getResponseCode() == 200);
 		} catch (SocketException e) {
+			logger.error("CheckProxy SocketException : ", e);
 			return false;
 		} catch (SocketTimeoutException e) {
+			logger.error("CheckProxy SocketTimeoutException : ", e);
 			return false;
 		} catch (Exception e) {
-			System.out.print("Error: " + e);
+			logger.error("CheckProxy Exception : ", e);
 			return false;
 		}
 	}

@@ -22,9 +22,11 @@ AS BEGIN
 	IF @screen_name IS NULL SET @screen_name = @name
 	IF @twitter_id = -1 SET @twitter_id = NULL
 
-	IF (@user_id = -1) 
+	IF (@user_id = -1) BEGIN
+		SET @user_id = NULL
 		SELECT @user_id = [user_id] FROM [dbo].[mAccounts]
 		WHERE [name] = @name AND [email] = @email AND [pass] = @pass
+	END
 
 	IF (@user_id IS NULL) BEGIN
 		INSERT INTO [dbo].[mAccounts]
@@ -59,6 +61,5 @@ AS BEGIN
 	VALUES
 		(@group_id, @user_id)
 	;	
-	
 END
 GO

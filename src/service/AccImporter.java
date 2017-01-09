@@ -68,7 +68,7 @@ public class AccImporter extends Thread {
 	}
 
 	private long SaveAcc() {
-		int group_id = 1;
+		int group_id = 2;
 		long user_id = -1;
 		AccIdent acc;
 		if (this.Datatype == 3)
