@@ -105,7 +105,8 @@ public class ProxyGetter {
 			urlConn = (HttpURLConnection) url.openConnection(httpProxy);
 			urlConn.setConnectTimeout(Constants.prxchcktimeout);
 			urlConn.connect();
-			return (urlConn.getResponseCode() == 200);
+			int resp = urlConn.getResponseCode();
+			return (resp == 200);
 		} catch (SocketException e) {
 			logger.error("CheckProxy SocketException : ", e);
 			return false;

@@ -47,8 +47,9 @@ public final class Constants {
 	//public static final String URL_RANDOM_SERVLET = "http://helpchildren.online/getrandomid";
 	
 	// Константы для проверки прокси
-	public static final String testLink = "http://google.ru";
-	public static final int prxchcktimeout = 5000; // время ожидания ответа (в милисекундах)
+	//public static final String testLink = "http://google.ru";
+	public static final String testLink = "https://twitter.com";
+	public static final int prxchcktimeout = 30000; // время ожидания ответа (в милисекундах)
 
 
 	public static final boolean IsDebugProxy = false;
