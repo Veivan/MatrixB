@@ -53,7 +53,7 @@ public class ProxyGetter {
 				dbConnector.setProxyIsBlocked(proxy.getProxyID(), false);
 			}
 		}
-		logger.info("Selected Proxy : " + accproxy == null ? " - " : accproxy.getIp());
+		logger.info("Selected Proxy : " + (accproxy == null ? " - " : accproxy.getIp()));
 		
 		return accproxy;		
 	}
