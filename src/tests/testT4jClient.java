@@ -19,7 +19,14 @@ public class testT4jClient {
 	
 	@Before
 	public void setUp() throws Exception {
-		JobAtom job = new JobAtom(5L, "TWIT", "Winter coming");
+		//JobAtom job = new JobAtom(5L, "TWIT", "Winter coming"); 
+
+		String name = "Лорик Соловаева";
+		String url = "";
+		String location = "Гондурас";
+		String description = "Мне бы в небо...";
+
+		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); 
 		ConcreteAcc acc = new ConcreteAcc(57L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		

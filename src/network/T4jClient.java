@@ -17,6 +17,7 @@ import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
@@ -124,8 +125,9 @@ public class T4jClient implements IJobExecutor {
 						} catch (ProxyException e) {
 							logger.error(msg, e);
 
-							dbConnector.setProxyIsAlive(dbproxy.getProxyID(), false);
-							
+							dbConnector.setProxyIsAlive(dbproxy.getProxyID(),
+									false);
+
 							// Getting twitter with another proxy
 							dbproxy = ProxyGetter.getProxy(this.acc.getAccID());
 							if (dbproxy == null) {
@@ -241,6 +243,11 @@ public class T4jClient implements IJobExecutor {
 			case FOLLOW:
 				break;
 			case UNFOLLOW:
+				break;
+			case UPDATEPROFILE:
+				User us = twitter.updateProfile(job.getName(), job.getUrl(), job.getLocation(), job.getDescription());
+				System.out.println(us.getScreenName() + " : " + us.getId());
+				result = true;
 				break;
 			default:
 				break;

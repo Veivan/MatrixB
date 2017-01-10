@@ -9,7 +9,8 @@ import java.text.SimpleDateFormat;
 public final class Constants {
 
 	public enum JobType {
-		SETAVA, SETBACKGROUND, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT
+		SETAVA, SETBACKGROUND, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT,
+		UPDATEPROFILE
 	}
 
 	// Приоритеты списков задач. Перечислены по порядку членов перечисления
