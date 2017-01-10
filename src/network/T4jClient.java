@@ -238,7 +238,11 @@ public class T4jClient implements IJobExecutor {
 			case REPLAY:
 				break;
 			case SETBACKGROUND:
-				// User updateProfileBackgroundImage(File image, boolean tile)
+				byte[] buf = job.getProfileImageBack();
+				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
+	            twitter.updateProfileBackgroundImage(bis, job.isTiled());
+	            bis.close();
+				result = true;
 				break;
 			case FOLLOW:
 				break;

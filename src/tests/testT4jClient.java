@@ -1,6 +1,5 @@
 package tests;
 
-import static org.junit.Assert.*;
 import jobs.JobAtom;
 import main.ConcreteAcc;
 import model.ElementProxy;
@@ -11,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import service.Constants;
+import service.Utils;
 
 public class testT4jClient {
 	T4jClient t4wclient;
@@ -21,12 +21,15 @@ public class testT4jClient {
 	public void setUp() throws Exception {
 		//JobAtom job = new JobAtom(5L, "TWIT", "Winter coming"); 
 
-		String name = "Лорик Соловаева";
+		/*String name = "Лорик Соловаева";
 		String url = "";
 		String location = "Гондурас";
 		String description = "Мне бы в небо...";
-
-		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); 
+		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); */
+		
+		byte[] img = Utils.readBytesFromFile("d:\\temp\\p1.jpg");	
+		JobAtom job = new JobAtom(10L, "SETBACKGROUND", img, true); 
+				
 		ConcreteAcc acc = new ConcreteAcc(57L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		

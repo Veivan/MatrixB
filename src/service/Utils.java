@@ -3,6 +3,7 @@ package service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -73,5 +74,28 @@ public class Utils {
 	public static boolean empty(final String s) {
 		// Null-safe, short-circuit evaluation.
 		return s == null || s.trim().isEmpty();
+	}
+
+	public static byte[] readBytesFromFile(String filePath) {
+		FileInputStream fileInputStream = null;
+		byte[] bytesArray = null;
+		try {
+			File file = new File(filePath);
+			bytesArray = new byte[(int) file.length()];
+			// read file into bytes[]
+			fileInputStream = new FileInputStream(file);
+			fileInputStream.read(bytesArray);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fileInputStream != null) {
+				try {
+					fileInputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return bytesArray;
 	}
 }

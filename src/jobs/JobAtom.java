@@ -25,6 +25,9 @@ public class JobAtom {
 	private String location = "Гондурас";
 	private String description = "";
 
+	private byte[] profileImage = null;
+	private byte[] profileImageBack = null;
+	private boolean tiled = false;
 
 	/** Construct for TWIT */
 	public JobAtom(long JobID, String Type, String TContent) {
@@ -43,13 +46,28 @@ public class JobAtom {
 		this.description = description;
 	}
 
+	/** Construct for SETBACKGROUND */
+	public JobAtom(long JobID, String Type, byte[] profileImageBack, boolean tiled) {
+		this.JobID = JobID;
+		this.Type = Constants.JobType.valueOf(Type.toUpperCase());
+		this.profileImageBack = profileImageBack.clone();
+		this.tiled = tiled;
+	}
+
 	/** Construct new copy */
 	public JobAtom(JobAtom job) {
 		this.JobID = job.JobID;		
 		this.Type = job.Type; 
 		this.TContent = job.TContent;
 		this.timestamp = job.timestamp;
-	}
+
+		this.name = job.name;
+		this.url = job.url;
+		this.location = job.location;
+		this.description = job.description;
+
+		this.profileImageBack = job.profileImageBack.clone();
+}
 
 	public String getName() {
 		return name;
@@ -65,6 +83,18 @@ public class JobAtom {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public byte[] getProfileImage() {
+		return profileImage;
+	}
+
+	public byte[] getProfileImageBack() {
+		return profileImageBack;
+	}
+
+	public boolean isTiled() {
+		return tiled;
 	}
 
 }
