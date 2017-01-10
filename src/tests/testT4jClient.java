@@ -8,30 +8,32 @@ import model.MatrixAct;
 import network.T4jClient;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import service.Constants;
 
 public class testT4jClient {
-	T4jClient t4wclient; 
+	T4jClient t4wclient;
+	private String proxyIP;
+	private int proxyPort; 
 	
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
-		JobAtom job = new JobAtom(5L, "TWIT", "Cold!");
-
-		ConcreteAcc acc = new ConcreteAcc(19L);
+		JobAtom job = new JobAtom(5L, "TWIT", "Winter coming");
+		ConcreteAcc acc = new ConcreteAcc(57L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		//t4wclient = new T4jClient(theact, new ElementProxy("103.59.57.218", 45554, Constants.ProxyType.SOCKS));
+		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works
+		//String proxy = "178.215.111.70:9999"; // HTTP not works - timeout expired
+		//String proxy = "212.224.76.176:80"; // good but slow
+		String proxy = "168.9.128.232:65000"; // good 
+		String[] sp = proxy.split(":");
+		if (sp.length > 1) {
+			proxyIP = sp[0];
+			proxyPort = Integer.parseInt(sp[1]);
+		}
 		
-		t4wclient = new T4jClient(theact, new ElementProxy("212.224.76.176", 80, Constants.ProxyType.HTTP, -1));
-		
-		//t4wclient = new T4jClient(theact, new ElementProxy("178.215.111.70", 9999, Constants.ProxyType.HTTPS)); //good
+		t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.HTTP, -1)); 		
 	}
 
 	@Test

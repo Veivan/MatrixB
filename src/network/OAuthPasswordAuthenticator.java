@@ -119,6 +119,13 @@ public class OAuthPasswordAuthenticator {
 		} catch (Exception e) {
 			throw new AuthenticationException(e);
 		}
+		// TODO Сделать обработку кодов 401 - 405, при этом не банить прокси
+		/*catch (TwitterException te) {
+                        if (401 == te.getStatusCode()) {
+                            System.out.println("Unable to get the access token.");
+                        } else {
+                            te.printStackTrace();
+                        }*/
 	}
 
 	private String GetPageContent(String url) throws Exception {
