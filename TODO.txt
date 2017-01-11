@@ -1,7 +1,7 @@
 ﻿109.252.14.59 home
 213.79.120.82 office
 
-1. Прверить SOCKS для tw4j
+1. 
 1.1. Парсить unsort - HTTPS с сайта http://spys.ru/aproxy/
 
 2. Вставить проверку на анонимность в SenPitServer

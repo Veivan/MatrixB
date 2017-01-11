@@ -1,6 +1,7 @@
 package network;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.util.Base64;
 
@@ -238,10 +239,13 @@ public class T4jClient implements IJobExecutor {
 			case REPLAY:
 				break;
 			case SETBACKGROUND:
-				byte[] buf = job.getProfileImageBack();
+				/*byte[] buf = job.getProfileImageBack();
 				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
 	            twitter.updateProfileBackgroundImage(bis, job.isTiled());
-	            bis.close();
+	            bis.close(); */
+	            
+	            twitter.updateProfileBackgroundImage(new File("c:\\temp\\a1.jpg"), false);
+	            
 				result = true;
 				break;
 			case FOLLOW:
