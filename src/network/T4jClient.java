@@ -175,6 +175,8 @@ public class T4jClient implements IJobExecutor {
 
 	private boolean OperateTwitter(JobAtom job) {
 		Constants.JobType jobType = job.Type;
+		byte[] buf = null;
+		ByteArrayInputStream bis = null;
 		boolean result = false;
 		try {
 			switch (jobType) {
@@ -214,27 +216,11 @@ public class T4jClient implements IJobExecutor {
 				result = true;
 				break;
 			case SETAVA:
-/*				byte[] buf = job.getProfileImageBack();
-				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
-	            twitter.updateProfileBanner(bis);
-	            bis.close();   */          
+				buf = job.getProfileImage();
+				bis = new ByteArrayInputStream(buf);
+	            twitter.updateProfileImage(bis);
+	            bis.close();             
 				result = true;
-
-	            // User updateProfileImage(File image) throws TwitterException;
-				// void updateProfileBanner(File image) throws TwitterException;
-				/*
-				 * try { // Get timeline // gets Twitter instance with default
-				 * credentials Twitter twitter = new
-				 * TwitterFactory().getInstance(); User user =
-				 * twitter.verifyCredentials(); List<Status> statuses =
-				 * twitter.getHomeTimeline(); System.out.println("Showing @" +
-				 * user.getScreenName() + "'s home timeline."); for (Status
-				 * status : statuses) { System.out.println("@" +
-				 * status.getUser().getScreenName() + " - " + status.getText());
-				 * } } catch (TwitterException te) { te.printStackTrace();
-				 * System.out.println("Failed to get timeline: " +
-				 * te.getMessage()); System.exit(-1); }
-				 */
 				break;
 			case DIRECT:
 				break;
@@ -245,9 +231,8 @@ public class T4jClient implements IJobExecutor {
 			case REPLAY:
 				break;
 			case SETBANNER:
-				byte[] buf = job.getProfileBanner();
-				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
-	            //twitter.updateProfileBackgroundImage(bis, job.isTiled());
+				buf = job.getProfileBanner();
+				bis = new ByteArrayInputStream(buf);
 	            twitter.updateProfileBanner(bis);
 	            bis.close();             
 				result = true;
@@ -262,6 +247,20 @@ public class T4jClient implements IJobExecutor {
 				result = true;
 				break;
 			default:
+				/*
+				 * try { // Get timeline // gets Twitter instance with default
+				 * credentials Twitter twitter = new
+				 * TwitterFactory().getInstance(); User user =
+				 * twitter.verifyCredentials(); List<Status> statuses =
+				 * twitter.getHomeTimeline(); System.out.println("Showing @" +
+				 * user.getScreenName() + "'s home timeline."); for (Status
+				 * status : statuses) { System.out.println("@" +
+				 * status.getUser().getScreenName() + " - " + status.getText());
+				 * } } catch (TwitterException te) { te.printStackTrace();
+				 * System.out.println("Failed to get timeline: " +
+				 * te.getMessage()); System.exit(-1); }
+				 */
+				
 				break;
 			}
 		} catch (Exception e) {

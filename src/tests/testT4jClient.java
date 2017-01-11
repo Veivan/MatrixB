@@ -27,8 +27,11 @@ public class testT4jClient {
 		String description = "Мне бы в небо...";
 		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); */
 		
-		byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.jpg");	
+		byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.png");	
 		JobAtom job = new JobAtom(10L, "SETBANNER", img); 
+		
+		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
+		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
 		ConcreteAcc acc = new ConcreteAcc(57L);
 		MatrixAct theact = new MatrixAct(job, acc);

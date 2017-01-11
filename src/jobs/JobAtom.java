@@ -1,6 +1,7 @@
 package jobs;
 
 import service.Constants;
+import service.Constants.JobType;
 
 /** Класс описывает единицу задания - твит, ретвит... . */
 public class JobAtom {
@@ -8,8 +9,11 @@ public class JobAtom {
 
 	/** Свойство - тип задания. */
 	public Constants.JobType Type;
-	
-	/** Свойство - содержание задания. Например, содержание твита или ссылка для посещения */
+
+	/**
+	 * Свойство - содержание задания. Например, содержание твита или ссылка для
+	 * посещения
+	 */
 	public String TContent;
 
 	/**
@@ -19,7 +23,7 @@ public class JobAtom {
 	public Long timestamp = 0l;
 
 	public boolean IsFinished = false;
-	
+
 	private String name; // ScreenName
 	private String url = "";
 	private String location = "Гондурас";
@@ -36,7 +40,8 @@ public class JobAtom {
 	}
 
 	/** Construct for UPDATEPROFILE */
-	public JobAtom(long JobID, String Type, String name, String url, String location, String description ) {
+	public JobAtom(long JobID, String Type, String name, String url,
+			String location, String description) {
 		this.JobID = JobID;
 		this.Type = Constants.JobType.valueOf(Type.toUpperCase());
 		this.name = name;
@@ -45,17 +50,20 @@ public class JobAtom {
 		this.description = description;
 	}
 
-	/** Construct for SETBANNER */
-	public JobAtom(long JobID, String Type, byte[] profileImageBack) {
+	/** Construct for SETAVA and SETBANNER */
+	public JobAtom(long JobID, String Type, byte[] image) {
 		this.JobID = JobID;
-		this.Type = Constants.JobType.valueOf(Type.toUpperCase());
-		this.profileBanner = profileImageBack.clone();
+		this.Type = JobType.valueOf(Type.toUpperCase());
+		if (this.Type == JobType.SETAVA)
+			this.profileImage = image.clone();
+		else
+			this.profileBanner = image.clone();
 	}
 
 	/** Construct new copy */
 	public JobAtom(JobAtom job) {
-		this.JobID = job.JobID;		
-		this.Type = job.Type; 
+		this.JobID = job.JobID;
+		this.Type = job.Type;
 		this.TContent = job.TContent;
 		this.timestamp = job.timestamp;
 
@@ -64,8 +72,11 @@ public class JobAtom {
 		this.location = job.location;
 		this.description = job.description;
 
-		this.profileBanner = job.profileBanner.clone();
-}
+		if (job.profileImage != null)
+			this.profileImage = job.profileImage.clone();
+		if (job.profileBanner != null)
+			this.profileBanner = job.profileBanner.clone();
+	}
 
 	public String getName() {
 		return name;
