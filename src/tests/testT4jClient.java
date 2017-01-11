@@ -27,13 +27,16 @@ public class testT4jClient {
 		String description = "Мне бы в небо...";
 		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); */
 		
-		byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.png");	
-		JobAtom job = new JobAtom(10L, "SETBANNER", img); 
+		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.png");	
+		JobAtom job = new JobAtom(10L, "SETBANNER", img); */ 
 		
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
+		
+		
+		JobAtom job = new JobAtom(12L, "READTIMELINE", ""); 
 				
-		ConcreteAcc acc = new ConcreteAcc(57L);
+		ConcreteAcc acc = new ConcreteAcc(2L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works

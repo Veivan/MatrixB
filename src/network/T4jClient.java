@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Base64;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -222,6 +223,25 @@ public class T4jClient implements IJobExecutor {
 	            bis.close();             
 				result = true;
 				break;
+			case SETBANNER:
+				buf = job.getProfileBanner();
+				bis = new ByteArrayInputStream(buf);
+	            twitter.updateProfileBanner(bis);
+	            bis.close();             
+				result = true;
+				break;
+			case UPDATEPROFILE:
+				User us = twitter.updateProfile(job.getName(), job.getUrl(), job.getLocation(), job.getDescription());
+				System.out.println(us.getScreenName() + " : " + us.getId());
+				result = true;
+				break;
+			case READTIMELINE:
+				List<Status> statuses = twitter.getHomeTimeline(); 
+				System.out.println("Showing @" + "user.getScreenName()" + "'s home timeline."); 
+				for (Status stat : statuses) { 
+					System.out.println("@" + stat.getUser().getScreenName() + " - " + stat.getText());
+				}				
+				break;
 			case DIRECT:
 				break;
 			case LIKE:
@@ -230,37 +250,11 @@ public class T4jClient implements IJobExecutor {
 				break;
 			case REPLAY:
 				break;
-			case SETBANNER:
-				buf = job.getProfileBanner();
-				bis = new ByteArrayInputStream(buf);
-	            twitter.updateProfileBanner(bis);
-	            bis.close();             
-				result = true;
-				break;
 			case FOLLOW:
 				break;
 			case UNFOLLOW:
 				break;
-			case UPDATEPROFILE:
-				User us = twitter.updateProfile(job.getName(), job.getUrl(), job.getLocation(), job.getDescription());
-				System.out.println(us.getScreenName() + " : " + us.getId());
-				result = true;
-				break;
-			default:
-				/*
-				 * try { // Get timeline // gets Twitter instance with default
-				 * credentials Twitter twitter = new
-				 * TwitterFactory().getInstance(); User user =
-				 * twitter.verifyCredentials(); List<Status> statuses =
-				 * twitter.getHomeTimeline(); System.out.println("Showing @" +
-				 * user.getScreenName() + "'s home timeline."); for (Status
-				 * status : statuses) { System.out.println("@" +
-				 * status.getUser().getScreenName() + " - " + status.getText());
-				 * } } catch (TwitterException te) { te.printStackTrace();
-				 * System.out.println("Failed to get timeline: " +
-				 * te.getMessage()); System.exit(-1); }
-				 */
-				
+			default:				
 				break;
 			}
 		} catch (Exception e) {

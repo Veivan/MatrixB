@@ -13,6 +13,7 @@ import network.T4jClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import twitter4j.User;
 import main.ConcreteAcc;
 import model.AccIdent;
 import model.ElementProxy;
@@ -63,6 +64,9 @@ public class AccImporter extends Thread {
 			ConcreteAcc acc = new ConcreteAcc(user_id);
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
+		
+			//	User user = twitter.verifyCredentials();
+
 			t4wclient.Execute();
 		}
 	}
