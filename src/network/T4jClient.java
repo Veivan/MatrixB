@@ -214,7 +214,13 @@ public class T4jClient implements IJobExecutor {
 				result = true;
 				break;
 			case SETAVA:
-				// User updateProfileImage(File image) throws TwitterException;
+/*				byte[] buf = job.getProfileImageBack();
+				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
+	            twitter.updateProfileBanner(bis);
+	            bis.close();   */          
+				result = true;
+
+	            // User updateProfileImage(File image) throws TwitterException;
 				// void updateProfileBanner(File image) throws TwitterException;
 				/*
 				 * try { // Get timeline // gets Twitter instance with default
@@ -238,14 +244,12 @@ public class T4jClient implements IJobExecutor {
 				break;
 			case REPLAY:
 				break;
-			case SETBACKGROUND:
-				/*byte[] buf = job.getProfileImageBack();
+			case SETBANNER:
+				byte[] buf = job.getProfileBanner();
 				ByteArrayInputStream bis = new ByteArrayInputStream(buf);
-	            twitter.updateProfileBackgroundImage(bis, job.isTiled());
-	            bis.close(); */
-	            
-	            twitter.updateProfileBackgroundImage(new File("c:\\temp\\a1.jpg"), false);
-	            
+	            //twitter.updateProfileBackgroundImage(bis, job.isTiled());
+	            twitter.updateProfileBanner(bis);
+	            bis.close();             
 				result = true;
 				break;
 			case FOLLOW:

@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 public final class Constants {
 
 	public enum JobType {
-		SETAVA, SETBACKGROUND, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT,
+		SETAVA, SETBANNER, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT,
 		UPDATEPROFILE
 	}
 

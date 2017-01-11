@@ -28,7 +28,7 @@ public class testT4jClient {
 		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); */
 		
 		byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.jpg");	
-		JobAtom job = new JobAtom(10L, "SETBACKGROUND", img, true); 
+		JobAtom job = new JobAtom(10L, "SETBANNER", img); 
 				
 		ConcreteAcc acc = new ConcreteAcc(57L);
 		MatrixAct theact = new MatrixAct(job, acc);

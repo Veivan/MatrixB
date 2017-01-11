@@ -51,7 +51,7 @@ public class TypedURI {
 				break;
 			case REPLAY:
 				break;
-			case SETBACKGROUND:
+			case SETBANNER:
 				break;
 			case FOLLOW:
 				break;
