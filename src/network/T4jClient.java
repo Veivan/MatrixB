@@ -241,6 +241,11 @@ public class T4jClient implements IJobExecutor {
 				for (Status stat : statuses) { 
 					System.out.println("@" + stat.getUser().getScreenName() + " - " + stat.getText());
 				}				
+				result = true;
+				break;
+			case NEWUSER:
+				User user = twitter.verifyCredentials();
+				result = true;
 				break;
 			case DIRECT:
 				break;
@@ -258,6 +263,8 @@ public class T4jClient implements IJobExecutor {
 				break;
 			}
 		} catch (Exception e) {
+			// TODO Перенести обработку ичключений в цикл. Делать OperTwitter в цикле.
+			// TODO Добавить обработку кодов 401, 403 и тогда прерывать цикл
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
 			logger.debug(premess, e);

@@ -42,7 +42,7 @@ public class testT4jClient {
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works
 		//String proxy = "178.215.111.70:9999"; // HTTP not works - timeout expired
 		//String proxy = "212.224.76.176:80"; // good but slow
-		String proxy = "168.9.128.232:65000"; // good 
+		String proxy = "46.4.38.139:8080"; // good 
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];

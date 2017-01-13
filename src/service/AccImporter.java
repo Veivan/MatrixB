@@ -60,13 +60,10 @@ public class AccImporter extends Thread {
 			logger.error("AccImporter cant get proxy");
 			logger.debug("AccImporter cant get proxy");
 		} else {
-			JobAtom job = new JobAtom(5L, "TWIT", "Hello!");
+			JobAtom job = new JobAtom(5L, "NEWUSER", "Hello!");
 			ConcreteAcc acc = new ConcreteAcc(user_id);
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
-		
-			//	User user = twitter.verifyCredentials();
-
 			t4wclient.Execute();
 		}
 	}
