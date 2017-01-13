@@ -2,7 +2,7 @@ package tests;
 
 import jobs.Homeworks;
 import jobs.JobAtom;
-import main.ConcreteAcc;
+import model.ConcreteAcc;
 
 import org.junit.Before;
 import org.junit.Test;

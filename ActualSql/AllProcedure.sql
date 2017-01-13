@@ -53,14 +53,15 @@ AS BEGIN
 			  ,[mailpass] = @mailpass
 		 WHERE [user_id] = @user_id
 
-	MERGE [dbo].[mBelong2] B
-	USING (SELECT [group_id] = @group_id, [user_id] = @user_id ) I 
-		ON B.[group_id] = I.[group_id] AND B.[user_id] = I.[user_id]
-	WHEN NOT MATCHED BY TARGET THEN INSERT
-		( [group_id], [user_id])
-	VALUES
-		(@group_id, @user_id)
-	;	
+	IF (@group_id <> -1)
+		MERGE [dbo].[mBelong2] B
+		USING (SELECT [group_id] = @group_id, [user_id] = @user_id ) I 
+			ON B.[group_id] = I.[group_id] AND B.[user_id] = I.[user_id]
+		WHEN NOT MATCHED BY TARGET THEN INSERT
+			( [group_id], [user_id])
+		VALUES
+			(@group_id, @user_id)
+		;	
 END
 GO
 

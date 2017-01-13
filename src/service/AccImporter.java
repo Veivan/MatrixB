@@ -13,18 +13,17 @@ import network.T4jClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import twitter4j.User;
-import main.ConcreteAcc;
-import model.AccIdent;
+import model.ConcreteAcc;
 import model.ElementProxy;
 import model.MatrixAct;
-import dbaware.DbConnect4ImportAccsSingle;
+import dbaware.DbConnectSingle;
 
 /**
  * Выполняет действия: - Импортит в БД акки из текста
  */
 public class AccImporter extends Thread {
-	private DbConnect4ImportAccsSingle dbConnector = new DbConnect4ImportAccsSingle();
+	private DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+
 	private String email;
 	private String pass;
 	private String name;
@@ -53,31 +52,31 @@ public class AccImporter extends Thread {
 
 	@Override
 	public void run() {
-		long user_id = SaveAcc();
+		ConcreteAcc acc = SaveAcc(); 
+		long user_id = acc.getAccID();
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
 		if (dbproxy == null) {
 			logger.error("AccImporter cant get proxy");
-			logger.debug("AccImporter cant get proxy");
 		} else {
 			JobAtom job = new JobAtom(5L, "NEWUSER", "Hello!");
-			ConcreteAcc acc = new ConcreteAcc(user_id);
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();
 		}
 	}
 
-	private long SaveAcc() {
+	private ConcreteAcc SaveAcc() {
 		int group_id = 2;
 		long user_id = -1;
-		AccIdent acc;
+		ConcreteAcc acc = null;
 		if (this.Datatype == 3)
-			acc = new AccIdent(user_id, email, pass, name);
+			acc = new ConcreteAcc(user_id, email, pass, name);
 		else
-			acc = new AccIdent(user_id, email, pass, name, phone, mailpass);
+			acc = new ConcreteAcc(user_id, email, pass, name, phone, mailpass);
 		user_id = dbConnector.SaveAcc2Db(acc, group_id);
-		return user_id;
+		acc.setAccID(user_id);
+		return acc;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {

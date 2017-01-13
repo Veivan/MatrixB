@@ -20,7 +20,7 @@ import service.Utils;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
-import main.ConcreteAcc;
+import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
@@ -74,14 +74,6 @@ public class DbConnectSingle {
 	 */
 	public List<IAccount> getAccounts() {
 		List<IAccount> accounts = new ArrayList<IAccount>();
-
-		/*
-		 * / Debug ConcreteAcc acc1 = new ConcreteAcc(1); ConcreteAcc acc2 = new
-		 * ConcreteAcc(2); ConcreteAcc acc3 = new ConcreteAcc(3); ConcreteAcc
-		 * acc4 = new ConcreteAcc(4); accounts.add(acc1); accounts.add(acc2);
-		 * accounts.add(acc3); accounts.add(acc4);
-		 */
-
 		try {
 			dbConnect();
 			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
@@ -103,6 +95,70 @@ public class DbConnectSingle {
 		return accounts;
 	}
 
+	/**
+	 * Returns Single Account from DB
+	 */
+	public IAccount getAccount(Long user_id) {
+		ConcreteAcc acc = null;
+		try {
+			dbConnect();
+			String query = "SELECT TOP 1 [name],[screen_name],[email],[phone],[pass],[twitter_id] = ISNULL([twitter_id], -1) " +
+			   ",[mailpass] FROM [dbo].[mAccounts] WHERE [user_id] = ?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setLong(1, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				acc = new ConcreteAcc(user_id, rs.getString("email"), rs.getString("pass"),
+						rs.getString("name"), rs.getString("phone"), rs.getString("mailpass"));
+				acc.setScreenname(rs.getString("screen_name"));
+				acc.setTwitter_id(rs.getLong("twitter_id"));
+			}
+			pstmt.close();
+			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("getAccounts exception", e);
+		}
+		return acc;
+	}
+
+	/**
+	 * Сохраняет данные аккаунта в БД
+	 */
+	public long SaveAcc2Db(ConcreteAcc acc, int group_id) {
+		long user_id = -1;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.registerOutParameter(1, java.sql.Types.BIGINT);
+
+			sp.setLong(1, acc.getAccID());
+			sp.setString(2, acc.getName());
+			sp.setString(3, acc.getScreenname());
+			sp.setString(4, acc.getEmail());
+			sp.setString(5, acc.getPhone());
+			sp.setString(6, acc.getPass());
+			sp.setLong(7, acc.getTwitter_id());
+			sp.setInt(8, group_id);
+			sp.setString(9, acc.getMailpass());
+				
+			sp.executeUpdate();
+			user_id = sp.getLong(1);
+
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnectSingle.logger.error("SaveAcc2Db exception", e);
+		} 
+		
+		return user_id;
+	}
 	/**
 	 * Returns free proxies from DB
 	 */

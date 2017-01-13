@@ -1,4 +1,4 @@
-package main;
+package model;
 
 import java.util.List;
 
@@ -6,13 +6,21 @@ import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import inrtfs.IAccount;
-import model.Regimen;
+import main.Timing;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ConcreteAcc implements IAccount {
 	private long AccID;
+	private String email;
+	private String pass;    
+	private String name; 
+	private String phone;
+	private String mailpass;
+	private String screenname; 
+	private long twitter_id = -1;
+	
 	private final String cTimeZone = "GMT+3";
 	private static final long late = 300000l; // ms = 5min
 
@@ -32,6 +40,30 @@ public class ConcreteAcc implements IAccount {
 		this.timing = new Timing(this.cTimeZone, this.regim);
 	}
 
+	/**
+	 * Используется для импорта акков
+	 */
+	public ConcreteAcc(long user_id, String email, String pass, String name) {
+		super();
+		this.AccID = user_id;
+		this.email = email;
+		this.pass = pass;
+		this.name = name;
+	}
+
+	/**
+	 * Используется для импорта акков
+	 */
+	public ConcreteAcc(long user_id, String email, String pass, String name, String phone, String mailpass) {
+		super();
+		this.AccID = user_id;
+		this.email = email;
+		this.pass = pass;
+		this.name = name;
+		this.phone = phone;
+		this.mailpass = mailpass;
+	}
+	
 	public void RebuldAccTiming(Homeworks homeworks) {
 		this.timing.RebuildTiming(homeworks);
 	}
@@ -43,6 +75,13 @@ public class ConcreteAcc implements IAccount {
 	@Override
 	public long getAccID() {
 		return AccID;
+	}
+
+	/**
+	 * @param accID the accID to set
+	 */
+	public void setAccID(long accID) {
+		AccID = accID;
 	}
 
 	@Override
@@ -77,4 +116,54 @@ public class ConcreteAcc implements IAccount {
 		// }
 	}
 
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * @return the pass
+	 */
+	public String getPass() {
+		return pass;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @return the phone
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * @return the email pass
+	 */
+	public String getMailpass() {
+		return mailpass;
+	}
+
+	public String getScreenname() {
+		return screenname;
+	}
+
+	public void setScreenname(String screenname) {
+		this.screenname = screenname;
+	}
+
+	public long getTwitter_id() {
+		return twitter_id;
+	}
+
+	public void setTwitter_id(long twitter_id) {
+		this.twitter_id = twitter_id;
+	}
 }

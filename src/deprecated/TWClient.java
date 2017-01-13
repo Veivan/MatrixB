@@ -12,7 +12,7 @@ import java.net.Socket;
 import javax.net.ssl.SSLContext;
 
 import jobs.JobAtom;
-import main.ConcreteAcc;
+import model.ConcreteAcc;
 import model.ElementProxy;
 import model.MatrixAct;
 import network.ProxyGetter;

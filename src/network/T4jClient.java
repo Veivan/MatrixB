@@ -27,6 +27,7 @@ import jobs.JobAtom;
 import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
+import model.ConcreteAcc;
 import inrtfs.IAccount;
 import inrtfs.IJobExecutor;
 
@@ -74,7 +75,7 @@ public class T4jClient implements IJobExecutor {
 					Constants.dfm.format(this.job.timestamp),
 					this.acc.getAccID(), this.ID);
 
-			result = OperateTwitter(this.job);
+			result = OperateTwitter();
 		}
 		logger.info("T4jClient Action result is {} : {} {} accID = {} ID = {}",
 				result, this.job.Type.name(),
@@ -174,8 +175,8 @@ public class T4jClient implements IJobExecutor {
 		return true;
 	}
 
-	private boolean OperateTwitter(JobAtom job) {
-		Constants.JobType jobType = job.Type;
+	private boolean OperateTwitter() {
+		Constants.JobType jobType = this.job.Type;
 		byte[] buf = null;
 		ByteArrayInputStream bis = null;
 		boolean result = false;
@@ -245,6 +246,12 @@ public class T4jClient implements IJobExecutor {
 				break;
 			case NEWUSER:
 				User user = twitter.verifyCredentials();
+				// Определение пола gender
+				// Сохранение дополнительных данных в БД 
+				((ConcreteAcc)this.acc).setScreenname(user.getScreenName());  
+				((ConcreteAcc)this.acc).setTwitter_id(user.getId());  
+				dbConnector.SaveAcc2Db((ConcreteAcc)acc, -1);
+				// Установка картинок для акка
 				result = true;
 				break;
 			case DIRECT:

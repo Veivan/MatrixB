@@ -1,7 +1,7 @@
 package tests;
 
 import jobs.JobAtom;
-import main.ConcreteAcc;
+import model.ConcreteAcc;
 import model.ElementProxy;
 import model.MatrixAct;
 import network.T4jClient;
