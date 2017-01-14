@@ -13,7 +13,18 @@ ALTER PROCEDURE [dbo].[spSaveProxy]
 	,@id_cn INT 
 	,@alive INT 
 AS BEGIN
+	DECLARE @ProxyID BIGINT = NULL
 	SET NOCOUNT ON;
+	IF (@alive = 0) BEGIN
+		SELECT @ProxyID = [ProxyID] FROM [dbo].[mProxies]
+		WHERE [ip] = @ip AND [port] = @port
+		IF (@ProxyID IS NOT NULL) BEGIN
+			DELETE [dbo].[mProxyAcc] WHERE [ProxyID] = @ProxyID
+			DELETE [dbo].[mProxies] WHERE [ProxyID] = @ProxyID
+		END
+	END
+	ELSE
+
 		MERGE [dbo].[mProxies] P
 		USING (SELECT [ip] = @ip, [port] = @port) I 
 			ON P.[ip] = I.[ip] AND P.[port] = I.[port]
