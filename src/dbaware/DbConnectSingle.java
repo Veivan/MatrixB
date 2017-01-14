@@ -2,6 +2,9 @@ package dbaware;
 
 import inrtfs.IAccount;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -36,13 +39,14 @@ public class DbConnectSingle {
 
 	private DbConnectSingle() {
 		try {
-			this.db_connect_string = Utils.ReadConnStrINI() + this.db_connect_string;
+			this.db_connect_string = Utils.ReadConnStrINI()
+					+ this.db_connect_string;
 		} catch (Exception e) {
 			logger.error("DbConnectSingle exception", e);
 			logger.debug("DbConnectSingle exception", e);
-		} 
+		}
 	}
-	
+
 	/**
 	 * @return the conn
 	 */
@@ -96,20 +100,60 @@ public class DbConnectSingle {
 	}
 
 	/**
+	 * Возвращает случайную картинку из БД
+	 */
+	public byte[] getRandomPicture(Gender gender, int ptype_id) {
+		byte[] bytes = null;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spGetRandomImage](?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.registerOutParameter(3, java.sql.Types.BLOB);
+			if (gender == Gender.NEUTRAL)
+				sp.setNull("gender", java.sql.Types.BIT);
+			else
+				sp.setBoolean("gender", gender.ordinal() != 0);
+			sp.setInt("ptype_id", ptype_id);
+
+			sp.executeUpdate();
+			Blob pic = sp.getBlob("pic");
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			InputStream in = pic.getBinaryStream();
+			int n = 0;
+			while ((n = in.read(buf)) >= 0) {
+				baos.write(buf, 0, n);
+			}
+			in.close();
+			bytes = baos.toByteArray();
+			baos.close();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("getRandomPicture exception", e);
+		}
+		return bytes;
+	}
+
+	/**
 	 * Returns Single Account from DB
 	 */
 	public IAccount getAccount(Long user_id) {
 		ConcreteAcc acc = null;
 		try {
 			dbConnect();
-			String query = "SELECT TOP 1 [name],[screen_name],[email],[phone],[pass],[twitter_id] = ISNULL([twitter_id], -1) " +
-			   ",[mailpass], [gender] = ISNULL([gender], 2) FROM [dbo].[mAccounts] WHERE [user_id] = ?";
+			String query = "SELECT TOP 1 [name],[screen_name],[email],[phone],[pass],[twitter_id] = ISNULL([twitter_id], -1) "
+					+ ",[mailpass], [gender] = ISNULL([gender], 2) FROM [dbo].[mAccounts] WHERE [user_id] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setLong(1, user_id);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
-				acc = new ConcreteAcc(user_id, rs.getString("email"), rs.getString("pass"),
-						rs.getString("name"), rs.getString("phone"), rs.getString("mailpass"));
+				acc = new ConcreteAcc(user_id, rs.getString("email"),
+						rs.getString("pass"), rs.getString("name"),
+						rs.getString("phone"), rs.getString("mailpass"));
 				acc.setScreenname(rs.getString("screen_name"));
 				acc.setTwitter_id(rs.getLong("twitter_id"));
 				acc.setGender(Gender.values()[rs.getInt("gender")]);
@@ -150,7 +194,7 @@ public class DbConnectSingle {
 				sp.setNull(10, java.sql.Types.INTEGER);
 			else
 				sp.setInt(10, genderint);
-				
+
 			sp.executeUpdate();
 			user_id = sp.getLong(1);
 
@@ -161,10 +205,11 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			DbConnectSingle.logger.error("SaveAcc2Db exception", e);
-		} 
-		
+		}
+
 		return user_id;
 	}
+
 	/**
 	 * Returns free proxies from DB
 	 */
@@ -195,7 +240,7 @@ public class DbConnectSingle {
 	}
 
 	/**
-	 * Set proxy "alive" 
+	 * Set proxy "alive"
 	 */
 	public void setProxyIsAlive(long ProxyID, boolean IsAlive) {
 		try {
@@ -213,11 +258,11 @@ public class DbConnectSingle {
 		} catch (Exception e) {
 			logger.error("setProxyIsAlive exception", e);
 			logger.debug("setProxyIsAlive exception", e);
-		} 
+		}
 	}
 
 	/**
-	 * Set proxy "blocked" 
+	 * Set proxy "blocked"
 	 */
 	public void setProxyIsBlocked(long ProxyID, boolean Isblocked) {
 		try {
@@ -235,7 +280,7 @@ public class DbConnectSingle {
 		} catch (Exception e) {
 			logger.error("setProxyIsBlocked exception", e);
 			logger.debug("setProxyIsBlocked exception", e);
-		} 
+		}
 	}
 
 	/**
@@ -258,7 +303,7 @@ public class DbConnectSingle {
 		} catch (Exception e) {
 			logger.error("setProxy4Acc spProxy4AccUpdate exception", e);
 			logger.debug("setProxy4Acc spProxy4AccUpdate exception", e);
-		} 
+		}
 	}
 
 	/**
@@ -285,8 +330,7 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("getProxy spProxy4AccSelect exception", e);
-			logger.debug("getProxy spProxy4AccSelect exception", e);
-		} 
+		}
 		return proxy;
 	}
 
@@ -303,9 +347,11 @@ public class DbConnectSingle {
 			ResultSet rs = sp.executeQuery();
 			// Читаем только первую запись
 			rs.next();
-			creds = new ElementCredentials(rs.getString("cons_key"), rs.getString("cons_secret"),
-					rs.getString("name"), rs.getString("pass"), rs.getString("token"),
-					rs.getString("token_secret"), rs.getInt("user_id"), rs.getInt("id_app"));
+			creds = new ElementCredentials(rs.getString("cons_key"),
+					rs.getString("cons_secret"), rs.getString("name"),
+					rs.getString("pass"), rs.getString("token"),
+					rs.getString("token_secret"), rs.getInt("user_id"),
+					rs.getInt("id_app"));
 			rs.close();
 			sp.close();
 			sp = null;
@@ -389,8 +435,8 @@ public class DbConnectSingle {
 			sp.setDate(1, moment);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				JobAtom job = new JobAtom(rs.getLong("id_Task"), rs.getString("TypeMean"),
-						rs.getString("TContent"));
+				JobAtom job = new JobAtom(rs.getLong("id_Task"),
+						rs.getString("TypeMean"), rs.getString("TContent"));
 				JobAtomList.add(job);
 			}
 			rs.close();

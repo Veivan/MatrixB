@@ -2,6 +2,12 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:	Vetrov
+-- Description:	Select random image from DB
+-- @gender = 0 (FEMALE) or = 1 (MALE) or = null (NEUTRAL)
+-- @ptype_id is link to DicPicType
+-- =============================================
 ALTER PROCEDURE [dbo].[spGetRandomImage]
 	@gender BIT
 	,@ptype_id INT
