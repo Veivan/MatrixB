@@ -18,6 +18,14 @@ CREATE TABLE [dbo].[DicGroups](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicPicType](
+	[ptype_id] [int] IDENTITY(1,1) NOT NULL,
+	[ptype_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicProxyType](
 	[prtypeID] [tinyint] IDENTITY(1,1) NOT NULL,
 	[typename] [nchar](10) COLLATE Cyrillic_General_CI_AS NOT NULL
@@ -102,6 +110,16 @@ CREATE TABLE [dbo].[mExecution](
 	[result] [bit] NOT NULL,
 	[failreason] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
 	[execdate] [bigint] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mPicture](
+	[pic_id] [int] IDENTITY(1,1) NOT NULL,
+	[gender] [bit] NULL,
+	[fpicture] [varbinary](max) NULL,
+	[ptype_id] [int] NULL
 ) ON [PRIMARY]
 
 
