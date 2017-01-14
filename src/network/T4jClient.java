@@ -14,6 +14,8 @@ import dbaware.DbConnectSingle;
 import service.CustExeptions.AuthenticationException;
 import service.CustExeptions.ProxyException;
 import service.Constants;
+import service.GenderChecker;
+import service.GenderChecker.Gender;
 import service.Utils;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -246,7 +248,8 @@ public class T4jClient implements IJobExecutor {
 				break;
 			case NEWUSER:
 				User user = twitter.verifyCredentials();
-				// Определение пола gender
+				// Определение пола 
+				Gender gender = GenderChecker.get_gender(user.getScreenName());
 				// Сохранение дополнительных данных в БД 
 				((ConcreteAcc)this.acc).setScreenname(user.getScreenName());  
 				((ConcreteAcc)this.acc).setTwitter_id(user.getId());  
