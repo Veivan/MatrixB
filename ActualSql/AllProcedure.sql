@@ -15,7 +15,8 @@ ALTER PROCEDURE [dbo].[spAccountAdd]
 	@pass NVARCHAR(50),  
 	@twitter_id BIGINT,
 	@group_id INT,
-	@mailpass NVARCHAR(50) 
+	@mailpass NVARCHAR(50),
+	@gender BIT
 AS BEGIN
 	SET NOCOUNT ON
 
@@ -37,9 +38,10 @@ AS BEGIN
 			   ,[pass]
 			   ,[twitter_id]
 			   ,[mailpass]
+			   ,[gender]
 			   ,[finsert])
 		 VALUES
-			   (@name, @screen_name, @email, @phone, @pass, @twitter_id, @mailpass, GETDATE())
+			   (@name, @screen_name, @email, @phone, @pass, @twitter_id, @mailpass, @gender, GETDATE())
 		SET @user_id = @@IDENTITY
 	END
 	ELSE 
@@ -51,6 +53,7 @@ AS BEGIN
 			  ,[pass] = @pass
 			  ,[twitter_id] = @twitter_id
 			  ,[mailpass] = @mailpass
+			  ,[gender] = @gender
 		 WHERE [user_id] = @user_id
 
 	IF (@group_id <> -1)

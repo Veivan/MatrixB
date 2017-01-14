@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
+import service.GenderChecker.Gender;
 import service.Utils;
 import jobs.Homeworks;
 import jobs.JobAtom;
@@ -90,7 +91,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("getAccounts exception", e);
-			logger.debug("getAccounts exception", e);
 		}
 		return accounts;
 	}
@@ -103,7 +103,7 @@ public class DbConnectSingle {
 		try {
 			dbConnect();
 			String query = "SELECT TOP 1 [name],[screen_name],[email],[phone],[pass],[twitter_id] = ISNULL([twitter_id], -1) " +
-			   ",[mailpass] FROM [dbo].[mAccounts] WHERE [user_id] = ?";
+			   ",[mailpass], [gender] = ISNULL([gender], 2) FROM [dbo].[mAccounts] WHERE [user_id] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setLong(1, user_id);
 			ResultSet rs = pstmt.executeQuery();
@@ -112,6 +112,7 @@ public class DbConnectSingle {
 						rs.getString("name"), rs.getString("phone"), rs.getString("mailpass"));
 				acc.setScreenname(rs.getString("screen_name"));
 				acc.setTwitter_id(rs.getLong("twitter_id"));
+				acc.setGender(Gender.values()[rs.getInt("gender")]);
 			}
 			pstmt.close();
 			pstmt = null;
@@ -144,6 +145,11 @@ public class DbConnectSingle {
 			sp.setLong(7, acc.getTwitter_id());
 			sp.setInt(8, group_id);
 			sp.setString(9, acc.getMailpass());
+			int genderint = acc.getGender().ordinal();
+			if (genderint == 2)
+				sp.setNull(10, java.sql.Types.INTEGER);
+			else
+				sp.setInt(10, genderint);
 				
 			sp.executeUpdate();
 			user_id = sp.getLong(1);

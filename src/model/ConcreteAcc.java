@@ -3,6 +3,7 @@ package model;
 import java.util.List;
 
 import service.Constants;
+import service.GenderChecker.Gender;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import inrtfs.IAccount;
@@ -20,6 +21,7 @@ public class ConcreteAcc implements IAccount {
 	private String mailpass;
 	private String screenname; 
 	private long twitter_id = -1;
+	private Gender gender = Gender.NEUTRAL;
 	
 	private final String cTimeZone = "GMT+3";
 	private static final long late = 300000l; // ms = 5min
@@ -165,5 +167,13 @@ public class ConcreteAcc implements IAccount {
 
 	public void setTwitter_id(long twitter_id) {
 		this.twitter_id = twitter_id;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 }
