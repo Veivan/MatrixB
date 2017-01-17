@@ -358,6 +358,7 @@ AS BEGIN
 		,T.[id_TaskType]
 		,T.[TContent]
 		,T.[IsRepeat]
+		,[group_id] = ISNULL(T.[group_id], 0)
 		,D.[TypeMean]
 	FROM [dbo].[mTasks] T
 		LEFT JOIN [dbo].[DicTaskType] D ON D.[id_TaskType] = T.[id_TaskType]

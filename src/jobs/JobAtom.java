@@ -17,6 +17,12 @@ public class JobAtom {
 	public String TContent;
 
 	/**
+	 * Свойство - ID группы, которой назначено задание. Если = 0, значит задание
+	 * относится ко всем группам.
+	 */
+	public int group_id = 0;
+
+	/**
 	 * Свойство - время выполнения задания. Заполняется при размещении задания в
 	 * тайминге аккаунта
 	 */
@@ -24,7 +30,7 @@ public class JobAtom {
 
 	public boolean IsFinished = false;
 
-	/** for UPDATEPROFILE only*/
+	/** for UPDATEPROFILE only */
 	private String name; // ScreenName
 	private String url = "";
 	private String location = "Гондурас";

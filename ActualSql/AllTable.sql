@@ -69,7 +69,8 @@ CREATE TABLE [dbo].[mAccounts](
 	[pass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[twitter_id] [bigint] NULL,
 	[mailpass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
-	[gender] [bit] NULL
+	[gender] [bit] NULL,
+	[enabled] [bit] NULL
 ) ON [PRIMARY]
 
 
@@ -81,15 +82,6 @@ CREATE TABLE [dbo].[mApplications](
 	[cons_secret] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
 	[user_id] [bigint] NOT NULL,
 	[appname] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
-) ON [PRIMARY]
-
-
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
-CREATE TABLE [dbo].[mBelong2](
-	[bg_id] [bigint] IDENTITY(1,1) NOT NULL,
-	[group_id] [int] NOT NULL,
-	[user_id] [bigint] NOT NULL
 ) ON [PRIMARY]
 
 
@@ -152,7 +144,8 @@ CREATE TABLE [dbo].[mTasks](
 	[TaskDate] [smalldatetime] NOT NULL,
 	[id_TaskType] [smallint] NOT NULL,
 	[TContent] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL,
-	[IsRepeat] [bit] NOT NULL
+	[IsRepeat] [bit] NOT NULL,
+	[group_id] [int] NULL
 ) ON [PRIMARY]
 
 

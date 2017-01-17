@@ -6,6 +6,7 @@ CREATE TABLE [dbo].[mTasks](
 	[TaskDate] [smalldatetime] NOT NULL,
 	[id_TaskType] [smallint] NOT NULL,
 	[TContent] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL,
-	[IsRepeat] [bit] NOT NULL
+	[IsRepeat] [bit] NOT NULL,
+	[group_id] [int] NULL
 ) ON [PRIMARY]
 

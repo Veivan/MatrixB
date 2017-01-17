@@ -43,7 +43,6 @@ public class DbConnectSingle {
 					+ this.db_connect_string;
 		} catch (Exception e) {
 			logger.error("DbConnectSingle exception", e);
-			logger.debug("DbConnectSingle exception", e);
 		}
 	}
 
@@ -81,7 +80,7 @@ public class DbConnectSingle {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		try {
 			dbConnect();
-			String query = "SELECT [user_id] FROM [dbo].[mAccounts]";
+			String query = "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled]=1";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -234,7 +233,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("getFreeProxies spProxyFreeSelect exception", e);
-			logger.debug("getFreeProxies spProxyFreeSelect exception", e);
 		}
 		return proxylist;
 	}
@@ -257,7 +255,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("setProxyIsAlive exception", e);
-			logger.debug("setProxyIsAlive exception", e);
 		}
 	}
 
@@ -279,7 +276,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("setProxyIsBlocked exception", e);
-			logger.debug("setProxyIsBlocked exception", e);
 		}
 	}
 
@@ -302,7 +298,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("setProxy4Acc spProxy4AccUpdate exception", e);
-			logger.debug("setProxy4Acc spProxy4AccUpdate exception", e);
 		}
 	}
 
@@ -360,7 +355,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("getCredentials spCredsSelect exception", e);
-			logger.debug("getCredentials spCredsSelect exception", e);
 		}
 		return creds;
 	}
@@ -386,7 +380,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("StoreActResult failed", e);
-			logger.debug("StoreActResult failed", e);
 		}
 	}
 
@@ -414,7 +407,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("StoreActResult failed", e);
-			logger.debug("StoreActResult failed", e);
 		}
 	}
 
@@ -437,6 +429,7 @@ public class DbConnectSingle {
 			while (rs.next()) {
 				JobAtom job = new JobAtom(rs.getLong("id_Task"),
 						rs.getString("TypeMean"), rs.getString("TContent"));
+				job.group_id = rs.getInt("group_id");
 				JobAtomList.add(job);
 			}
 			rs.close();
@@ -447,7 +440,6 @@ public class DbConnectSingle {
 			conn = null;
 		} catch (Exception e) {
 			logger.error("getHomeworks spTasksSelect exception", e);
-			logger.debug("getHomeworks spTasksSelect exception", e);
 		}
 
 		Homeworks newschedule = new Homeworks();
