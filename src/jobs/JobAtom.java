@@ -72,6 +72,7 @@ public class JobAtom {
 		this.JobID = job.JobID;
 		this.Type = job.Type;
 		this.TContent = job.TContent;
+		this.group_id = job.group_id;
 		this.timestamp = job.timestamp;
 
 		this.name = job.name;

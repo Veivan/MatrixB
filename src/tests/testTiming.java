@@ -1,44 +1,43 @@
 package tests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jobs.Homeworks;
-import jobs.JobAtom;
-import jobs.JobList;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import dbaware.DbConnectSingle;
 import main.Timing;
 
 public class testTiming {
 
-	Homeworks homeworks = new Homeworks();
+	static DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	//Homeworks homeworks = new Homeworks();
 	Timing timing;
+	Homeworks homeworks;
+	private List<Integer> GroupIDs = new ArrayList<Integer>();
 
 	@Before
 	public void setUp() throws Exception {
-		MakeHowmworks(homeworks);
+		//MakeHowmworks(homeworks);
+		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
+		homeworks = dbConnector.getHomeworks();
 		timing = new Timing();
 	}
 
 	@Test
 	public void testRebuildTiming() {
-		timing.RebuildTiming(homeworks);
-		timing.printTiming();
+		timing.RebuildTiming(homeworks, GroupIDs);
+		//timing.printTiming();
 	}
 
-	private static void MakeHowmworks(Homeworks homeworks) {
+/*	private static void MakeHowmworks(Homeworks homeworks) {
 		for (int i = 0; i < 5; i++) {
 			JobAtom job = new JobAtom((long)i, "TWIT", "qq");
 			homeworks.AddJob(job);
 		}
-	}
-
-	public static void main(String[] args) {
-		Homeworks homeworks = new Homeworks();
-		MakeHowmworks(homeworks);
-		for (JobList jobList : homeworks) {
-			System.out.printf("Value: %s \n", String.valueOf(jobList.getPriority()));
-		}
-	}
+	} */
 
 }

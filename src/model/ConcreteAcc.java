@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import service.Constants;
@@ -32,6 +33,11 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> FolwngList;
 	private List<IAccount> UnFolwdList;
 
+	/**
+	 * Перечень групп, к которым относится акк
+	 */
+	private List<Integer> GroupIDs = new ArrayList<Integer>();
+
 	private Timing timing;
 
 	static Logger logger = LoggerFactory.getLogger(ConcreteAcc.class);
@@ -40,6 +46,7 @@ public class ConcreteAcc implements IAccount {
 		this.AccID = AccID;
 		this.regim = new Regimen();
 		this.timing = new Timing(this.cTimeZone, this.regim);
+		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
 	}
 
 	/**
@@ -67,7 +74,7 @@ public class ConcreteAcc implements IAccount {
 	}
 	
 	public void RebuldAccTiming(Homeworks homeworks) {
-		this.timing.RebuildTiming(homeworks);
+		this.timing.RebuildTiming(homeworks, this.GroupIDs);
 	}
 
 	public void printTiming() {

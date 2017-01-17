@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
@@ -48,15 +49,18 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	// Считать число оставшихся заданий.
 	// Равномерно распределить задания по оставшемуся времени.
 	// Приоритет заданий не учитывается
-	public void RebuildTiming(Homeworks homeworks) {
+	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs) {
 		logger.info("Timing  rebuilding");
-		// Формируем плоский список заданий
+		// Формируем плоский список заданий.
 		homeworks.First();
 		for (JobList jobList : homeworks) {
 			jobList.First();
 			for (JobAtom job : jobList) {
-				JobAtom jobcopy = new JobAtom(job);
-				innerTiming.add(jobcopy);
+				// В список выбирать задания только относящиеся к перечню групп.
+				if (GroupIDs.contains(job.group_id)) {
+					JobAtom jobcopy = new JobAtom(job);
+					innerTiming.add(jobcopy);
+				}
 			}
 		}
 
@@ -97,8 +101,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 
 	public void printTiming() {
 		for (JobAtom job : innerTiming) {
-		//for (int i = 0; i < 2; i++) {
-			//JobAtom job = innerTiming.get(i);
+			// for (int i = 0; i < 2; i++) {
+			// JobAtom job = innerTiming.get(i);
 			logger.info("Job at : {} {}", Constants.dfm.format(job.timestamp),
 					job.timestamp);
 		}

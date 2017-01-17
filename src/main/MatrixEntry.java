@@ -64,7 +64,6 @@ public class MatrixEntry {
 			}
 		} catch (InterruptedException e) {
 			logger.error("MatrixEntry cycle exception :", e);
-			logger.debug("MatrixEntry cycle exception :", e);
 		}
 		logger.info("MatrixEntry finishing");
 	}
