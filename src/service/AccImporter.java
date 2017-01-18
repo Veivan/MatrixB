@@ -59,7 +59,7 @@ public class AccImporter extends Thread {
 		if (dbproxy == null) {
 			logger.error("AccImporter cant get proxy");
 		} else {
-			JobAtom job = new JobAtom(5L, "NEWUSER", "Hello!");
+			JobAtom job = new JobAtom(5L, "NEWUSER", "");
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();
@@ -67,7 +67,7 @@ public class AccImporter extends Thread {
 	}
 
 	private ConcreteAcc SaveAcc() {
-		int group_id = 2;
+		int group_id = 1;
 		long user_id = -1;
 		ConcreteAcc acc = null;
 		if (this.Datatype == 3)

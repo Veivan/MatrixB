@@ -170,7 +170,6 @@ public class T4jClient implements IJobExecutor {
 			}
 		} catch (Exception e) {
 			logger.error("ERROR : ", e);
-			logger.debug("ERROR : ", e);
 			return false;
 		}
 
@@ -255,7 +254,7 @@ public class T4jClient implements IJobExecutor {
 				((ConcreteAcc)this.acc).setTwitter_id(user.getId());  
 				((ConcreteAcc)this.acc).setGender(gender);
 				dbConnector.SaveAcc2Db((ConcreteAcc)acc, -1);
-				// Установка картинок для акка
+				/*/ Установка картинок для акка
 				int ptype_id = 1; // BANNERIMG
 				byte[] bytes = dbConnector.getRandomPicture(gender, ptype_id);
 				bis = new ByteArrayInputStream(bytes);
@@ -265,7 +264,7 @@ public class T4jClient implements IJobExecutor {
 				bytes = dbConnector.getRandomPicture(gender, ptype_id);
 				bis = new ByteArrayInputStream(bytes);
 	            twitter.updateProfileImage(bis);
-	            bis.close();             
+	            bis.close();    */         
 				result = true;
 				break;
 			case DIRECT:

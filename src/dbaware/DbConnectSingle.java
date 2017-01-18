@@ -175,7 +175,7 @@ public class DbConnectSingle {
 		long user_id = -1;
 		try {
 			dbConnect();
-			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?,?)}";
+			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.registerOutParameter(1, java.sql.Types.BIGINT);
 
