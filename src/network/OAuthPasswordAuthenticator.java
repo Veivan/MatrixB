@@ -104,7 +104,7 @@ public class OAuthPasswordAuthenticator {
 
 			final String oauth_verifier = readOauthVerifier(page2);
 
-			if (oauth_verifier.isEmpty())
+			if (oauth_verifier == null || oauth_verifier.isEmpty())
 				throw new AuthenticationException("Cannot get OAuth verifier.");
 
 			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken,

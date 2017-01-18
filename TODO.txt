@@ -3,10 +3,22 @@
 
 1. 
 1.1. Парсить unsort - HTTPS с сайта http://spys.ru/aproxy/
-
-2. Вставить проверку на анонимность в SenPitServer
+1.2. Вставить проверку на анонимность в SenPitServer
 
 HTTP_VIA, HTTP_X_FORWARDED_FOR, HTTP_FORWARDED_FOR, HTTP_X_FORWARDED, HTTP_FORWARDED, HTTP_CLIENT_IP, HTTP_FORWARDED_FOR_IP, VIA, X_FORWARDED_FOR, FORWARDED_FOR, X_FORWARDED, FORWARDED, CLIENT_IP, FORWARDED_FOR_IP, HTTP_PROXY_CONNECTION
+
+
+2. В функции GetCredentials  (а не в getOAuthAccessTokenSilent) сделать проверку на коды 401-405
+
+2.1 в getOAuthAccessTokenSilent сделать проверку на редирект RetypePhoneNumber и RetypeEmail и его обработку
+<html>
+ <head></head>
+ <body>
+  You are being 
+  <a href="https://twitter.com/account/login_challenge?platform=web&amp;user_id=2878229963&amp;challenge_type=RetypePhoneNumber&amp;challenge_id=vMXBehSfw7ujK7dGAG0aR5qYXoMyig4d&amp;remember_me=false&amp;redirect_after_login_verification=%2F">redirected</a>.
+ </body>
+</html>
+
 
 3. verifyCredentials перед всеми операциями. 
 	 

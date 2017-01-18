@@ -287,7 +287,6 @@ public class T4jClient implements IJobExecutor {
 			// TODO Добавить обработку кодов 401, 403 и тогда прерывать цикл
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
-			logger.debug(premess, e);
 			result = false;
 			failreason = premess + " : " + e.getMessage();
 		}

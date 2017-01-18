@@ -74,7 +74,7 @@ public class GenderChecker {
 
 	public static void main(String[] args) {
 		first_name = "Валерия";
-		surname = "Иванова";
+		surname = "";
 		System.out.println(gender_by_first_name());
 		System.out.println(gender_by_surname());
 		
@@ -94,7 +94,10 @@ public class GenderChecker {
 		
 		String s[] = screenname.split(" ");
 		first_name = s[0];
-		surname = s[1];
+		if (s.length > 1)
+			surname = s[1];
+		else
+			surname = "";
 
 		Gender gender_on_fname = gender_by_first_name();
 		Gender gender_on_surname = gender_by_surname();
@@ -153,6 +156,9 @@ public class GenderChecker {
 	 */
 	private static Gender gender_by_surname() {
 		Gender gender = Gender.NEUTRAL;
+		if (surname == null || surname.isEmpty())
+			return gender;
+			
 		if (is_surname_completes(surname, Gender.FEMALE.ordinal()))
 			gender = Gender.FEMALE;
 		else if (is_surname_completes(surname, Gender.MALE.ordinal()))
