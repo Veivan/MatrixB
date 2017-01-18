@@ -9,7 +9,7 @@ GO
 ALTER PROCEDURE [dbo].[spAccountAdd]
 	@user_id BIGINT OUTPUT,
 	@name NVARCHAR(50),  
-	@screen_name NVARCHAR(150),
+	@screen_name NVARCHAR(150), --Login
 	@email NVARCHAR(50),  
 	@phone NVARCHAR(50),  
 	@pass NVARCHAR(50),  
@@ -20,7 +20,7 @@ ALTER PROCEDURE [dbo].[spAccountAdd]
 AS BEGIN
 	SET NOCOUNT ON
 
-	IF @screen_name IS NULL SET @screen_name = @name
+	IF @name IS NULL SET @name = @screen_name
 	IF @twitter_id = -1 SET @twitter_id = NULL
 
 	IF (@user_id = -1) BEGIN
