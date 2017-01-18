@@ -31,7 +31,7 @@ public class JobAtom {
 	public boolean IsFinished = false;
 
 	/** for UPDATEPROFILE only */
-	private String name; // ScreenName
+	private String name;
 	private String url = "";
 	private String location = "Гондурас";
 	private String description = "";

@@ -248,9 +248,9 @@ public class T4jClient implements IJobExecutor {
 			case NEWUSER:
 				User user = twitter.verifyCredentials();
 				// Определение пола 
-				Gender gender = GenderChecker.get_gender(user.getScreenName());
+				Gender gender = GenderChecker.get_gender(user.getName());
 				// Сохранение дополнительных данных в БД 
-				((ConcreteAcc)this.acc).setScreenname(user.getScreenName());  
+				((ConcreteAcc)this.acc).setName(user.getName());  
 				((ConcreteAcc)this.acc).setTwitter_id(user.getId());  
 				((ConcreteAcc)this.acc).setGender(gender);
 				dbConnector.SaveAcc2Db((ConcreteAcc)acc, -1);

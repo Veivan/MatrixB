@@ -78,21 +78,21 @@ public class GenderChecker {
 		System.out.println(gender_by_first_name());
 		System.out.println(gender_by_surname());
 		
-		String screenname = "";
-		System.out.println(get_gender(screenname));
+		String name = "";
+		System.out.println(get_gender(name));
 	}
 
 	/**
 	 * @return {Gender}
 	 */
-	public static Gender get_gender(String screenname) {
+	public static Gender get_gender(String name) {
 		boolean male = false, female = false;
 		Gender gender = Gender.NEUTRAL;
 		
-		if (screenname == null || screenname.isEmpty())
+		if (name == null || name.isEmpty())
 			return gender;
 		
-		String s[] = screenname.split(" ");
+		String s[] = name.split(" ");
 		first_name = s[0];
 		if (s.length > 1)
 			surname = s[1];

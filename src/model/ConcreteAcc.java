@@ -17,10 +17,10 @@ public class ConcreteAcc implements IAccount {
 	private long AccID;
 	private String email;
 	private String pass;    
-	private String name; 
+	private String screenname; // Login
 	private String phone;
 	private String mailpass;
-	private String screenname; 
+	private String name; 
 	private long twitter_id = -1;
 	private Gender gender = Gender.NEUTRAL;
 	
@@ -57,7 +57,7 @@ public class ConcreteAcc implements IAccount {
 		this.AccID = user_id;
 		this.email = email;
 		this.pass = pass;
-		this.name = name;
+		this.screenname = name;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class ConcreteAcc implements IAccount {
 		this.AccID = user_id;
 		this.email = email;
 		this.pass = pass;
-		this.name = name;
+		this.screenname = name;
 		this.phone = phone;
 		this.mailpass = mailpass;
 	}
@@ -139,11 +139,19 @@ public class ConcreteAcc implements IAccount {
 		return pass;
 	}
 
+	public String getScreenname() {
+		return screenname;
+	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -158,14 +166,6 @@ public class ConcreteAcc implements IAccount {
 	 */
 	public String getMailpass() {
 		return mailpass;
-	}
-
-	public String getScreenname() {
-		return screenname;
-	}
-
-	public void setScreenname(String screenname) {
-		this.screenname = screenname;
 	}
 
 	public long getTwitter_id() {

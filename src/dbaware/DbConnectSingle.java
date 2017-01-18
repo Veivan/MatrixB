@@ -151,9 +151,9 @@ public class DbConnectSingle {
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				acc = new ConcreteAcc(user_id, rs.getString("email"),
-						rs.getString("pass"), rs.getString("name"),
+						rs.getString("pass"), rs.getString("screen_name"),
 						rs.getString("phone"), rs.getString("mailpass"));
-				acc.setScreenname(rs.getString("screen_name"));
+				acc.setName(rs.getString("name"));
 				acc.setTwitter_id(rs.getLong("twitter_id"));
 				acc.setGender(Gender.values()[rs.getInt("gender")]);
 			}
