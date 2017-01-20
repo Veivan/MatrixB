@@ -414,17 +414,17 @@ public class DbConnectSingle {
 	 * Возвращает текущее расписание заданий. Надо сортировать элементы в
 	 * списках по одному алгоритму для правильного сравнения
 	 */
-	public Homeworks getHomeworks() {
+	public Homeworks getHomeworks(long moment) {
 
 		List<JobAtom> JobAtomList = new ArrayList<JobAtom>();
 
-		Date moment = new Date(System.currentTimeMillis());
+		Date now = new Date(moment);
 		// Tasks from DB
 		try {
 			dbConnect();
 			String query = "{call [dbo].[spTasksSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
-			sp.setDate(1, moment);
+			sp.setDate(1, now);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
 				JobAtom job = new JobAtom(rs.getLong("id_Task"),

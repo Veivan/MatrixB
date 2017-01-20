@@ -20,8 +20,8 @@ public class MatrixEntry {
 
 		logger.info("MatrixEntry starting");
 
-		Homeworks howmworks = new Homeworks();
-		Brain brain = new Brain(howmworks);
+		Homeworks homeworks = new Homeworks();
+		Brain brain = new Brain(homeworks);
 		Engine engine = new Engine();
 
 		//@SuppressWarnings("unused")
@@ -49,12 +49,12 @@ public class MatrixEntry {
 				engine.setAccounts(accounts); */
 
 				// Homeworks refreshing
-				Homeworks newschedule = dbConnector.getHomeworks();
-				boolean ischanged = howmworks.IsDifferent(newschedule);
+				Homeworks newschedule = dbConnector.getHomeworks(moment);
+				boolean ischanged = homeworks.IsDifferent(newschedule);
 				if (ischanged) {
-					howmworks.ReplaceWith(newschedule);
+					homeworks.ReplaceWith(newschedule);
 					// Запустить формирование тайминга
-					howmworks.notifyObservers();
+					homeworks.notifyObservers();
 				}
 
 				engine.ReadTimings(moment);

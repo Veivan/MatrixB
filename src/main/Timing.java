@@ -50,6 +50,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	// Равномерно распределить задания по оставшемуся времени.
 	// Приоритет заданий не учитывается
 	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs) {
+		innerTiming.clear();
 		logger.info("Timing  rebuilding");
 		// Формируем плоский список заданий.
 		homeworks.First();
