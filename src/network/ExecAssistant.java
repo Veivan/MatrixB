@@ -34,8 +34,7 @@ public class ExecAssistant extends Thread {
 		} else { 
 			dbproxy = ProxyGetter.getProxy(this.theact.getAcc().getAccID());
 			if (dbproxy == null) {
-				logger.error("TWClient cant get proxy");
-				logger.debug("TWClient cant get proxy");
+				logger.error("Executor cant get proxy");
 				return false;
 			}
 		}
@@ -48,7 +47,7 @@ public class ExecAssistant extends Thread {
 		boolean IsDebug = Constants.IsDebugProxy;
 		if (!GetProxy(IsDebug))
 			return;
-		logger.info("TWClient got proxy {} : accID = {} ID = {}",
+		logger.info("Executor got proxy {} : accID = {} ID = {}",
 				IsDebug ? "Debug" : "", this.theact.getAcc().getAccID(), this.theact.getSelfID());
 		
 		if (this.theact.getJob().Type == JobType.VISIT) 

@@ -31,6 +31,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnectSingle;
 import service.Constants;
 import service.Constants.ProxyType;
 import service.Constants.RequestType;
@@ -42,6 +43,7 @@ import inrtfs.IJobExecutor;
 
 public class SimpleVisitor implements IJobExecutor {
 
+	private MatrixAct act;
 	private long ID;
 	private JobAtom job;
 	private IAccount acc;
@@ -50,8 +52,10 @@ public class SimpleVisitor implements IJobExecutor {
 	private int port;
 	private Constants.ProxyType proxyType;
 	private CloseableHttpClient httpclient;
+	private String failreason = "";
 
 	public SimpleVisitor(MatrixAct theact, ElementProxy dbproxy) {
+		this.act = theact;
 		this.ID = theact.getSelfID();
 		this.job = theact.getJob();
 		this.acc = theact.getAcc();
@@ -61,9 +65,11 @@ public class SimpleVisitor implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(SimpleVisitor.class);
+	DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 
 	@Override
 	public void Execute() {
+		boolean result = false;
 		logger.info("SimpleVisitor run Action : {} {} accID = {} ID = {}",
 				this.job.Type.name(), Constants.dfm.format(this.job.timestamp),
 				this.acc.getAccID(), this.ID);
@@ -82,9 +88,11 @@ public class SimpleVisitor implements IJobExecutor {
 			this.httpclient = HttpClients.custom().setConnectionManager(cm)
 					.build();
 		} else {
-			final RequestConfig requestConfig = RequestConfig.custom()
+			final RequestConfig requestConfig = RequestConfig
+					.custom()
 					.setConnectTimeout(Constants.CONNECTION_TIMEOUT_MS)
-					.setConnectionRequestTimeout(Constants.CONNECTION_REQUEST_TIMEOUT_MS)
+					.setConnectionRequestTimeout(
+							Constants.CONNECTION_REQUEST_TIMEOUT_MS)
 					.setSocketTimeout(Constants.SOCKET_TIMEOUT_MS).build();
 			this.httpclient = HttpClients.custom()
 					.setDefaultRequestConfig(requestConfig).build();
@@ -116,34 +124,31 @@ public class SimpleVisitor implements IJobExecutor {
 			CloseableHttpResponse response = httpclient.execute(request,
 					context);
 			try {
-				// System.out.println("----------------------------------------");
 				String message = response.getStatusLine().toString();
 				logger.info("ResponseStatus: {}", message);
-
-				HttpEntity httpEntity = response.getEntity();
-				BufferedReader br = new BufferedReader(new InputStreamReader(
-						httpEntity.getContent()));
-				String line;
-				while ((line = br.readLine()) != null) {
-					if (line.isEmpty())
-						continue;
-					System.out.println(line);
-				}
-				EntityUtils.consume(httpEntity);
+				result = (response.getStatusLine().getStatusCode() == 200);
+				
+				/*
+				 * Not used// HttpEntity httpEntity = response.getEntity();
+				 * BufferedReader br = new BufferedReader(new InputStreamReader(
+				 * httpEntity.getContent())); String line; while ((line =
+				 * br.readLine()) != null) { if (line.isEmpty()) continue;
+				 * System.out.println(line); } EntityUtils.consume(httpEntity);
+				 */
 			} finally {
 				response.close();
 			}
 		} catch (Exception e) {
 			logger.error("TWClient run thrown exception", e);
-			logger.debug("TWClient run thrown exception", e);
+			failreason = e.getMessage();
 		} finally {
 			try {
 				httpclient.close();
 			} catch (IOException e) {
 				logger.error("An httpclient.close thrown exception :", e);
-				logger.debug("An httpclient.close thrown exception :", e);
 			}
 		}
+		dbConnector.StoreActResult(this.act, result, failreason);
 	}
 
 	static class MyConnectionSocketFactory extends SSLConnectionSocketFactory {
@@ -161,6 +166,5 @@ public class SimpleVisitor implements IJobExecutor {
 			return new Socket(proxy);
 		}
 	}
-
 
 }
