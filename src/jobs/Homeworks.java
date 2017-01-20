@@ -5,6 +5,7 @@ import inrtfs.Observer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class Homeworks implements Observable, Iterable<JobList>,
 
 	private List<JobList> HomeworksList = new ArrayList<JobList>();
 	private int index = 0;
+	
+	private Date datevalid = new Date(System.currentTimeMillis());
 
 	@Override
 	public void registerObserver(Observer o) {
@@ -89,6 +92,10 @@ public class Homeworks implements Observable, Iterable<JobList>,
 
 	// Сравнение двух расписаний
 	public boolean IsDifferent(Homeworks newsched) {
+		// Сравнение по дате валидности
+		if (this.getDatevalid() != newsched.getDatevalid())
+			return true;
+
 		// Сравнение по числу списков
 		if (this.JobListsCount() != newsched.JobListsCount())
 			return true;
@@ -162,5 +169,9 @@ public class Homeworks implements Observable, Iterable<JobList>,
 
 	public int JobListsCount() {
 		return this.HomeworksList.size();
+	}
+
+	public Date getDatevalid() {
+		return datevalid;
 	}
 }
