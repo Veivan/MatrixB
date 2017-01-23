@@ -77,6 +77,10 @@ public class Engine implements Observable {
 		logger.debug("Engine Accounts setting");
 	}
 
+	public void stop() {
+		cachedPool.shutdown(); // shutdown the pool.
+	}
+
 	// for debug only
 	public void setUserAction(int user, String actiontxt, String tcontent) {
 		MatrixActList.clear();

@@ -11,18 +11,22 @@ import dbaware.DbConnectSingle;
 import service.Constants;
 import jobs.Homeworks;
 
-public class MatrixEntry {
+public class MatrixEntry extends Thread{
 
 	static Logger logger = LoggerFactory.getLogger(MatrixEntry.class);
 	private static final long tick = 5000l; // ms
+	private volatile boolean mIsStopped = false;
+	
+	private Engine engine;
 
-	public static void main(String[] args) {
-
+	@Override
+	public void run() {
+		mIsStopped = false;
 		logger.info("MatrixEntry starting");
 
 		Homeworks homeworks = new Homeworks();
 		Brain brain = new Brain(homeworks);
-		Engine engine = new Engine();
+		engine = new Engine();
 
 		//@SuppressWarnings("unused")
 		//ActionsObserver currentDisplay = new ActionsObserver(engine);
@@ -39,7 +43,7 @@ public class MatrixEntry {
 		 */
 	
 		try {
-			while (true) {
+			while (!mIsStopped) {
 				long moment = System.currentTimeMillis();
 				logger.debug("MatrixEntry tick : {}",
 						Constants.dfm.format(moment));
@@ -67,5 +71,16 @@ public class MatrixEntry {
 		}
 		logger.info("MatrixEntry finishing");
 	}
+	
+	public void stopThis() {
+		mIsStopped = true;
+		this.interrupt();
+		engine.stop(); 
+	}
+
+	/*public static void main(String[] args) {
+		MatrixEntry matrix = new MatrixEntry();
+		matrix.run();
+	}*/
 
 }
