@@ -19,6 +19,7 @@ import service.Utils;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
@@ -146,6 +147,13 @@ public class T4jClient implements IJobExecutor {
 								this.twitter = tf.getInstance();
 							}
 							break;
+						} catch (TwitterException te) {
+							// При возникновении TwitterException, не связанных с сетью (400...500) 
+							//	не баним прокси, а выходим из цикла
+							throw new AuthenticationException(
+									String.format(
+											" Сant get AccessToken for acc = {} - {}",
+											this.acc.getAccID(), te.getMessage()));
 						} catch (Exception e) {
 							logger.error(msg, e);
 						}

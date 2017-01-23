@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
@@ -116,16 +117,17 @@ public class OAuthPasswordAuthenticator {
 					+ accessToken.getTokenSecret());
 
 			return accessToken;
-		} catch (Exception e) {
+		} 
+		catch (TwitterException te) {
+            if (te.isCausedByNetworkIssue()) {
+    			throw new ProxyException(te);
+            } else {
+            	throw te;
+            }
+		}	
+		catch (Exception e) {
 			throw new AuthenticationException(e);
 		}
-		// TODO Сделать обработку кодов 401 - 405, при этом не банить прокси
-		/*catch (TwitterException te) {
-                        if (401 == te.getStatusCode()) {
-                            System.out.println("Unable to get the access token.");
-                        } else {
-                            te.printStackTrace();
-                        }*/
 	}
 
 	private String GetPageContent(String url) throws Exception {
