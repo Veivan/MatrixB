@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import service.MemoProxy;
+
 /**
  * 
  */
@@ -49,11 +51,12 @@ public class MatrixFace extends JFrame {
 		JScrollPane scroll = new JScrollPane(memo,
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-
+		
 		JTextArea memo3 = new JTextArea();
 		memo3.setEditable(false);
-    	memo3.append(" ������.\n");
-    	memo3.append(" ����� ");
+
+    	MemoProxy memoProxy = new MemoProxy(memo);
+		MemoProxy StatusMemoProxy = new MemoProxy(memo3);
 
 		JLabel label1 = new JLabel("Start execution");
 		btStartMatrix = new JButton("Start");
@@ -62,7 +65,7 @@ public class MatrixFace extends JFrame {
 				sessionstarted = !sessionstarted;
 				if (sessionstarted == true) {
 					btStartMatrix.setText("Stop");
-					session = new MatrixEntry(); //memo
+					session = new MatrixEntry(StatusMemoProxy); 
 					session.start();
 				} else {
 					btStartMatrix.setText("Start");

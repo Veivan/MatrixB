@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnectSingle;
 import service.Constants;
+import service.MemoProxy;
 import jobs.Homeworks;
 
 public class MatrixEntry extends Thread{
@@ -18,12 +19,19 @@ public class MatrixEntry extends Thread{
 	private volatile boolean mIsStopped = false;
 	
 	private Engine engine;
+	private MemoProxy memoProxy;
+	
+	public MatrixEntry(MemoProxy memoProxy) {
+		this.memoProxy = memoProxy;
+	} 
 
 	@Override
 	public void run() {
 		mIsStopped = false;
-		logger.info("MatrixEntry starting");
-
+		String mess = "MatrixEntry starting";
+		logger.info(mess);
+		memoProxy.println(mess);
+		
 		Homeworks homeworks = new Homeworks();
 		Brain brain = new Brain(homeworks);
 		engine = new Engine();
@@ -69,7 +77,9 @@ public class MatrixEntry extends Thread{
 		} catch (InterruptedException e) {
 			logger.error("MatrixEntry cycle exception :", e);
 		}
-		logger.info("MatrixEntry finishing");
+		mess = "MatrixEntry finishing";
+		logger.info(mess);
+		memoProxy.replacetext(mess);
 	}
 	
 	public void stopThis() {
