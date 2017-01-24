@@ -10,12 +10,12 @@ public final class Constants {
 
 	public enum JobType {
 		SETAVA, SETBANNER, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT,
-		UPDATEPROFILE, READTIMELINE, NEWUSER
+		UPDATEPROFILE, READTIMELINE, NEWUSER, NEWUSERBRUT
 	}
 
 	// Приоритеты списков задач. Перечислены по порядку членов перечисления
 	// JobType
-	private static int[] priority = { 20, 10, 50, 90, 80, 70, 60, 30, 40, 85, 20, 95, 5 };
+	private static int[] priority = { 20, 10, 50, 90, 80, 70, 60, 30, 40, 85, 20, 95, 5, 5 };
 
 	public static int GetPriority(JobType jobType) {
 		return priority[jobType.ordinal()];

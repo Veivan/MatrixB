@@ -1,6 +1,7 @@
 package network;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
@@ -220,6 +221,41 @@ public class T4jClient implements IJobExecutor {
 		return twitter.updateStatus(latestStatus);
 	}
 
+	/**
+	 * directly make new user
+	 * 
+	 * @return
+	 * @throws TwitterException
+	 * @throws IOException
+	 */
+	private void MakeUser(boolean fillprof) throws TwitterException,
+			IOException {
+		User user = twitter.verifyCredentials();
+		// Определение пола
+		Gender gender = GenderChecker.get_gender(user.getName());
+		// Сохранение дополнительных данных в БД
+		((ConcreteAcc) this.acc).setName(user.getName());
+		((ConcreteAcc) this.acc).setTwitter_id(user.getId());
+		((ConcreteAcc) this.acc).setGender(gender);
+		dbConnector.SaveAcc2Db((ConcreteAcc) acc, -1);
+
+		if (fillprof) {
+			// Установка картинок для акка
+			int ptype_id = 1;
+			// BANNERIMG
+			byte[] bytes = dbConnector.getRandomPicture(gender, ptype_id);
+			ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+			twitter.updateProfileBanner(bis);
+			bis.close();
+			ptype_id = 2;
+			// PROFILEIMG
+			bytes = dbConnector.getRandomPicture(gender, ptype_id);
+			bis = new ByteArrayInputStream(bytes);
+			twitter.updateProfileImage(bis);
+			bis.close();
+		}
+	}
+
 	private boolean OperateTwitter() {
 		Constants.JobType jobType = this.job.Type;
 		byte[] buf = null;
@@ -272,27 +308,11 @@ public class T4jClient implements IJobExecutor {
 							result = true;
 							break;
 						case NEWUSER:
-							User user = twitter.verifyCredentials();
-							// Определение пола
-							Gender gender = GenderChecker.get_gender(user
-									.getName());
-							// Сохранение дополнительных данных в БД
-							((ConcreteAcc) this.acc).setName(user.getName());
-							((ConcreteAcc) this.acc)
-									.setTwitter_id(user.getId());
-							((ConcreteAcc) this.acc).setGender(gender);
-							dbConnector.SaveAcc2Db((ConcreteAcc) acc, -1);
-							/*
-							 * / Установка картинок для акка int ptype_id = 1;
-							 * // BANNERIMG byte[] bytes =
-							 * dbConnector.getRandomPicture(gender, ptype_id);
-							 * bis = new ByteArrayInputStream(bytes);
-							 * twitter.updateProfileBanner(bis); bis.close();
-							 * ptype_id = 2; // PROFILEIMG bytes =
-							 * dbConnector.getRandomPicture(gender, ptype_id);
-							 * bis = new ByteArrayInputStream(bytes);
-							 * twitter.updateProfileImage(bis); bis.close();
-							 */
+							MakeUser(true);
+							result = true;
+							break;
+						case NEWUSERBRUT:
+							MakeUser(false);
 							result = true;
 							break;
 						case DIRECT:
