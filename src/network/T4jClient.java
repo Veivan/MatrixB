@@ -183,117 +183,151 @@ public class T4jClient implements IJobExecutor {
 		return true;
 	}
 
+	/**
+	 * directly update status
+	 * 
+	 * @return Status
+	 */
+	private Status SendTwit() throws Exception {
+		StatusUpdate latestStatus = null;
+		if (job.TContent.contains("#helpchildren")) {
+			// Получение id и картинки
+			String page = Utils.GetPageContent(Constants.URL_RANDOM_SERVLET);
+			JSONObject json = new JSONObject(page);
+			int id = json.getInt("id");
+			String pname = json.getString("name");
+			String ppage = json.getString("age");
+			String picenc = json.getString("picture");
+			byte[] decodedBytes = Base64.getDecoder().decode(picenc.getBytes());
+
+			// Формирование Статуса
+			InputStream is = new ByteArrayInputStream(decodedBytes);
+			String fileName = Integer.toString(id) + ".jpg";
+
+			String message = String.format("%s %s. Вы можете помочь.%n", pname,
+					ppage)
+					+ "http://helpchildren.online/?id="
+					+ id
+					+ " "
+					+ job.TContent; // + #подарижизнь
+			latestStatus = new StatusUpdate(message);
+			// Загрузка картинки в твиттер
+			latestStatus.setMedia(fileName, is);
+			// setLocation(GeoLocation location)
+		} else
+			latestStatus = new StatusUpdate(job.TContent);
+		// Твиттинг
+		return twitter.updateStatus(latestStatus);
+	}
+
 	private boolean OperateTwitter() {
 		Constants.JobType jobType = this.job.Type;
 		byte[] buf = null;
 		ByteArrayInputStream bis = null;
 		boolean result = false;
 		try {
-			switch (jobType) {
-			case TWIT:
-				StatusUpdate latestStatus = null;
-				if (job.TContent.contains("#helpchildren")) {
-					// Получение id и картинки
-					String page = Utils
-							.GetPageContent(Constants.URL_RANDOM_SERVLET);
-					JSONObject json = new JSONObject(page);
-					int id = json.getInt("id");
-					String pname = json.getString("name");
-					String ppage = json.getString("age");
-					String picenc = json.getString("picture");
-					byte[] decodedBytes = Base64.getDecoder().decode(
-							picenc.getBytes());
-
-					// Формирование Статуса
-					InputStream is = new ByteArrayInputStream(decodedBytes);
-					String fileName = Integer.toString(id) + ".jpg";
-
-					String message = String.format(
-							"%s %s. Вы можете помочь.%n", pname, ppage)
-							+ "http://helpchildren.online/?id="
-							+ id
-							+ " "
-							+ job.TContent; // + #подарижизнь
-					latestStatus = new StatusUpdate(message);
-					// Загрузка картинки в твиттер
-					latestStatus.setMedia(fileName, is);
-					// setLocation(GeoLocation location)
-				} else
-					latestStatus = new StatusUpdate(job.TContent);
-				// Твиттинг
-				Status status = twitter.updateStatus(latestStatus);
-
-				result = true;
-				break;
-			case SETAVA:
-				buf = job.getProfileImage();
-				bis = new ByteArrayInputStream(buf);
-				twitter.updateProfileImage(bis);
-				bis.close();
-				result = true;
-				break;
-			case SETBANNER:
-				buf = job.getProfileBanner();
-				bis = new ByteArrayInputStream(buf);
-				twitter.updateProfileBanner(bis);
-				bis.close();
-				result = true;
-				break;
-			case UPDATEPROFILE:
-				User us = twitter.updateProfile(job.getName(), job.getUrl(),
-						job.getLocation(), job.getDescription());
-				System.out.println(us.getScreenName() + " : " + us.getId());
-				result = true;
-				break;
-			case READTIMELINE:
-				List<Status> statuses = twitter.getHomeTimeline();
-				System.out.println("Showing @" + "user.getScreenName()"
-						+ "'s home timeline.");
-				for (Status stat : statuses) {
-					System.out.println("@" + stat.getUser().getScreenName()
-							+ " - " + stat.getText());
+			for (int j = 0; j < Constants.cTryProxyCount; j++) {
+				for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
+					String msg = String.format(
+							"OperateTwitter shot %d with proxy %d ERROR : ", i,
+							j);
+					try {
+						switch (jobType) {
+						case TWIT:
+							Status status = SendTwit();
+							result = true;
+							break;
+						case SETAVA:
+							buf = job.getProfileImage();
+							bis = new ByteArrayInputStream(buf);
+							twitter.updateProfileImage(bis);
+							bis.close();
+							result = true;
+							break;
+						case SETBANNER:
+							buf = job.getProfileBanner();
+							bis = new ByteArrayInputStream(buf);
+							twitter.updateProfileBanner(bis);
+							bis.close();
+							result = true;
+							break;
+						case UPDATEPROFILE:
+							User us = twitter.updateProfile(job.getName(),
+									job.getUrl(), job.getLocation(),
+									job.getDescription());
+							System.out.println(us.getScreenName() + " : "
+									+ us.getId());
+							result = true;
+							break;
+						case READTIMELINE:
+							List<Status> statuses = twitter.getHomeTimeline();
+							System.out.println("Showing @"
+									+ "user.getScreenName()"
+									+ "'s home timeline.");
+							for (Status stat : statuses) {
+								System.out.println("@"
+										+ stat.getUser().getScreenName()
+										+ " - " + stat.getText());
+							}
+							result = true;
+							break;
+						case NEWUSER:
+							User user = twitter.verifyCredentials();
+							// Определение пола
+							Gender gender = GenderChecker.get_gender(user
+									.getName());
+							// Сохранение дополнительных данных в БД
+							((ConcreteAcc) this.acc).setName(user.getName());
+							((ConcreteAcc) this.acc)
+									.setTwitter_id(user.getId());
+							((ConcreteAcc) this.acc).setGender(gender);
+							dbConnector.SaveAcc2Db((ConcreteAcc) acc, -1);
+							/*
+							 * / Установка картинок для акка int ptype_id = 1;
+							 * // BANNERIMG byte[] bytes =
+							 * dbConnector.getRandomPicture(gender, ptype_id);
+							 * bis = new ByteArrayInputStream(bytes);
+							 * twitter.updateProfileBanner(bis); bis.close();
+							 * ptype_id = 2; // PROFILEIMG bytes =
+							 * dbConnector.getRandomPicture(gender, ptype_id);
+							 * bis = new ByteArrayInputStream(bytes);
+							 * twitter.updateProfileImage(bis); bis.close();
+							 */
+							result = true;
+							break;
+						case DIRECT:
+							break;
+						case LIKE:
+							break;
+						case RETWIT:
+							break;
+						case REPLAY:
+							break;
+						case FOLLOW:
+							break;
+						case UNFOLLOW:
+							break;
+						default:
+							break;
+						}
+					} catch (TwitterException te) {
+						// При возникновении TwitterException, не связанных
+						// с сетью (400...500) выходим из цикла
+						if (te.isCausedByNetworkIssue()) {
+							logger.error(msg, te);
+						} else {
+							throw te;
+						}
+					} catch (Exception e) {
+						logger.error(msg, e);
+					}
+					if (result == true)
+						break;
 				}
-				result = true;
-				break;
-			case NEWUSER:
-				User user = twitter.verifyCredentials();
-				// Определение пола
-				Gender gender = GenderChecker.get_gender(user.getName());
-				// Сохранение дополнительных данных в БД
-				((ConcreteAcc) this.acc).setName(user.getName());
-				((ConcreteAcc) this.acc).setTwitter_id(user.getId());
-				((ConcreteAcc) this.acc).setGender(gender);
-				dbConnector.SaveAcc2Db((ConcreteAcc) acc, -1);
-				/*
-				 * / Установка картинок для акка int ptype_id = 1; // BANNERIMG
-				 * byte[] bytes = dbConnector.getRandomPicture(gender,
-				 * ptype_id); bis = new ByteArrayInputStream(bytes);
-				 * twitter.updateProfileBanner(bis); bis.close(); ptype_id = 2;
-				 * // PROFILEIMG bytes = dbConnector.getRandomPicture(gender,
-				 * ptype_id); bis = new ByteArrayInputStream(bytes);
-				 * twitter.updateProfileImage(bis); bis.close();
-				 */
-				result = true;
-				break;
-			case DIRECT:
-				break;
-			case LIKE:
-				break;
-			case RETWIT:
-				break;
-			case REPLAY:
-				break;
-			case FOLLOW:
-				break;
-			case UNFOLLOW:
-				break;
-			default:
-				break;
+				if (result == true)
+					break;
 			}
 		} catch (Exception e) {
-			// TODO Перенести обработку ичключений в цикл. Делать OperTwitter в
-			// цикле.
-			// TODO Добавить обработку кодов 401, 403 и тогда прерывать цикл
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
 			result = false;
