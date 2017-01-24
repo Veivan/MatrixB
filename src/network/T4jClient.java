@@ -148,12 +148,12 @@ public class T4jClient implements IJobExecutor {
 							}
 							break;
 						} catch (TwitterException te) {
-							// При возникновении TwitterException, не связанных с сетью (400...500) 
-							//	не баним прокси, а выходим из цикла
-							throw new AuthenticationException(
-									String.format(
-											" Сant get AccessToken for acc = {} - {}",
-											this.acc.getAccID(), te.getMessage()));
+							// При возникновении TwitterException, не связанных
+							// с сетью (400...500)
+							// не баним прокси, а выходим из цикла
+							throw new AuthenticationException(String.format(
+									" Сant get AccessToken for acc = {} - {}",
+									this.acc.getAccID(), te.getMessage()));
 						} catch (Exception e) {
 							logger.error(msg, e);
 						}
@@ -228,50 +228,51 @@ public class T4jClient implements IJobExecutor {
 			case SETAVA:
 				buf = job.getProfileImage();
 				bis = new ByteArrayInputStream(buf);
-	            twitter.updateProfileImage(bis);
-	            bis.close();             
+				twitter.updateProfileImage(bis);
+				bis.close();
 				result = true;
 				break;
 			case SETBANNER:
 				buf = job.getProfileBanner();
 				bis = new ByteArrayInputStream(buf);
-	            twitter.updateProfileBanner(bis);
-	            bis.close();             
+				twitter.updateProfileBanner(bis);
+				bis.close();
 				result = true;
 				break;
 			case UPDATEPROFILE:
-				User us = twitter.updateProfile(job.getName(), job.getUrl(), job.getLocation(), job.getDescription());
+				User us = twitter.updateProfile(job.getName(), job.getUrl(),
+						job.getLocation(), job.getDescription());
 				System.out.println(us.getScreenName() + " : " + us.getId());
 				result = true;
 				break;
 			case READTIMELINE:
-				List<Status> statuses = twitter.getHomeTimeline(); 
-				System.out.println("Showing @" + "user.getScreenName()" + "'s home timeline."); 
-				for (Status stat : statuses) { 
-					System.out.println("@" + stat.getUser().getScreenName() + " - " + stat.getText());
-				}				
+				List<Status> statuses = twitter.getHomeTimeline();
+				System.out.println("Showing @" + "user.getScreenName()"
+						+ "'s home timeline.");
+				for (Status stat : statuses) {
+					System.out.println("@" + stat.getUser().getScreenName()
+							+ " - " + stat.getText());
+				}
 				result = true;
 				break;
 			case NEWUSER:
 				User user = twitter.verifyCredentials();
-				// Определение пола 
+				// Определение пола
 				Gender gender = GenderChecker.get_gender(user.getName());
-				// Сохранение дополнительных данных в БД 
-				((ConcreteAcc)this.acc).setName(user.getName());  
-				((ConcreteAcc)this.acc).setTwitter_id(user.getId());  
-				((ConcreteAcc)this.acc).setGender(gender);
-				dbConnector.SaveAcc2Db((ConcreteAcc)acc, -1);
-				/*/ Установка картинок для акка
-				int ptype_id = 1; // BANNERIMG
-				byte[] bytes = dbConnector.getRandomPicture(gender, ptype_id);
-				bis = new ByteArrayInputStream(bytes);
-	            twitter.updateProfileBanner(bis);
-	            bis.close();             
-				ptype_id = 2; // PROFILEIMG
-				bytes = dbConnector.getRandomPicture(gender, ptype_id);
-				bis = new ByteArrayInputStream(bytes);
-	            twitter.updateProfileImage(bis);
-	            bis.close();    */         
+				// Сохранение дополнительных данных в БД
+				((ConcreteAcc) this.acc).setName(user.getName());
+				((ConcreteAcc) this.acc).setTwitter_id(user.getId());
+				((ConcreteAcc) this.acc).setGender(gender);
+				dbConnector.SaveAcc2Db((ConcreteAcc) acc, -1);
+				/*
+				 * / Установка картинок для акка int ptype_id = 1; // BANNERIMG
+				 * byte[] bytes = dbConnector.getRandomPicture(gender,
+				 * ptype_id); bis = new ByteArrayInputStream(bytes);
+				 * twitter.updateProfileBanner(bis); bis.close(); ptype_id = 2;
+				 * // PROFILEIMG bytes = dbConnector.getRandomPicture(gender,
+				 * ptype_id); bis = new ByteArrayInputStream(bytes);
+				 * twitter.updateProfileImage(bis); bis.close();
+				 */
 				result = true;
 				break;
 			case DIRECT:
@@ -286,11 +287,12 @@ public class T4jClient implements IJobExecutor {
 				break;
 			case UNFOLLOW:
 				break;
-			default:				
+			default:
 				break;
 			}
 		} catch (Exception e) {
-			// TODO Перенести обработку ичключений в цикл. Делать OperTwitter в цикле.
+			// TODO Перенести обработку ичключений в цикл. Делать OperTwitter в
+			// цикле.
 			// TODO Добавить обработку кодов 401, 403 и тогда прерывать цикл
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
