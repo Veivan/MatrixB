@@ -98,7 +98,7 @@ public class T4jClient implements IJobExecutor {
 
 			if (this.creds == null)
 				throw new AuthenticationException(String.format(
-						"Cannot get credentials for acc = {}",
+						"Cannot get credentials for acc = %d",
 						this.acc.getAccID()));
 
 			if (Utils.empty(this.creds.getCONSUMER_KEY())
@@ -106,7 +106,7 @@ public class T4jClient implements IJobExecutor {
 					|| Utils.empty(this.creds.getUSER())
 					|| Utils.empty(this.creds.getUSER_PASS()))
 				throw new AuthenticationException(String.format(
-						"Empty incoming credentials for acc = {}",
+						"Empty incoming credentials for acc = %d",
 						this.acc.getAccID()));
 
 			// Creating twitter
@@ -140,7 +140,7 @@ public class T4jClient implements IJobExecutor {
 							if (dbproxy == null) {
 								throw new AuthenticationException(
 										String.format(
-												" cant get proxy for acc = {}",
+												" cant get proxy for acc = %d",
 												this.acc.getAccID()));
 							} else {
 								// Creating twitter
@@ -154,7 +154,7 @@ public class T4jClient implements IJobExecutor {
 							// с сетью (400...500)
 							// не баним прокси, а выходим из цикла
 							throw new AuthenticationException(String.format(
-									" Сant get AccessToken for acc = {} - {}",
+									" Сant get AccessToken for acc = %d - %s",
 									this.acc.getAccID(), te.getMessage()));
 						} catch (AuthenticationException e) {
 							throw e;
@@ -176,7 +176,7 @@ public class T4jClient implements IJobExecutor {
 							accessToken.getTokenSecret());
 				} else
 					throw new AuthenticationException(String.format(
-							"AccessToken is null for acc = {}",
+							"AccessToken is null for acc = %d",
 							this.acc.getAccID()));
 			}
 		} catch (Exception e) {
