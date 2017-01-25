@@ -39,7 +39,7 @@ public class testT4jClient {
 
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
-		ConcreteAcc acc = new ConcreteAcc(4L);
+		ConcreteAcc acc = new ConcreteAcc(6L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works

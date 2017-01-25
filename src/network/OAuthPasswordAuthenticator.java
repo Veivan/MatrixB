@@ -49,7 +49,8 @@ public class OAuthPasswordAuthenticator {
 	static Logger logger = LoggerFactory
 			.getLogger(OAuthPasswordAuthenticator.class);
 
-	public OAuthPasswordAuthenticator(final Twitter twitter, final ElementCredentials creds) {
+	public OAuthPasswordAuthenticator(final Twitter twitter,
+			final ElementCredentials creds) {
 		this.twitter = twitter;
 		this.creds = creds;
 	}
@@ -61,13 +62,27 @@ public class OAuthPasswordAuthenticator {
 	 */
 	public AccessToken getOAuthAccessTokenSilent() throws Exception {
 		RequestToken requestToken = null;
+		AccessToken accessToken = null;
 		try {
-			requestToken = twitter
-					.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
-		} catch (Exception e) {
-			throw new ProxyException(e);
-		}
-		try {
+			for (int i = 0; i < 2; i++) {
+				String msg = String.format(
+						"Get OAuthRequestToken shot %d ERROR : ", i + 1);
+				try {
+					requestToken = twitter
+							.getOAuthRequestToken(Constants.DEFAULT_OAUTH_CALLBACK);
+					if (requestToken != null)
+						break;
+				} catch (TwitterException te) {
+					if (te.isCausedByNetworkIssue()) {
+						logger.error(msg, te);
+					} else {
+						throw te;
+					}
+				}
+			}
+			if (requestToken == null)
+				throw new ProxyException("Bad proxy when getOAuthRequestToken");
+			
 			final String oauth_token = requestToken.getToken();
 
 			logger.debug("Got request token.");
@@ -108,24 +123,37 @@ public class OAuthPasswordAuthenticator {
 			if (oauth_verifier == null || oauth_verifier.isEmpty())
 				throw new AuthenticationException("Cannot get OAuth verifier.");
 
-			AccessToken accessToken = twitter.getOAuthAccessToken(requestToken,
-					oauth_verifier);
+			for (int i = 0; i < 2; i++) {
+				String msg = String.format(
+						"Get getOAuthAccessToken shot %d ERROR : ", i + 1);
+				try {
+					 accessToken = twitter.getOAuthAccessToken(requestToken,
+							oauth_verifier);
+					if (accessToken != null)
+						break;
+				} catch (TwitterException te) {
+					if (te.isCausedByNetworkIssue()) {
+						logger.error(msg, te);
+					} else {
+						throw te;
+					}
+				}
+			}
+			if (accessToken == null)
+				throw new ProxyException("Bad proxy when getOAuthAccessToken");
 
 			logger.debug("Got access token.");
 			logger.debug("Access token: " + accessToken.getToken());
-			logger.debug("Access token secret: "
-					+ accessToken.getTokenSecret());
+			logger.debug("Access token secret: " + accessToken.getTokenSecret());
 
 			return accessToken;
-		} 
-		catch (TwitterException te) {
-            if (te.isCausedByNetworkIssue()) {
-    			throw new ProxyException(te);
-            } else {
-            	throw te;
-            }
-		}	
-		catch (Exception e) {
+		} catch (TwitterException te) {
+			if (te.isCausedByNetworkIssue()) {
+				throw new ProxyException(te);
+			} else {
+				throw te;
+			}
+		} catch (Exception e) {
 			throw e;
 		}
 	}
@@ -215,8 +243,7 @@ public class OAuthPasswordAuthenticator {
 		return buf.toString();
 	}
 
-	private static String readAuthenticityToken(String html)
-			throws Exception {
+	private static String readAuthenticityToken(String html) throws Exception {
 		logger.debug("Extracting authenticity_token...");
 		Document doc = Jsoup.parse(html);
 		String result = "";
@@ -234,7 +261,7 @@ public class OAuthPasswordAuthenticator {
 		}
 		return result;
 	}
-	
+
 	private static String readOauthVerifier(String html) {
 		Document document = Jsoup.parse(html);
 		String result = "";
@@ -245,7 +272,7 @@ public class OAuthPasswordAuthenticator {
 					Pattern.CASE_INSENSITIVE);
 			Matcher m = pattern.matcher(content);
 			result = m.matches() ? m.group(1) : null;
-			//logger.debug(result);
+			// logger.debug(result);
 			return result;
 		} catch (Exception e) {
 			return null;

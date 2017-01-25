@@ -38,6 +38,12 @@ public class CustExeptions {
 			super(cause);
 			logger.error(ident + cause.getMessage());
 		}
+
+		public ProxyException(final String message) {
+			super(message);
+			logger.error(ident + message);
+		}
+		
 	}
 
 }
