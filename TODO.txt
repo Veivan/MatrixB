@@ -26,7 +26,7 @@ HTTP_VIA, HTTP_X_FORWARDED_FOR, HTTP_FORWARDED_FOR, HTTP_X_FORWARDED, HTTP_FORWA
 </html>
 
 
-3. verifyCredentials перед всеми операциями - Зачем?. 
+3.  
 	 
 
 4. Может быть одинаковое число списков, но с разными типами.

@@ -29,7 +29,7 @@ public class AccImporter extends Thread {
 	private String name;
 	private String phone;
 	private String mailpass;
-	
+
 	private int Datatype;
 
 	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
@@ -52,7 +52,7 @@ public class AccImporter extends Thread {
 
 	@Override
 	public void run() {
-		ConcreteAcc acc = SaveAcc(); 
+		ConcreteAcc acc = SaveAcc();
 		long user_id = acc.getAccID();
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
@@ -79,7 +79,7 @@ public class AccImporter extends Thread {
 		return acc;
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
+	private static void DoImportAccsFromFile() throws FileNotFoundException {
 		ExecutorService cachedPool = Executors.newCachedThreadPool();
 		Scanner in = new Scanner(new FileReader("accs.txt"));
 		while (in.hasNext()) {
@@ -89,6 +89,13 @@ public class AccImporter extends Thread {
 		}
 		in.close();
 		cachedPool.shutdown();
+	}
+
+	private static void DoCheckAccs() {
+	}
+	
+	public static void main(String[] args) throws FileNotFoundException {
+		DoImportAccsFromFile();
 	}
 
 }

@@ -33,17 +33,19 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		JobAtom job = new JobAtom(12L, "READTIMELINE", "");
+		JobAtom job = new JobAtom(12L, "READUSERTIMELINE", "");
 		
-		//JobAtom job = new JobAtom(100L, "NEWUSER", ""); 
+		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
+
+		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
-		ConcreteAcc acc = new ConcreteAcc(2L);
+		ConcreteAcc acc = new ConcreteAcc(4L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works
 		//String proxy = "178.215.111.70:9999"; // HTTP not works - timeout expired
 
-		String proxy = "188.170.209.50:3128"; // good HTTPS 188.170.209.50:3128 //79.104.54.82:8080
+		String proxy = "79.104.54.82:8080"; // good HTTPS 
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];

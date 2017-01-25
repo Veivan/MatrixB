@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import model.ElementCredentials;
 
@@ -98,4 +100,22 @@ public class Utils {
 		}
 		return bytesArray;
 	}
+	
+	/**
+	 * Get a diff between two dates
+	 * @param date1 the oldest date
+	 * @param date2 the newest date
+	 * @param timeUnit the unit in which you want the diff
+	 * @return the diff value, in the provided unit
+	 */
+	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+	    long diffInMillies = date2.getTime() - date1.getTime();
+	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+	}
+	
+	public static long getDateDiff(long date1, long date2, TimeUnit timeUnit) {
+	    long diffInMillies = date2 - date1;
+	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+	}
+
 }

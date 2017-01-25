@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -123,7 +124,7 @@ public class T4jClient implements IJobExecutor {
 					for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 						String msg = String
 								.format("Get accessToken shot %d with proxy %d ERROR : ",
-										i, j);
+										i+1, j+1);
 						try {
 							accessToken = auth.getOAuthAccessTokenSilent();
 							if (accessToken != null)
@@ -228,9 +229,8 @@ public class T4jClient implements IJobExecutor {
 	 * @throws TwitterException
 	 * @throws IOException
 	 */
-	private void MakeUser(boolean fillprof) throws TwitterException,
+	private void MakeUser(boolean fillprof, User user) throws TwitterException,
 			IOException {
-		User user = twitter.verifyCredentials();
 		// Определение пола
 		Gender gender = GenderChecker.get_gender(user.getName());
 		// Сохранение дополнительных данных в БД
@@ -260,12 +260,14 @@ public class T4jClient implements IJobExecutor {
 		Constants.JobType jobType = this.job.Type;
 		byte[] buf = null;
 		ByteArrayInputStream bis = null;
+		List<Status> statuses = null;
 		boolean result = false;
 		try {
 			for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 				String msg = String
-						.format("OperateTwitter shot %d ERROR : ", i);
+						.format("OperateTwitter shot %d ERROR : ", i+1);
 				try {
+					User user = twitter.verifyCredentials();
 					switch (jobType) {
 					case TWIT:
 						Status status = SendTwit();
@@ -293,23 +295,49 @@ public class T4jClient implements IJobExecutor {
 								+ us.getId());
 						result = true;
 						break;
-					case READTIMELINE:
-						List<Status> statuses = twitter.getHomeTimeline();
-						System.out.println("Showing @" + "user.getScreenName()"
+					case READHOMETIMELINE:
+						statuses = twitter.getHomeTimeline();
+						System.out.println("Showing @" + user.getScreenName()
 								+ "'s home timeline.");
 						for (Status stat : statuses) {
-							System.out.println(stat.getCreatedAt() + "@"
+							System.out.println(stat.getCreatedAt() + " @"
 									+ stat.getUser().getScreenName() + " - "
 									+ stat.getText());
 						}
 						result = true;
 						break;
+					case READUSERTIMELINE:
+						statuses = twitter.getUserTimeline();
+						System.out.println("Showing @" + user.getScreenName()
+								+ "'s user timeline.");
+						for (Status stat : statuses) {
+							System.out.println(stat.getCreatedAt() + " @"
+									+ stat.getUser().getScreenName() + " - "
+									+ stat.getText());
+						}
+						result = true;
+						break;
+					case CHECKENABLED:
+						boolean IsEnabled = false;
+						statuses = twitter.getUserTimeline();
+						if (statuses == null || statuses.size() == 0)
+							IsEnabled = true;
+						else {
+							long interval = Utils.getDateDiff(statuses.get(0)
+									.getCreatedAt().getTime(),
+									System.currentTimeMillis(), TimeUnit.DAYS);
+							IsEnabled = interval > Constants.cIntervalOfLastUse;
+						}
+						System.out.println("@" + user.getScreenName() + " is "
+								+ (IsEnabled ? "enabled" : "disabled"));
+						result = true;
+						break;
 					case NEWUSER:
-						MakeUser(true);
+						MakeUser(true, user);
 						result = true;
 						break;
 					case NEWUSERBRUT:
-						MakeUser(false);
+						MakeUser(false, user);
 						result = true;
 						break;
 					case DIRECT:
