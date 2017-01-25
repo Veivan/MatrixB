@@ -156,6 +156,8 @@ public class T4jClient implements IJobExecutor {
 							throw new AuthenticationException(String.format(
 									" Сant get AccessToken for acc = {} - {}",
 									this.acc.getAccID(), te.getMessage()));
+						} catch (AuthenticationException e) {
+							throw e;
 						} catch (Exception e) {
 							logger.error(msg, e);
 						}

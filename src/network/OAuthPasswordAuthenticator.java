@@ -126,7 +126,7 @@ public class OAuthPasswordAuthenticator {
             }
 		}	
 		catch (Exception e) {
-			throw new AuthenticationException(e);
+			throw e;
 		}
 	}
 

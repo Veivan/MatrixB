@@ -18,13 +18,11 @@ public class CustExeptions {
 		public AuthenticationException(final Exception cause) {
 			super(cause);
 			logger.error(ident + cause.getMessage());
-			logger.debug(ident + cause.getMessage());
 		}
 
 		public AuthenticationException(final String message) {
 			super(message);
 			logger.error(ident + message);
-			logger.debug(ident + message);
 		}
 	}
 
@@ -39,7 +37,6 @@ public class CustExeptions {
 		public ProxyException(final Exception cause) {
 			super(cause);
 			logger.error(ident + cause.getMessage());
-			logger.debug(ident + cause.getMessage());
 		}
 	}
 

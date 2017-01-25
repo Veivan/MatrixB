@@ -59,7 +59,8 @@ public class AccImporter extends Thread {
 		if (dbproxy == null) {
 			logger.error("AccImporter cant get proxy");
 		} else {
-			JobAtom job = new JobAtom(5L, "NEWUSER", "");
+			String jobtp = (this.Datatype == 3) ? "NEWUSERBRUT" : "NEWUSER";
+			JobAtom job = new JobAtom(5L, jobtp, "");
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();
@@ -93,7 +94,7 @@ public class AccImporter extends Thread {
 
 	private static void DoCheckAccs() {
 	}
-	
+
 	public static void main(String[] args) throws FileNotFoundException {
 		DoImportAccsFromFile();
 	}
