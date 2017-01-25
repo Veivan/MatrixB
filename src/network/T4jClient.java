@@ -262,87 +262,81 @@ public class T4jClient implements IJobExecutor {
 		ByteArrayInputStream bis = null;
 		boolean result = false;
 		try {
-			for (int j = 0; j < Constants.cTryProxyCount; j++) {
-				for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
-					String msg = String.format(
-							"OperateTwitter shot %d with proxy %d ERROR : ", i,
-							j);
-					try {
-						switch (jobType) {
-						case TWIT:
-							Status status = SendTwit();
-							result = true;
-							break;
-						case SETAVA:
-							buf = job.getProfileImage();
-							bis = new ByteArrayInputStream(buf);
-							twitter.updateProfileImage(bis);
-							bis.close();
-							result = true;
-							break;
-						case SETBANNER:
-							buf = job.getProfileBanner();
-							bis = new ByteArrayInputStream(buf);
-							twitter.updateProfileBanner(bis);
-							bis.close();
-							result = true;
-							break;
-						case UPDATEPROFILE:
-							User us = twitter.updateProfile(job.getName(),
-									job.getUrl(), job.getLocation(),
-									job.getDescription());
-							System.out.println(us.getScreenName() + " : "
-									+ us.getId());
-							result = true;
-							break;
-						case READTIMELINE:
-							List<Status> statuses = twitter.getHomeTimeline();
-							System.out.println("Showing @"
-									+ "user.getScreenName()"
-									+ "'s home timeline.");
-							for (Status stat : statuses) {
-								System.out.println("@"
-										+ stat.getUser().getScreenName()
-										+ " - " + stat.getText());
-							}
-							result = true;
-							break;
-						case NEWUSER:
-							MakeUser(true);
-							result = true;
-							break;
-						case NEWUSERBRUT:
-							MakeUser(false);
-							result = true;
-							break;
-						case DIRECT:
-							break;
-						case LIKE:
-							break;
-						case RETWIT:
-							break;
-						case REPLAY:
-							break;
-						case FOLLOW:
-							break;
-						case UNFOLLOW:
-							break;
-						default:
-							break;
-						}
-					} catch (TwitterException te) {
-						// При возникновении TwitterException, не связанных
-						// с сетью (400...500) выходим из цикла
-						if (te.isCausedByNetworkIssue()) {
-							logger.error(msg, te);
-						} else {
-							throw te;
-						}
-					} catch (Exception e) {
-						logger.error(msg, e);
-					}
-					if (result == true)
+			for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
+				String msg = String
+						.format("OperateTwitter shot %d ERROR : ", i);
+				try {
+					switch (jobType) {
+					case TWIT:
+						Status status = SendTwit();
+						result = true;
 						break;
+					case SETAVA:
+						buf = job.getProfileImage();
+						bis = new ByteArrayInputStream(buf);
+						twitter.updateProfileImage(bis);
+						bis.close();
+						result = true;
+						break;
+					case SETBANNER:
+						buf = job.getProfileBanner();
+						bis = new ByteArrayInputStream(buf);
+						twitter.updateProfileBanner(bis);
+						bis.close();
+						result = true;
+						break;
+					case UPDATEPROFILE:
+						User us = twitter.updateProfile(job.getName(),
+								job.getUrl(), job.getLocation(),
+								job.getDescription());
+						System.out.println(us.getScreenName() + " : "
+								+ us.getId());
+						result = true;
+						break;
+					case READTIMELINE:
+						List<Status> statuses = twitter.getHomeTimeline();
+						System.out.println("Showing @" + "user.getScreenName()"
+								+ "'s home timeline.");
+						for (Status stat : statuses) {
+							System.out.println(stat.getCreatedAt() + "@"
+									+ stat.getUser().getScreenName() + " - "
+									+ stat.getText());
+						}
+						result = true;
+						break;
+					case NEWUSER:
+						MakeUser(true);
+						result = true;
+						break;
+					case NEWUSERBRUT:
+						MakeUser(false);
+						result = true;
+						break;
+					case DIRECT:
+						break;
+					case LIKE:
+						break;
+					case RETWIT:
+						break;
+					case REPLAY:
+						break;
+					case FOLLOW:
+						break;
+					case UNFOLLOW:
+						break;
+					default:
+						break;
+					}
+				} catch (TwitterException te) {
+					// При возникновении TwitterException, не связанных
+					// с сетью (400...500) выходим из цикла
+					if (te.isCausedByNetworkIssue()) {
+						logger.error(msg, te);
+					} else {
+						throw te;
+					}
+				} catch (Exception e) {
+					logger.error(msg, e);
 				}
 				if (result == true)
 					break;
