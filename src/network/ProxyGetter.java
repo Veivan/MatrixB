@@ -17,52 +17,49 @@ import model.ElementProxy;
 import dbaware.DbConnectSingle;
 
 public class ProxyGetter {
-	
+
 	static Logger logger = LoggerFactory.getLogger(ProxyGetter.class);
 
 	/**
 	 * Первичное получение прокси для акка из БД
 	 */
-	public static ElementProxy getProxy(long AccID)
-	{
+	public static ElementProxy getProxy(long AccID) {
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
-		if (!CheckProxy(accproxy))
-		{
+		if (!CheckProxy(accproxy)) {
 			if (accproxy != null) {
 				dbConnector.setProxyIsAlive(accproxy.getProxyID(), false);
 				accproxy = null;
 			}
 
 			List<ElementProxy> proxylist = dbConnector.getFreeProxies();
-			
+
 			for (ElementProxy proxy : proxylist) {
-				if (CheckProxy(proxy))
-				{
+				if (CheckProxy(proxy)) {
 					accproxy = proxy;
 					break;
-				}	
-				else
+				} else
 					dbConnector.setProxyIsAlive(proxy.getProxyID(), false);
 			}
-			
+
 			// Refresh proxy 4 account
-			dbConnector.setProxy4Acc(AccID, accproxy);			
+			dbConnector.setProxy4Acc(AccID, accproxy);
 			// Unblock temporary blocked proxies
 			for (ElementProxy proxy : proxylist) {
 				dbConnector.setProxyIsBlocked(proxy.getProxyID(), false);
 			}
 		}
-		logger.info("Selected Proxy : " + (accproxy == null ? " - " : accproxy.getIp()));
-		
-		return accproxy;		
+		logger.info("Selected Proxy : "
+				+ (accproxy == null ? " - " : accproxy.getIp()));
+
+		return accproxy;
 	}
 
 	/**
-	 * Получение другого прокси для акка из БД, в случае если использование существующего приводит к ошибке
+	 * Получение другого прокси для акка из БД, в случае если использование
+	 * существующего приводит к ошибке
 	 */
-	public static ElementProxy getAnotherProxy(long AccID)
-	{
+	public static ElementProxy getAnotherProxy(long AccID) {
 		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		accproxy = dbConnector.getProxy4Acc(AccID);
@@ -83,39 +80,42 @@ public class ProxyGetter {
 
 		// Refresh proxy 4 account
 		dbConnector.setProxy4Acc(AccID, accproxy);
-		
-		return accproxy;		
+
+		return accproxy;
 	}
 
 	private static boolean CheckProxy(ElementProxy proxy) {
-		if (proxy == null) return false;
-		
-		logger.info("CheckProxy : " + proxy.getIp());
-
+		if (proxy == null)
+			return false;
+		boolean result = false;
 		String pHost = proxy.getIp();
 		int pPort = proxy.getPort();
 		SocketAddress addr = new InetSocketAddress(pHost, pPort);
-		Proxy.Type _pType = ( proxy.getProxyType() == Constants.ProxyType.HTTP ? Proxy.Type.HTTP
+		Proxy.Type _pType = (proxy.getProxyType() == Constants.ProxyType.HTTP ? Proxy.Type.HTTP
 				: Proxy.Type.SOCKS);
 		Proxy httpProxy = new Proxy(_pType, addr);
 		HttpURLConnection urlConn = null;
 		URL url;
-		try {
-			url = new URL(Constants.testLink);
-			urlConn = (HttpURLConnection) url.openConnection(httpProxy);
-			urlConn.setConnectTimeout(Constants.prxchcktimeout);
-			urlConn.connect();
-			int resp = urlConn.getResponseCode();
-			return (resp == 200);
-		} catch (SocketException e) {
-			logger.error("CheckProxy SocketException : ", e);
-			return false;
-		} catch (SocketTimeoutException e) {
-			logger.error("CheckProxy SocketTimeoutException : ", e);
-			return false;
-		} catch (Exception e) {
-			logger.error("CheckProxy Exception : ", e);
-			return false;
+		for (int i = 0; i < 2; i++) {
+			logger.info("CheckProxy : " + proxy.getIp()
+					+ String.format(" try (%d)", i));
+			try {
+				url = new URL(Constants.testLink);
+				urlConn = (HttpURLConnection) url.openConnection(httpProxy);
+				urlConn.setConnectTimeout(Constants.prxchcktimeout);
+				urlConn.connect();
+				int resp = urlConn.getResponseCode();
+				result = (resp == 200);
+				if (result)
+					break;
+			} catch (SocketException e) {
+				logger.error("CheckProxy SocketException : ", e);
+			} catch (SocketTimeoutException e) {
+				logger.error("CheckProxy SocketTimeoutException : ", e);
+			} catch (Exception e) {
+				logger.error("CheckProxy Exception : ", e);
+			}
 		}
+		return result;
 	}
 }
