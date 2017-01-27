@@ -26,7 +26,7 @@ HTTP_VIA, HTTP_X_FORWARDED_FOR, HTTP_FORWARDED_FOR, HTTP_X_FORWARDED, HTTP_FORWA
 </html>
 
 
-3.  
+3. Надо делать отдельный коннект к ДБ для каждого потока 
 	 
 
 4. Может быть одинаковое число списков, но с разными типами.

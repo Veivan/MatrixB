@@ -22,6 +22,10 @@ import dbaware.DbConnectSingle;
  * Выполняет действия: - Импортит в БД акки из текста
  */
 public class AccImporter extends Thread {
+	public static enum ImporterActType {
+		IMPORTACC, CHECKENABLED
+	}
+
 	private DbConnectSingle dbConnector = DbConnectSingle.getInstance();
 
 	private String email;
@@ -30,24 +34,28 @@ public class AccImporter extends Thread {
 	private String phone;
 	private String mailpass;
 
-	private int Datatype;
+	private ImporterActType Acttype;
+	private int Datatype = 0;
 
 	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
 
-	public AccImporter(String data) {
-		String[] sp = data.split(":");
-		if (sp.length == 3) {
-			email = sp[0];
-			pass = sp[1];
-			name = sp[2];
-		} else {
-			name = sp[0];
-			pass = sp[1];
-			phone = sp[2];
-			email = sp[3];
-			mailpass = sp[4];
+	public AccImporter(String data, ImporterActType acttype) {
+		this.Acttype = acttype;
+		if (acttype == ImporterActType.IMPORTACC) {
+			String[] sp = data.split(":");
+			if (sp.length == 3) {
+				email = sp[0];
+				pass = sp[1];
+				name = sp[2];
+			} else {
+				name = sp[0];
+				pass = sp[1];
+				phone = sp[2];
+				email = sp[3];
+				mailpass = sp[4];
+			}
+			this.Datatype = sp.length;
 		}
-		this.Datatype = sp.length;
 	}
 
 	@Override
