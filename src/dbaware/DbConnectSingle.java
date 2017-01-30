@@ -448,6 +448,28 @@ public class DbConnectSingle {
 		return newschedule;
 	}
 
+	/**
+	 * Set acc "enabled"
+	 */
+	public void setAccIsEnabled(long accID, boolean IsEnabled) {
+		try {
+			dbConnect();
+			String query = "UPDATE [dbo].[mAccounts] SET [enabled] = ? WHERE [user_id] = ?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, IsEnabled ? 1 : 0);
+			pstmt.setLong(2, accID);
+			pstmt.execute();
+			pstmt.close();
+			pstmt = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("setAccIsEnabled exception", e);
+		}
+	}
+
+
 	private static void MakeHowmworks(Homeworks homeworks,
 			List<JobAtom> JobAtomList) {
 		for (JobAtom job : JobAtomList) {

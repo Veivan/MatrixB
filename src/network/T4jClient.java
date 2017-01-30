@@ -332,6 +332,7 @@ public class T4jClient implements IJobExecutor {
 						}
 						System.out.println("@" + user.getScreenName() + " is "
 								+ (IsEnabled ? "enabled" : "disabled"));
+						dbConnector.setAccIsEnabled(this.acc.getAccID(), IsEnabled);
 						result = true;
 						break;
 					case NEWUSER:
