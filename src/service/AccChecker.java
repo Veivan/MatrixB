@@ -41,7 +41,7 @@ public class AccChecker extends Thread {
 			logger.error("AccImporter cant get proxy");
 		} else {
 			String jobtp = "CHECKENABLED";
-			JobAtom job = new JobAtom(5L, jobtp, "");
+			JobAtom job = new JobAtom(7L, jobtp, "");
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();

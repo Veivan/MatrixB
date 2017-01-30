@@ -39,13 +39,13 @@ public class testT4jClient {
 
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
-		ConcreteAcc acc = new ConcreteAcc(6L);
+		ConcreteAcc acc = new ConcreteAcc(29L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works
 		//String proxy = "178.215.111.70:9999"; // HTTP not works - timeout expired
 
-		String proxy = "79.104.54.82:8080"; // good HTTPS 
+		String proxy = "168.205.245.93:8080"; // good HTTPS 
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];
