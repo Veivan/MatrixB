@@ -372,6 +372,13 @@ public class T4jClient implements IJobExecutor {
 				if (result == true)
 					break;
 			}
+
+			// Скорее всего был плохой прокси - сбросим его и забаним
+			if (result == false) {
+				dbConnector.setProxy4Acc(this.acc.getAccID(), null);
+				throw new ProxyException("Bad proxy when OperateTwitter");
+			}
+
 		} catch (Exception e) {
 			String premess = "Failed to OperateTwitter";
 			logger.error(premess, e);
