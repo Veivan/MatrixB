@@ -16,14 +16,14 @@ import org.slf4j.LoggerFactory;
 import model.ConcreteAcc;
 import model.ElementProxy;
 import model.MatrixAct;
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 
 /**
  * Выполняет действия: - Импортит в БД акки из текста
  */
 public class AccImporter extends Thread {
 
-	private DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	private DbConnector dbConnector = new DbConnector();
 
 	private String email;
 	private String pass;

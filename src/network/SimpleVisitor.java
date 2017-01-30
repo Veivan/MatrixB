@@ -31,7 +31,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 import service.Constants;
 import service.Constants.ProxyType;
 import service.Constants.RequestType;
@@ -65,7 +65,7 @@ public class SimpleVisitor implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(SimpleVisitor.class);
-	DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	DbConnector dbConnector = new DbConnector();
 
 	@Override
 	public void Execute() {

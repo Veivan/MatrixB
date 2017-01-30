@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 import jobs.JobAtom;
 import model.ConcreteAcc;
 import model.ElementProxy;
@@ -25,7 +25,7 @@ import network.T4jClient;
 public class AccChecker extends Thread {
 	private long user_id;
 
-	private static DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	private static DbConnector dbConnector = new DbConnector();
 	static Logger logger = LoggerFactory.getLogger(AccChecker.class);
 
 	public AccChecker(long user_id) {

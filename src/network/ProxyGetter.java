@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import service.Constants;
 import model.ElementProxy;
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 
 public class ProxyGetter {
 
@@ -24,7 +24,7 @@ public class ProxyGetter {
 	 * Первичное получение прокси для акка из БД
 	 */
 	public static ElementProxy getProxy(long AccID) {
-		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+		DbConnector dbConnector = new DbConnector();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		if (!CheckProxy(accproxy)) {
 			if (accproxy != null) {
@@ -60,7 +60,7 @@ public class ProxyGetter {
 	 * существующего приводит к ошибке
 	 */
 	public static ElementProxy getAnotherProxy(long AccID) {
-		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+		DbConnector dbConnector = new DbConnector();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		accproxy = dbConnector.getProxy4Acc(AccID);
 		// Баним старый прокси

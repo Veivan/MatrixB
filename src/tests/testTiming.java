@@ -11,12 +11,12 @@ import jobs.Homeworks;
 import org.junit.Before;
 import org.junit.Test;
 
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 import main.Timing;
 
 public class testTiming {
 
-	static DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	static DbConnector dbConnector = new DbConnector();
 	//Homeworks homeworks = new Homeworks();
 	Timing timing;
 	Homeworks homeworks;

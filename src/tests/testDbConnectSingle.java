@@ -15,10 +15,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import service.GenderChecker.Gender;
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 
 public class testDbConnectSingle {
-	DbConnectSingle dbConnector;
+	DbConnector dbConnector;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -26,7 +26,7 @@ public class testDbConnectSingle {
 
 	@Before
 	public void setUp() throws Exception {
-		dbConnector = DbConnectSingle.getInstance();
+		dbConnector = new DbConnector();
 	}
 
 	@Test

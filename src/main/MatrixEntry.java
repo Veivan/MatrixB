@@ -7,7 +7,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 import service.Constants;
 import service.MemoProxy;
 import jobs.Homeworks;
@@ -38,7 +38,7 @@ public class MatrixEntry extends Thread{
 
 		//@SuppressWarnings("unused")
 		//ActionsObserver currentDisplay = new ActionsObserver(engine);
-		DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+		DbConnector dbConnector = new DbConnector();
 
 		// If read Accounts in cycle then need to refresh their timings 
 		List<IAccount> accounts = dbConnector.getAccounts();

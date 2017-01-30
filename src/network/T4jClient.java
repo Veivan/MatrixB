@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dbaware.DbConnectSingle;
+import dbaware.DbConnector;
 import service.CustExeptions.AuthenticationException;
 import service.CustExeptions.ProxyException;
 import service.Constants;
@@ -56,7 +56,7 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(T4jClient.class);
-	DbConnectSingle dbConnector = DbConnectSingle.getInstance();
+	DbConnector dbConnector = new DbConnector();
 
 	@Override
 	public void Execute() {
