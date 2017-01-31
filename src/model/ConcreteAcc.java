@@ -73,6 +73,18 @@ public class ConcreteAcc implements IAccount {
 		this.mailpass = mailpass;
 	}
 	
+	/**
+	 * Используется для импорта акков
+	 */
+	public ConcreteAcc(long user_id, String email, String pass, String name, String mailpass) {
+		super();
+		this.AccID = user_id;
+		this.email = email;
+		this.pass = pass;
+		this.screenname = name;
+		this.mailpass = mailpass;
+	}
+	
 	public void RebuldAccTiming(Homeworks homeworks) {
 		this.timing.RebuildTiming(homeworks, this.GroupIDs);
 	}
