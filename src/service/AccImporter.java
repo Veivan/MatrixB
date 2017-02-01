@@ -40,8 +40,8 @@ public class AccImporter extends Thread {
 	}
 
 	// Настройка вручную
-	private cDatatype Datatype = cDatatype.EPN;
-	private int group_id = 4;
+	private cDatatype Datatype = cDatatype.NPEM;
+	private int group_id = 3;
 
 	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
 
