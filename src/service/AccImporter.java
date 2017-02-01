@@ -40,8 +40,8 @@ public class AccImporter extends Thread {
 	}
 
 	// Настройка вручную
-	private cDatatype Datatype = cDatatype.NPEM;
-	private int group_id = 3;
+	private cDatatype Datatype = cDatatype.EPN;
+	private int group_id = 4;
 
 	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
 
@@ -83,7 +83,7 @@ public class AccImporter extends Thread {
 			//String jobtp = (this.Datatype == cDatatype.EPN) ? "NEWUSERBRUT": "NEWUSER";		
 			String jobtp = "NEWUSERBRUT";
 			
-			JobAtom job = new JobAtom(100L, jobtp, "");
+			JobAtom job = new JobAtom(101L, jobtp, "");
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();

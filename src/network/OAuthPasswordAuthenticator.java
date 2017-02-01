@@ -118,6 +118,9 @@ public class OAuthPasswordAuthenticator {
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 					paramList);
 
+			if (page2.contains("RetypeEmail") || page2.contains("RetypePhoneNumber"))
+				throw new AuthenticationException("Cannot get verifier - Retype.");
+			
 			final String oauth_verifier = readOauthVerifier(page2);
 
 			if (oauth_verifier == null || oauth_verifier.isEmpty())
