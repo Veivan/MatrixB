@@ -65,18 +65,33 @@ public class DbConnector {
 	 * Returns enabled Accounts from DB
 	 */
 	public List<IAccount> getAccounts() {
+		return getAccounts(null, true);
+	}
+
+	public List<IAccount> getAccounts(Integer group_id, Boolean enabled) {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		try {
 			dbConnect();
-			String query = "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled] = 0";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			ResultSet rs = pstmt.executeQuery();
+			// String query =
+			// "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled] = 1";
+			String query = "{call [dbo].[spAccountsSelect](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			if (group_id == null)
+				sp.setNull("group_id", java.sql.Types.INTEGER);
+			else
+				sp.setInt("group_id", group_id);
+			if (enabled == null)
+				sp.setNull("enabled", java.sql.Types.BIT);
+			else
+				sp.setBoolean("enabled", enabled);
+			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
 				ConcreteAcc acc = new ConcreteAcc(rs.getLong("user_id"));
 				accounts.add(acc);
 			}
-			pstmt.close();
-			pstmt = null;
+			rs.close();
+			sp.close();
+			sp = null;
 			if (conn != null)
 				conn.close();
 			conn = null;
@@ -456,7 +471,6 @@ public class DbConnector {
 			logger.error("setAccIsEnabled exception", e);
 		}
 	}
-
 
 	private static void MakeHowmworks(Homeworks homeworks,
 			List<JobAtom> JobAtomList) {

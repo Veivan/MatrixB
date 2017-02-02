@@ -15,6 +15,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CheckSingleAcc extends Thread {
 	private long user_id;
+	
+	// Настройка вручную
+	private long job_id = 9L;
 
 	static Logger logger = LoggerFactory.getLogger(CheckSingleAcc.class);
 
@@ -31,7 +34,7 @@ public class CheckSingleAcc extends Thread {
 			logger.error("AccImporter cant get proxy");
 		} else {
 			String jobtp = "CHECKENABLED";
-			JobAtom job = new JobAtom(7L, jobtp, "");
+			JobAtom job = new JobAtom(job_id, jobtp, "");
 			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();

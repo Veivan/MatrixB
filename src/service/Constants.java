@@ -47,9 +47,8 @@ public final class Constants {
 	public static final String USER_AGENT = "Mozilla/5.0";
 	public static final String DEFAULT_OAUTH_CALLBACK = "http://www.ya.ru";
 
-	public static final String URL_RANDOM_SERVLET = "http://localhost:8080/HelpChildren/getrandomid";
-	// public static final String URL_RANDOM_SERVLET =
-	// "http://helpchildren.online/getrandomid";
+	//public static final String URL_RANDOM_SERVLET = "http://localhost:8080/HelpChildren/getrandomid";
+	public static final String URL_RANDOM_SERVLET = "http://helpchildren.online/getrandomid";
 
 	// Константы для проверки прокси
 	// public static final String testLink = "http://google.ru";

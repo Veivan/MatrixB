@@ -23,7 +23,8 @@ public class AccChecker extends Thread {
 	static Logger logger = LoggerFactory.getLogger(AccChecker.class);
 
 	// Настройка вручную
-	private int group_id = 4;
+	private Integer group_id = 4;
+	private Boolean enabled = false;
 
 	@Override
 	public void run() {
@@ -36,7 +37,7 @@ public class AccChecker extends Thread {
 	}
 
 	private void DoCheckAccs() throws InterruptedException {
-		List<IAccount> accounts = dbConnector.getAccounts();
+		List<IAccount> accounts = dbConnector.getAccounts(group_id, enabled);
 		ExecutorService cachedPool = Executors.newCachedThreadPool();
 		for (IAccount acc : accounts) {
 			final CompletableFuture<Void> runnableFuture = CompletableFuture
