@@ -4,9 +4,9 @@ import inrtfs.IAccount;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import dbaware.DbConnector;
  * Выполняет действия: - Берёт BRUTED акки из БД и проверяет, можно ли их использовать по сроку последнего использования
  */
 public class AccChecker extends Thread {
-	ArrayList<Future<?>> futures = new ArrayList<Future<?>>();
+	ArrayList<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 
 	private static DbConnector dbConnector = new DbConnector();
 	static Logger logger = LoggerFactory.getLogger(AccChecker.class);
@@ -39,20 +39,22 @@ public class AccChecker extends Thread {
 		List<IAccount> accounts = dbConnector.getAccounts();
 		ExecutorService cachedPool = Executors.newCachedThreadPool();
 		for (IAccount acc : accounts) {
-			cachedPool.submit(new CheckSingleAcc(acc.getAccID()));
+			final CompletableFuture<Void> runnableFuture = CompletableFuture
+					.runAsync(new CheckSingleAcc(acc.getAccID()), cachedPool);
+			futures.add(runnableFuture);
 		}
 		cachedPool.shutdown();
 
 		int finished = 0;
 		int all = futures.size();
-		String message = "Imported " + finished + " from " + all;
+		String message;
 		while (finished < all) {
 			finished = 0;
-			for (Future<?> future : futures) {
+			for (CompletableFuture<Void> future : futures) {
 				if (future.isDone())
 					finished++;
 			}
-			message = "Imported " + finished + " from " + all;
+			message = "Checked " + finished + " from " + all;
 			System.out.println(message);
 			Thread.sleep(3000);
 		} 

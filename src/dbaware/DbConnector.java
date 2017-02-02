@@ -68,7 +68,7 @@ public class DbConnector {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		try {
 			dbConnect();
-			String query = "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled] = 1";
+			String query = "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled] = 0";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
