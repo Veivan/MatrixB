@@ -62,7 +62,7 @@ public class DbConnector {
 	}
 
 	/**
-	 * Returns Accounts from DB
+	 * Returns enabled Accounts from DB
 	 */
 	public List<IAccount> getAccounts() {
 		List<IAccount> accounts = new ArrayList<IAccount>();
