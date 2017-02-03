@@ -1,5 +1,7 @@
 package tests;
 
+import java.io.FileNotFoundException;
+
 import jobs.JobAtom;
 import model.ConcreteAcc;
 import model.ElementProxy;
@@ -10,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import service.Constants;
-import service.Utils;
 
 public class testT4jClient {
 	T4jClient t4wclient;
@@ -19,7 +20,7 @@ public class testT4jClient {
 	
 	@Before
 	public void setUp() throws Exception {
-		//JobAtom job = new JobAtom(5L, "TWIT", "Winter coming"); 
+		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
 
 		/*String name = "Лорик Соловаева";
 		String url = "";
@@ -39,13 +40,13 @@ public class testT4jClient {
 
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
-		ConcreteAcc acc = new ConcreteAcc(29L);
+		ConcreteAcc acc = new ConcreteAcc(130L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "103.59.57.218:45554"; // Constants.ProxyType.SOCKS not works
 		//String proxy = "178.215.111.70:9999"; // HTTP not works - timeout expired
 
-		String proxy = "168.205.245.93:8080"; // good HTTPS 
+		String proxy = "185.2.101.31:3128"; // good HTTPS 
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];
@@ -64,5 +65,27 @@ public class testT4jClient {
 			e.printStackTrace();
 		}
 	}
+	
+/*	public static void main(String[] args) throws FileNotFoundException {
+		testT4jClient t= new testT4jClient();
+		JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
+		ConcreteAcc acc = new ConcreteAcc(130L);
+		MatrixAct theact = new MatrixAct(job, acc);
+		String proxy = "185.2.101.31:3128"; // good HTTPS 
+		String[] sp = proxy.split(":");
+		if (sp.length > 1) {
+			t.proxyIP = sp[0];
+			t.proxyPort = Integer.parseInt(sp[1]);
+		}
+		
+		T4jClient t4wclient = new T4jClient(theact, new ElementProxy(t.proxyIP, t.proxyPort, Constants.ProxyType.HTTP, -1)); 		
+		try {
+			t4wclient.Execute();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	} */
+
 
 }

@@ -15,7 +15,7 @@ import model.ElementCredentials;
 
 public class Utils {
 	private final static String inifile = "matrixb.ini";
-	
+
 	public static ElementCredentials ReadINI() throws Exception {
 		ElementCredentials creds;
 		Properties props = new Properties();
@@ -61,7 +61,7 @@ public class Utils {
 			conn = (HttpURLConnection) new URL(url_string).openConnection();
 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					conn.getInputStream()));
+					conn.getInputStream(), "UTF-8"));
 			String line = "";
 			while ((line = rd.readLine()) != null) {
 				result.append(line);
@@ -100,22 +100,26 @@ public class Utils {
 		}
 		return bytesArray;
 	}
-	
+
 	/**
 	 * Get a diff between two dates
-	 * @param date1 the oldest date
-	 * @param date2 the newest date
-	 * @param timeUnit the unit in which you want the diff
+	 * 
+	 * @param date1
+	 *            the oldest date
+	 * @param date2
+	 *            the newest date
+	 * @param timeUnit
+	 *            the unit in which you want the diff
 	 * @return the diff value, in the provided unit
 	 */
 	public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
-	    long diffInMillies = date2.getTime() - date1.getTime();
-	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+		long diffInMillies = date2.getTime() - date1.getTime();
+		return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
 	}
-	
+
 	public static long getDateDiff(long date1, long date2, TimeUnit timeUnit) {
-	    long diffInMillies = date2 - date1;
-	    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+		long diffInMillies = date2 - date1;
+		return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
 	}
 
 }

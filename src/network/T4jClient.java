@@ -213,10 +213,10 @@ public class T4jClient implements IJobExecutor {
 					+ "http://helpchildren.online/?id="
 					+ id
 					+ " "
-					+ job.TContent; // + #подарижизнь
+					+ job.TContent; // + #подарижизнь					
 			latestStatus = new StatusUpdate(message);
 			// Загрузка картинки в твиттер
-			latestStatus.setMedia(fileName, is);
+			latestStatus.setMedia(fileName, is); 
 			// setLocation(GeoLocation location)
 		} else
 			latestStatus = new StatusUpdate(job.TContent);
