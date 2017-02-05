@@ -4,6 +4,7 @@ import inrtfs.Observable;
 import inrtfs.Observer;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -27,7 +28,7 @@ public class Homeworks implements Observable, Iterable<JobList>,
 
 	private List<JobList> HomeworksList = new ArrayList<JobList>();
 	private int index = 0;
-	
+
 	private Date datevalid = new Date(System.currentTimeMillis());
 
 	@Override
@@ -47,7 +48,7 @@ public class Homeworks implements Observable, Iterable<JobList>,
 	}
 
 	public void AddJob(JobAtom job) {
-		JobList targetList = null; 
+		JobList targetList = null;
 		// Searching target list
 		for (JobList jobList : HomeworksList) {
 			if (job.Type == jobList.getType()) {
@@ -56,8 +57,7 @@ public class Homeworks implements Observable, Iterable<JobList>,
 			}
 		}
 		// If not found then make new one
-		if (targetList == null)
-		{
+		if (targetList == null) {
 			JobListComparator comparator = new JobListComparator();
 			targetList = new JobList(job.Type);
 			HomeworksList.add(targetList);
@@ -90,10 +90,12 @@ public class Homeworks implements Observable, Iterable<JobList>,
 		this.index = 0;
 	}
 
-	// Сравнение двух расписаний
+	/**
+	 * Сравнение двух расписаний
+	 */
 	public boolean IsDifferent(Homeworks newsched) {
 		// Сравнение по дате валидности
-		if (this.getDatevalid() != newsched.getDatevalid())
+		if (!IsDatesEqual(this.getDatevalid(), newsched.getDatevalid()))
 			return true;
 
 		// Сравнение по числу списков
@@ -132,7 +134,9 @@ public class Homeworks implements Observable, Iterable<JobList>,
 		return false;
 	}
 
-	// Замена старого расписания новым
+	/**
+	 * Замена старого расписания новым
+	 */
 	public void ReplaceWith(Homeworks newsched) {
 		// Помечаем в новом расписании уже выполненные задания
 		newsched.First();
@@ -150,9 +154,10 @@ public class Homeworks implements Observable, Iterable<JobList>,
 		}
 	}
 
-	// Функция ищет в старом расписании работу с таким же ID
-	// Возвращает true, если работа найдена и завершена
-	// иначе возвращает false
+	/**
+	 * Функция ищет в старом расписании работу с таким же ID Возвращает true,
+	 * если работа найдена и завершена иначе возвращает false
+	 */
 	private boolean AlreadyFinished(JobAtom ajob) {
 		for (JobList jobList : HomeworksList) {
 			if (jobList.getType() == ajob.Type) {
@@ -174,4 +179,19 @@ public class Homeworks implements Observable, Iterable<JobList>,
 	public Date getDatevalid() {
 		return datevalid;
 	}
+
+	/**
+	 * Сравнение двух дат на одинаковость (без времени)
+	 */
+	private boolean IsDatesEqual(Date date1, Date date2) {
+		Calendar c1 = Calendar.getInstance();
+		Calendar c2 = Calendar.getInstance();
+		c1.setTime(date1);
+		c2.setTime(date2);
+		boolean res = (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR))
+				&& (c1.get(Calendar.DAY_OF_YEAR) == c2
+						.get(Calendar.DAY_OF_YEAR));
+		return res;
+	}
+
 }

@@ -33,7 +33,7 @@
 	<!-- Логгеры -->
 	<!-- Корневой логгер -->
 	<root level="info">
-		<appender-ref ref="file" />
+		<appender-ref ref="stdout" />
 	</root>
 
 <!-- root level="OFF">

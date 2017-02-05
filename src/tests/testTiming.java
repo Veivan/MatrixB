@@ -41,7 +41,7 @@ public class testTiming {
 	@Test
 	public void testReReadTiming() throws ParseException {
 		DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
-		String time = "2017-01-21";
+		String time = "2017-02-05";
 		long newmoment = dfm.parse(time).getTime();
 		Homeworks newschedule = dbConnector.getHomeworks(newmoment);
 		boolean ischanged = homeworks.IsDifferent(newschedule);

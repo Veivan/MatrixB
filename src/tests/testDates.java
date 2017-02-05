@@ -3,16 +3,40 @@ package tests;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class testDates {
+	
+	public static void CompareDates(){
+		Calendar c1 = Calendar.getInstance(); 
+	    Calendar c2 = Calendar.getInstance();
+	    
+	    Date date = new Date(); // Лучше использовать Calendar.getInstance() 
+        System.out.println(date);     
+
+	    c1.setTime(date);
+	   // c1.set(1999, 12 , 31); 
+	    
+	    Date date2 = new Date();
+	       System.out.println(date2);     
+	    c2.setTime(date2); 
+	    
+	     
+	    boolean res = (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) &&
+	    		(c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR));
+        System.out.println(res);     
+	}
 
 	public static void main(String[] args) throws ParseException {
 
 		Logger logger = LoggerFactory.getLogger(testDates.class);
+		
+		CompareDates();
 
 		logger.info("start");
 

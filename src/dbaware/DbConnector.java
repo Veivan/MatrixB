@@ -400,7 +400,7 @@ public class DbConnector {
 			pstmt.setBoolean(4, result);
 			pstmt.setString(5, failreason);
 			long dt = act.getJob().timestamp == 0l ? System.currentTimeMillis() / 1000
-					: act.getJob().timestamp;
+					: act.getJob().timestamp / 1000;
 			pstmt.setLong(6, dt);
 			pstmt.execute();
 			pstmt.close();
