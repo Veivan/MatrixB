@@ -18,6 +18,7 @@ import service.Constants;
 import service.GenderChecker;
 import service.GenderChecker.Gender;
 import service.Utils;
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -208,16 +209,19 @@ public class T4jClient implements IJobExecutor {
 			InputStream is = new ByteArrayInputStream(decodedBytes);
 			String fileName = Integer.toString(id) + ".jpg";
 
-			String message = String.format("%s %s. Вы можете помочь.%n", pname,
+			String message = String.format("%s %s. Требуется лечение, Вы можете помочь.%n", pname,
 					ppage)
 					+ "http://helpchildren.online/?id="
 					+ id
 					+ " "
-					+ job.TContent; // + #подарижизнь					
+					+ job.TContent; // + "#Россия" + " #ПодариЖизнь";					
 			latestStatus = new StatusUpdate(message);
 			// Загрузка картинки в твиттер
 			latestStatus.setMedia(fileName, is); 
-			// setLocation(GeoLocation location)
+			// Moscow 
+			double lat = 55.751244;
+			double lon = 37.618423;
+			latestStatus.setLocation(new GeoLocation(lat, lon));
 		} else
 			latestStatus = new StatusUpdate(job.TContent);
 		// Твиттинг
