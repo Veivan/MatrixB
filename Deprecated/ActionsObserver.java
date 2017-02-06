@@ -10,7 +10,6 @@ import model.MatrixAct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import deprecated.TWClient;
 import service.Constants;
 import jobs.Homeworks;
 import inrtfs.Observer;

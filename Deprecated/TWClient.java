@@ -48,6 +48,9 @@ import service.Constants.RequestType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Класс работает с Twitter без библиотек,напрямую формируя HTTP-запросы
+ */
 public class TWClient extends Thread {
 
 	private String AccessToken;
