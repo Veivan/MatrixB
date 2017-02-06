@@ -14,44 +14,20 @@ import org.slf4j.LoggerFactory;
 
 import service.Constants;
 import inrtfs.IAccount;
-import inrtfs.Observable;
-import inrtfs.Observer;
 import jobs.JobAtom;
 
 /**
- * Класс служит для чтения таймингов из перечня аккаунтов <b>accounts</b>. При
- * наличии задания в тайминге добавляет его во внутренний список. По окончании
- * обхода перечня аккаунтов передаёт внутренний список обсерверу.
+ * Класс выполняет действия:
+ * Читает тайминги из перечня аккаунтов <b>accounts</b>. 
+ * При наличии задания в тайминге добавляет его во внутренний список заданий. 
+ * Запускает задания на выполнение.
  */
-public class Engine implements Observable {
+public class Engine {
 	private List<IAccount> accounts = new ArrayList<IAccount>();
 	private List<MatrixAct> MatrixActList = new ArrayList<MatrixAct>();
 	ExecutorService cachedPool = Executors.newCachedThreadPool();
 
-	private List<Observer> observers;
-
 	static Logger logger = LoggerFactory.getLogger(Engine.class);
-
-	public Engine() {
-		this.observers = new ArrayList<Observer>();
-	}
-
-	@Override
-	public void registerObserver(Observer o) {
-		observers.add(o);
-	}
-
-	@Override
-	public void removeObserver(Observer o) {
-		observers.remove(o);
-	}
-
-	@Override
-	public void notifyObservers() {
-		printMList();
-		for (Observer observer : observers)
-			observer.update(MatrixActList);
-	}
 
 	public void ReadTimings(long moment) {
 		MatrixActList.clear();
@@ -63,7 +39,6 @@ public class Engine implements Observable {
 				MatrixActList.add(act);
 			}
 		}
-		// if (!MatrixActList.isEmpty()) notifyObservers();
 	}
 
 	public void Execute() {
@@ -89,7 +64,8 @@ public class Engine implements Observable {
 
 		MatrixAct theact = new MatrixAct(job, acc);
 		MatrixActList.add(theact);
-		notifyObservers();
+		
+		printMList();
 	}
 
 	private void printMList() {

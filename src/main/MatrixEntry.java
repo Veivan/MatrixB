@@ -36,8 +36,6 @@ public class MatrixEntry extends Thread{
 		Brain brain = new Brain(homeworks);
 		engine = new Engine();
 
-		//@SuppressWarnings("unused")
-		//ActionsObserver currentDisplay = new ActionsObserver(engine);
 		DbConnector dbConnector = new DbConnector();
 
 		// If read Accounts in cycle then need to refresh their timings 
