@@ -30,8 +30,37 @@ public class ConcreteAcc implements IAccount {
 	private Regimen regim = new Regimen();
 
 	private List<IAccount> FolwrsList;
-	private List<IAccount> FolwngList;
+	private List<IAccount> FriendsList;
 	private List<IAccount> UnFolwdList;
+
+	/**
+	 * @return the folwrsList
+	 */
+	public List<IAccount> getFolwrsList() {
+		return FolwrsList;
+	}
+
+	/**
+	 * @param folwrsList the folwrsList to set
+	 */
+	public void setFolwrsList(List<IAccount> folwrsList) {
+		FolwrsList = folwrsList;
+	}
+
+	/**
+	 * @return the folwngList
+	 */
+	public List<IAccount> getFolwngList() {
+		return FriendsList;
+	}
+
+	/**
+	 * @return the unFolwdList
+	 */
+	public List<IAccount> getUnFolwdList() {
+		return UnFolwdList;
+	}
+
 
 	/**
 	 * Перечень групп, к которым относится акк
