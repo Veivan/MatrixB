@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import service.Constants;
 import service.GenderChecker.Gender;
 import service.Utils;
+import twitter4j.Status;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
@@ -472,6 +473,45 @@ public class DbConnector {
 		}
 	}
 
+	/**
+	 * Save Status in DB
+	 */
+	public void StoreStatus(Status status){
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+
+			//Date crd = (Date) status.getCreatedAt();
+
+			sp.setLong("tw_id", status.getId());
+			sp.setString("status", status.toString());
+			sp.setString("created_at", status.getCreatedAt().toGMTString());
+			sp.setInt("favorite_count", status.getFavoriteCount());
+			sp.setString("in_reply_to_screen_name", status.getInReplyToScreenName());
+			sp.setLong("in_reply_to_status_id", status.getInReplyToStatusId());
+			sp.setLong("in_reply_to_user_id", status.getInReplyToUserId());
+			sp.setString("lang", status.getLang());
+			sp.setInt("retweet_count", status.getRetweetCount());
+			sp.setString("text", status.getText());
+			sp.setLong("user_id", status.getUser().getId());
+			sp.setNull("place_json", java.sql.Types.NVARCHAR);
+			sp.setNull("coordinates_json", java.sql.Types.NVARCHAR);
+			sp.setBoolean("favorited", status.isFavorited());
+			sp.setBoolean("retweeted", status.isRetweeted());
+			sp.setBoolean("isRetweet", status.isRetweet());
+			
+			sp.execute();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnector.logger.error("StoreStatus exception", e);
+		}
+	}
+	
 	private static void MakeHowmworks(Homeworks homeworks,
 			List<JobAtom> JobAtomList) {
 		for (JobAtom job : JobAtomList) {

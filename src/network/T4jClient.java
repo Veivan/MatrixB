@@ -306,9 +306,8 @@ public class T4jClient implements IJobExecutor {
 						System.out.println("Showing @" + user.getScreenName()
 								+ "'s home timeline.");
 						for (Status stat : statuses) {
-							System.out.println(stat.getCreatedAt() + " @"
-									+ stat.getUser().getScreenName() + " - "
-									+ stat.getText());
+							System.out.println(stat.toString());
+							dbConnector.StoreStatus(stat);
 						}
 						result = true;
 						break;

@@ -1,2 +1,2 @@
-2017.2.21.1 - Add twTwits
+2017.2.21.1 - Add twTwits & spStatusAdd
 2017.2.5.1 - Add spProxyDeadDelete
