@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -143,5 +144,21 @@ public class Utils {
 		return dto;
 	}
 
+	/**
+	 * Формирование "случайного" выбора
+	 * if ( (x & 1) == 0 ) { even... } else { odd... }
+	 * 
+	 * @return boolean
+	 */
+	public static boolean DoItByDice() {
+		long num = System.nanoTime();		
+		return (num & 1) == 0;
+	}
+	
+/*	public static void main(String[] args) {
+		for (int i = 0; i < 5; i++) {
+			System.out.println(DoItByDice());
+		}
+	} */
 
 }

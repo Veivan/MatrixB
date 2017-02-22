@@ -355,6 +355,11 @@ public class T4jClient implements IJobExecutor {
 					case REPLAY:
 						break;
 					case FOLLOW:
+						if (Utils.DoItByDice()) 
+						{
+							
+						}
+						result = true;
 						break;
 					case UNFOLLOW:
 						break;
