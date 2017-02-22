@@ -3,7 +3,9 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[twTwits](
 	[tw_id] [bigint] NOT NULL,
+	[user_id] [bigint] NOT NULL,
 	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,
+	[creator_id] [bigint] NULL,
 	[created_at] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[favorite_count] [int] NULL,
 	[in_reply_to_screen_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
@@ -12,7 +14,6 @@ CREATE TABLE [dbo].[twTwits](
 	[lang] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[retweet_count] [int] NULL,
 	[text] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,
-	[user_id] [bigint] NULL,
 	[place_json] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,
 	[coordinates_json] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,
 	[favorited] [bit] NULL,

@@ -43,7 +43,7 @@ public class testT4jClient {
 		ConcreteAcc acc = new ConcreteAcc(130L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "158.69.71.236:8080"; // good HTTPS  
+		String proxy = "167.114.171.178:80"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];

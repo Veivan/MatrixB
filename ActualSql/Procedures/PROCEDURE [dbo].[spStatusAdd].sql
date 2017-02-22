@@ -8,7 +8,9 @@ GO
 -- ================================================
 ALTER PROCEDURE [dbo].[spStatusAdd]
 	@tw_id BIGINT
+	,@user_id BIGINT
 	,@status NVARCHAR(1000)
+	,@creator_id BIGINT
 	,@created_at NVARCHAR(50)
 	,@favorite_count INT
 	,@in_reply_to_screen_name NVARCHAR(50)
@@ -17,7 +19,6 @@ ALTER PROCEDURE [dbo].[spStatusAdd]
 	,@lang NVARCHAR(50)
 	,@retweet_count INT
 	,@text NVARCHAR(500)
-	,@user_id BIGINT
 	,@place_json NVARCHAR(500)
 	,@coordinates_json NVARCHAR(500)
 	,@favorited BIT
@@ -32,11 +33,13 @@ AS BEGIN
 	USING (SELECT [tw_id] = @tw_id ) I 
 		ON T.[tw_id] = I.[tw_id]
 	WHEN NOT MATCHED BY TARGET THEN INSERT
-		([tw_id], [status], [created_at], [favorite_count], [in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id],
-		[lang], [retweet_count], [text], [user_id], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet])
+		([tw_id], [user_id], [status], [creator_id], [created_at], [favorite_count], 
+		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id],
+		[lang], [retweet_count], [text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet])
 	VALUES
-		(@tw_id, @status, @created_at, @favorite_count, @in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id,
-		 @lang, @retweet_count, @text, @user_id, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet)
+		(@tw_id, @user_id, @status, @creator_id, @created_at, @favorite_count, 
+		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id,
+		@lang, @retweet_count, @text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet)
 	WHEN MATCHED THEN UPDATE SET
 		[status] = @status
 		,[favorite_count] = @favorite_count

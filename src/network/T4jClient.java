@@ -307,7 +307,7 @@ public class T4jClient implements IJobExecutor {
 								+ "'s home timeline.");
 						for (Status stat : statuses) {
 							System.out.println(stat.toString());
-							dbConnector.StoreStatus(stat);
+							dbConnector.StoreStatus(this.acc.getAccID(), stat);
 						}
 						result = true;
 						break;

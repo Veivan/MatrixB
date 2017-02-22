@@ -476,16 +476,18 @@ public class DbConnector {
 	/**
 	 * Save Status in DB
 	 */
-	public void StoreStatus(Status status){
+	public void StoreStatus(long accID, Status status){
 		try {
 			dbConnect();
-			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
 			//Date crd = (Date) status.getCreatedAt();
 
 			sp.setLong("tw_id", status.getId());
+			sp.setLong("user_id", accID);
 			sp.setString("status", status.toString());
+			sp.setLong("creator_id", status.getUser().getId());
 			sp.setString("created_at", status.getCreatedAt().toGMTString());
 			sp.setInt("favorite_count", status.getFavoriteCount());
 			sp.setString("in_reply_to_screen_name", status.getInReplyToScreenName());
@@ -494,7 +496,6 @@ public class DbConnector {
 			sp.setString("lang", status.getLang());
 			sp.setInt("retweet_count", status.getRetweetCount());
 			sp.setString("text", status.getText());
-			sp.setLong("user_id", status.getUser().getId());
 			sp.setNull("place_json", java.sql.Types.NVARCHAR);
 			sp.setNull("coordinates_json", java.sql.Types.NVARCHAR);
 			sp.setBoolean("favorited", status.isFavorited());
