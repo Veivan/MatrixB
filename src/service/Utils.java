@@ -7,10 +7,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+import org.joda.time.DateTime;
+
+import microsoft.sql.DateTimeOffset;
 import model.ElementCredentials;
 
 public class Utils {
@@ -121,5 +127,21 @@ public class Utils {
 		long diffInMillies = date2 - date1;
 		return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
 	}
+
+	/**
+	 * Преобразование java.util.Date в DateTimeOffset
+	 * 
+	 * @return DateTimeOffset
+	 */
+	public static DateTimeOffset getDateTimeOffset(Date date) {
+		DateTime jDate = new DateTime(date); 		
+		TimeZone tz = TimeZone.getTimeZone(jDate.getZone().getID());
+		Calendar calendar = Calendar.getInstance(); 
+		calendar.setTimeZone(tz);
+		Timestamp ts = new Timestamp(jDate.getMillis());
+		DateTimeOffset dto = DateTimeOffset.valueOf(ts, calendar);
+		return dto;
+	}
+
 
 }

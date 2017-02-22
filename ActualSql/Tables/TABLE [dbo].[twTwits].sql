@@ -6,7 +6,7 @@ CREATE TABLE [dbo].[twTwits](
 	[user_id] [bigint] NOT NULL,
 	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,
 	[creator_id] [bigint] NULL,
-	[created_at] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[created_at] [datetimeoffset](2) NULL,
 	[favorite_count] [int] NULL,
 	[in_reply_to_screen_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[in_reply_to_status_id] [bigint] NULL,

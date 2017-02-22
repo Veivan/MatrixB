@@ -16,7 +16,6 @@
 	<classpathentry kind="lib" path="C:/java/slf4j-1.7.21/slf4j-api-1.7.21.jar"/>
 	<classpathentry kind="lib" path="C:/java/logback-1.1.7/logback-classic-1.1.7.jar"/>
 	<classpathentry kind="lib" path="C:/java/logback-1.1.7/logback-core-1.1.7.jar"/>
-	<classpathentry kind="lib" path="C:/java/sqljdbc_4.0/rus/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="C:/java/jsoup-1.10.1.jar"/>
 	<classpathentry kind="lib" path="C:/java/twitter4j-4.0.4/lib/twitter4j-core-4.0.4.jar" sourcepath="C:/java/twitter4j-4.0.4/twitter4j-core/src">
 		<attributes>
@@ -24,5 +23,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/java/org.json-20120521.jar"/>
+	<classpathentry kind="lib" path="C:/java/joda-time-2.9.7/joda-time-2.9.7.jar"/>
+	<classpathentry kind="lib" path="C:/java/sqljdbc_6.0/rus/jre8/sqljdbc42.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

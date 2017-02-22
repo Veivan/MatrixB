@@ -12,9 +12,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +29,7 @@ import twitter4j.Status;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
+import microsoft.sql.DateTimeOffset;
 import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
@@ -482,13 +487,12 @@ public class DbConnector {
 			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
-			//Date crd = (Date) status.getCreatedAt();
-
 			sp.setLong("tw_id", status.getId());
 			sp.setLong("user_id", accID);
 			sp.setString("status", status.toString());
-			sp.setLong("creator_id", status.getUser().getId());
-			sp.setString("created_at", status.getCreatedAt().toGMTString());
+			sp.setLong("creator_id", status.getUser().getId()); 
+			sp.setObject("created_at",
+					Utils.getDateTimeOffset(status.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);			
 			sp.setInt("favorite_count", status.getFavoriteCount());
 			sp.setString("in_reply_to_screen_name", status.getInReplyToScreenName());
 			sp.setLong("in_reply_to_status_id", status.getInReplyToStatusId());

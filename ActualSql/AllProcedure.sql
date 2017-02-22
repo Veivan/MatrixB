@@ -418,7 +418,7 @@ ALTER PROCEDURE [dbo].[spStatusAdd]
 	,@user_id BIGINT
 	,@status NVARCHAR(1000)
 	,@creator_id BIGINT
-	,@created_at NVARCHAR(50)
+	,@created_at datetimeoffset(2)
 	,@favorite_count INT
 	,@in_reply_to_screen_name NVARCHAR(50)
 	,@in_reply_to_status_id BIGINT
