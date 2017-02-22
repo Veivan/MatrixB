@@ -12,13 +12,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +25,6 @@ import twitter4j.Status;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
-import microsoft.sql.DateTimeOffset;
 import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
@@ -514,6 +509,42 @@ public class DbConnector {
 			conn = null;
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreStatus exception", e);
+		}
+	}
+	
+	/**
+	 * Save Timing in DB
+	 */
+	public void StoreTiming(long accID, ArrayList<JobAtom> timing){
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spTimingAdd](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+
+			sp.registerOutParameter("tmng_id", java.sql.Types.BIGINT);
+			sp.setLong("user_id", accID);
+			sp.setNull("tmng_id", java.sql.Types.BIGINT);
+			sp.executeUpdate();
+			long tmng_id = sp.getLong("tmng_id");
+			sp.close();
+
+			query = "{call [dbo].[spTimingRecordAdd](?,?,?)}";
+			
+			for (JobAtom job : timing) {
+				sp = conn.prepareCall(query);
+				sp.setLong("tmng_id", tmng_id);
+				sp.setString("TaskType", job.Type.toString());
+				sp.setLong("tstamp", job.timestamp / 1000);
+				sp.execute();
+				sp.close();
+			}
+			
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnector.logger.error("StoreTiming exception", e);
 		}
 	}
 	

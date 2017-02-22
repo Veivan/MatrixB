@@ -162,6 +162,25 @@ CREATE TABLE [dbo].[mTasks](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mTimingList](
+	[ctm_id] [bigint] IDENTITY(1,1) NOT NULL,
+	[tmng_id] [bigint] NOT NULL,
+	[id_TaskType] [smallint] NOT NULL,
+	[tstamp] [bigint] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mTimings](
+	[tmng_id] [bigint] IDENTITY(1,1) NOT NULL,
+	[user_id] [bigint] NOT NULL,
+	[created_at] [datetime] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mTokens](
 	[id_creds] [bigint] IDENTITY(1,1) NOT NULL,
 	[user_id] [bigint] NOT NULL,

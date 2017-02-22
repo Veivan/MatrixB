@@ -116,6 +116,7 @@ public class ConcreteAcc implements IAccount {
 	
 	public void RebuldAccTiming(Homeworks homeworks) {
 		this.timing.RebuildTiming(homeworks, this.GroupIDs);
+		this.timing.StoreTiming(this.AccID);
 	}
 
 	public void printTiming() {

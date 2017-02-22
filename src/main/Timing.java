@@ -16,6 +16,7 @@ import model.Regimen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnector;
 import service.Constants;
 import jobs.Homeworks;
 import jobs.JobAtom;
@@ -34,6 +35,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 
 	private ArrayList<JobAtom> innerTiming = new ArrayList<JobAtom>();
 	private int index = 0;
+
+	DbConnector dbConnector = new DbConnector();
 
 	public Timing() {
 		this.timeZone = "GMT+3";
@@ -100,6 +103,11 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		printTiming();
 	}
 
+	public void StoreTiming(long AccID)
+	{
+		dbConnector.StoreTiming(AccID, innerTiming);
+	}
+	
 	public void printTiming() {
 		for (JobAtom job : innerTiming) {
 			// for (int i = 0; i < 2; i++) {
