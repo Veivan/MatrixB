@@ -3,6 +3,7 @@ package network;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -357,24 +358,14 @@ public class T4jClient implements IJobExecutor {
 						break;
 					case DIRECT:
 						break;
-					case LIKE:
+					case LIKE:						
+						if (Utils.DoItByDice())
+							LikeOne(twitter);
+						result = true;
 						break;
 					case RETWIT:
-						if (Utils.DoItByDice()) {
-							statuses = twitter.getHomeTimeline();
-							if (statuses.size() > 0) {
-								for (Status stat : statuses) {
-									dbConnector.StoreStatus(
-											this.acc.getAccID(), stat);
-								}
-								long status_id = Utils
-										.GetPreferedStatus(statuses, Constants.CompareBy.RetwitCount);
-								Status statusrt = twitter
-										.retweetStatus(status_id);
-								dbConnector.StoreStatus(this.acc.getAccID(),
-										statusrt); 
-							}
-						}
+						if (Utils.DoItByDice())
+							RetwitOne(twitter);
 						result = true;
 						break;
 					case REPLAY:
@@ -425,6 +416,49 @@ public class T4jClient implements IJobExecutor {
 			failreason = premess + " : " + e.getMessage();
 		}
 		return result;
+	}
+
+	/**
+	 * Function read home timeline and stores twits 2 DB. Then sort twits by
+	 * RetwitCount descending and retweet first twit (with Max RetwitCount).
+	 * 
+	 * @return
+	 */
+	private void RetwitOne(Twitter twitter) throws TwitterException {
+		List<Status> statuses = twitter.getHomeTimeline();
+		if (statuses.size() > 0) {
+			List<Status> notMineList = new ArrayList<Status>();
+			for (Status stat : statuses) {
+				dbConnector.StoreStatus(this.acc.getAccID(), stat);
+				if (!stat.isRetweetedByMe())
+					notMineList.add(stat);
+			}
+			if (notMineList.size() > 0) {
+				long status_id = Utils.GetPreferedStatus(notMineList,
+						Constants.CompareBy.RetwitCount);
+				Status statusrt = twitter.retweetStatus(status_id);
+				dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+			}
+		}
+	}
+
+	/**
+	 * Function read home timeline and stores twits 2 DB. Then sort twits by
+	 * FavoriteCount descending and likes first twit (with Max FavoriteCount).
+	 * 
+	 * @return
+	 */
+	private void LikeOne(Twitter twitter) throws TwitterException {
+		List<Status> statuses = twitter.getHomeTimeline();
+		if (statuses.size() > 0) {
+			for (Status stat : statuses) {
+				dbConnector.StoreStatus(this.acc.getAccID(), stat);
+			}
+			long status_id = Utils.GetPreferedStatus(statuses,
+					Constants.CompareBy.FavoriteCount);
+			Status statusrt = twitter.createFavorite(status_id);
+			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+		}
 	}
 
 	/**
