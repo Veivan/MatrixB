@@ -39,6 +39,11 @@ public final class Constants {
 		GET, POST
 	}
 
+	public enum CompareBy {
+		RetwitCount, FavoriteCount
+	}
+
+
 	// Константы для SimpleVisitor
 	public static final int CONNECTION_TIMEOUT_MS = 20;
 	public static final int CONNECTION_REQUEST_TIMEOUT_MS = 20;

@@ -34,13 +34,13 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");
+		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");
 		
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
-		//JobAtom job = new JobAtom(100L, "FOLLOW", "");  
+		JobAtom job = new JobAtom(100L, "RETWIT", "");  
 
 		ConcreteAcc acc = new ConcreteAcc(130L);
 		MatrixAct theact = new MatrixAct(job, acc);

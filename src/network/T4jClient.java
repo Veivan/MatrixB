@@ -126,7 +126,7 @@ public class T4jClient implements IJobExecutor {
 					for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 						String msg = String
 								.format("Get accessToken shot %d with proxy %d ERROR : ",
-										i+1, j+1);
+										i + 1, j + 1);
 						try {
 							accessToken = auth.getOAuthAccessTokenSilent();
 							if (accessToken != null)
@@ -210,16 +210,17 @@ public class T4jClient implements IJobExecutor {
 			InputStream is = new ByteArrayInputStream(decodedBytes);
 			String fileName = Integer.toString(id) + ".jpg";
 
-			String message = String.format("%s %s. Требуется лечение, Вы можете помочь.%n", pname,
+			String message = String.format(
+					"%s %s. Требуется лечение, Вы можете помочь.%n", pname,
 					ppage)
 					+ "http://helpchildren.online/?id="
 					+ id
 					+ " "
-					+ job.TContent; // + "#Россия" + " #ПодариЖизнь";					
+					+ job.TContent; // + "#Россия" + " #ПодариЖизнь";
 			latestStatus = new StatusUpdate(message);
 			// Загрузка картинки в твиттер
-			latestStatus.setMedia(fileName, is); 
-			// Moscow 
+			latestStatus.setMedia(fileName, is);
+			// Moscow
 			double lat = 55.751244;
 			double lon = 37.618423;
 			latestStatus.setLocation(new GeoLocation(lat, lon));
@@ -271,8 +272,8 @@ public class T4jClient implements IJobExecutor {
 		boolean result = false;
 		try {
 			for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
-				String msg = String
-						.format("OperateTwitter shot %d ERROR : ", i+1);
+				String msg = String.format("OperateTwitter shot %d ERROR : ",
+						i + 1);
 				try {
 					User user = twitter.verifyCredentials();
 					dbConnector.SaveAccExtended(this.acc.getAccID(), user);
@@ -305,12 +306,16 @@ public class T4jClient implements IJobExecutor {
 						result = true;
 						break;
 					case READHOMETIMELINE:
-						statuses = twitter.getHomeTimeline();
-						System.out.println("Showing @" + user.getScreenName()
-								+ "'s home timeline.");
-						for (Status stat : statuses) {
-							System.out.println(stat.toString());
-							dbConnector.StoreStatus(this.acc.getAccID(), stat);
+						if (Utils.DoItByDice()) {
+							statuses = twitter.getHomeTimeline();
+							System.out.println("Showing @"
+									+ user.getScreenName()
+									+ "'s home timeline.");
+							for (Status stat : statuses) {
+								System.out.println(stat.toString());
+								dbConnector.StoreStatus(this.acc.getAccID(),
+										stat);
+							}
 						}
 						result = true;
 						break;
@@ -338,7 +343,8 @@ public class T4jClient implements IJobExecutor {
 						}
 						System.out.println("@" + user.getScreenName() + " is "
 								+ (IsEnabled ? "enabled" : "disabled"));
-						dbConnector.setAccIsEnabled(this.acc.getAccID(), IsEnabled);
+						dbConnector.setAccIsEnabled(this.acc.getAccID(),
+								IsEnabled);
 						result = true;
 						break;
 					case NEWUSER:
@@ -354,17 +360,35 @@ public class T4jClient implements IJobExecutor {
 					case LIKE:
 						break;
 					case RETWIT:
+						if (Utils.DoItByDice()) {
+							statuses = twitter.getHomeTimeline();
+							if (statuses.size() > 0) {
+								for (Status stat : statuses) {
+									dbConnector.StoreStatus(
+											this.acc.getAccID(), stat);
+								}
+								long status_id = Utils
+										.GetPreferedStatus(statuses, Constants.CompareBy.RetwitCount);
+								Status statusrt = twitter
+										.retweetStatus(status_id);
+								dbConnector.StoreStatus(this.acc.getAccID(),
+										statusrt); 
+							}
+						}
+						result = true;
 						break;
 					case REPLAY:
 						break;
 					case FOLLOW:
-						if (Utils.DoItByDice()) 
-						{
-							TwFriend friend = dbConnector.GetRandomScreenName(this.acc.getAccID());
-							if (friend != null){
+						if (Utils.DoItByDice()) {
+							TwFriend friend = dbConnector
+									.GetRandomScreenName(this.acc.getAccID());
+							if (friend != null) {
 								twitter.createFriendship(friend.getScreenName());
-								dbConnector.StoreFollowInfo(this.acc.getAccID(), friend.getTwitter_id(), true);
-							}						
+								dbConnector.StoreFollowInfo(
+										this.acc.getAccID(),
+										friend.getTwitter_id(), true);
+							}
 						}
 						result = true;
 						break;

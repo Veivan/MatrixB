@@ -9,13 +9,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 
+import twitter4j.Status;
 import microsoft.sql.DateTimeOffset;
 import model.ElementCredentials;
 
@@ -152,6 +155,27 @@ public class Utils {
 	public static boolean DoItByDice() {
 		long num = System.nanoTime();		
 		return (num & 1) == 0;
+		//return true;
+	}
+
+	/**
+	 * Выбор статуса для ретвита из списка
+	 * 
+	 * @return long
+	 */
+	public static long GetPreferedStatus(List<Status> statuses, Constants.CompareBy criterion) {
+		
+		switch (criterion) {
+		case RetwitCount:
+			Collections.sort(statuses, StatusComparator.StatusComparatorByRT);
+			break;
+		case FavoriteCount:
+			Collections.sort(statuses, StatusComparator.StatusComparatorByFv);
+			break;
+		}
+		long rt = statuses.get(0).getId();
+		System.out.println(rt);
+		return rt;
 	}
 	
 /*	public static void main(String[] args) {
