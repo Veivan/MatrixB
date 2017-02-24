@@ -358,7 +358,7 @@ public class T4jClient implements IJobExecutor {
 						break;
 					case DIRECT:
 						break;
-					case LIKE:						
+					case LIKE:
 						if (Utils.DoItByDice())
 							LikeOne(twitter);
 						result = true;
