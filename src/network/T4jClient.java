@@ -278,6 +278,7 @@ public class T4jClient implements IJobExecutor {
 					switch (jobType) {
 					case TWIT:
 						Status status = SendTwit();
+						dbConnector.StoreStatus(this.acc.getAccID(), status);
 						result = true;
 						break;
 					case SETAVA:
