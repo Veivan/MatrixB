@@ -3,12 +3,11 @@ package tests;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import model.ElementProxy;
+import model.TwFriend;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -29,7 +28,7 @@ public class testDbConnectSingle {
 		dbConnector = new DbConnector();
 	}
 
-	@Test
+	//@Test
 	public void testgetRandomPicture() throws Exception {
 		Gender gender = Gender.FEMALE;
 		int ptype_id = 1;
@@ -45,17 +44,25 @@ public class testDbConnectSingle {
 		assertFalse(bytes.length == 0);
 	}
 
-	@Test
+	//@Test
 	public void testGetFreeProxies() {
 		List<ElementProxy> proxylist = dbConnector.getFreeProxies();
 		assertFalse(proxylist.size() == 0);
 	}
 
-	@Test
+	//@Test
 	public void testGetProxy4Acc() {
 		int AccID = 1;
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		assertNotNull(accproxy); 		
 	}
+
+	@Test
+	public void testGetRandomScreenName() {
+		int AccID = 130;
+		TwFriend friend = dbConnector.GetRandomScreenName(AccID);
+		assertNotNull(friend); 		
+	}
+
 
 }

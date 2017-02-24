@@ -19,10 +19,12 @@ AS BEGIN
 	USING (SELECT [user_id] = @user_id, [twitter_id] = @twitter_id) I 
 		ON M.[user_id] = I.[user_id] AND M.[twitter_id] = I.[twitter_id]
 	WHEN NOT MATCHED BY TARGET THEN 
-		INSERT ([user_id], [twitter_id], [fwtype])
-		VALUES (@user_id, @twitter_id, @fwtype)
+		INSERT ([user_id], [twitter_id], [fwtype], [date_upd])
+		VALUES (@user_id, @twitter_id, @fwtype, GETDATE())
 	WHEN MATCHED THEN 
-		UPDATE SET [fwtype] = @fwtype
+		UPDATE SET 
+			[fwtype] = @fwtype,
+			[date_upd] = GETDATE()
 	;
 
 END

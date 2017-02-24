@@ -33,6 +33,7 @@ import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
 import model.ConcreteAcc;
+import model.TwFriend;
 import inrtfs.IAccount;
 import inrtfs.IJobExecutor;
 
@@ -359,7 +360,11 @@ public class T4jClient implements IJobExecutor {
 					case FOLLOW:
 						if (Utils.DoItByDice()) 
 						{
-							
+							TwFriend friend = dbConnector.GetRandomScreenName(this.acc.getAccID());
+							if (friend != null){
+								twitter.createFriendship(friend.getScreenName());
+								dbConnector.StoreFollowInfo(this.acc.getAccID(), friend.getTwitter_id(), true);
+							}						
 						}
 						result = true;
 						break;

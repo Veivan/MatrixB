@@ -30,6 +30,7 @@ import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
+import model.TwFriend;
 
 public class DbConnector {
 
@@ -226,26 +227,28 @@ public class DbConnector {
 			sp.setLong("user_id", user_id);
 			sp.setLong("twitter_id", user.getId());
 			sp.setString("location", user.getLocation());
-			sp.setInt("followers_count", user.getFollowersCount()); 
-			sp.setInt("friends_count", user.getFriendsCount()); 
-			sp.setInt("listed_count", user.getListedCount()); 
-			sp.setInt("statuses_count", user.getStatusesCount()); 
+			sp.setInt("followers_count", user.getFollowersCount());
+			sp.setInt("friends_count", user.getFriendsCount());
+			sp.setInt("listed_count", user.getListedCount());
+			sp.setInt("statuses_count", user.getStatusesCount());
 			sp.setString("url", user.getURL());
 			sp.setString("description", user.getDescription());
 			sp.setObject("created_at",
-					Utils.getDateTimeOffset(user.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);			
+					Utils.getDateTimeOffset(user.getCreatedAt()),
+					microsoft.sql.Types.DATETIMEOFFSET);
 			sp.setInt("utc_offset", user.getUtcOffset());
-			sp.setString("time_zone", user.getTimeZone()); 
+			sp.setString("time_zone", user.getTimeZone());
 			sp.setString("lang", user.getLang());
 			sp.setBoolean("geo_enabled", user.isGeoEnabled());
-			
+
 			Status st = user.getStatus();
 			if (st != null)
 				sp.setObject("lasttweet_at",
-					Utils.getDateTimeOffset(st.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);
+						Utils.getDateTimeOffset(st.getCreatedAt()),
+						microsoft.sql.Types.DATETIMEOFFSET);
 			else
 				sp.setNull("lasttweet_at", microsoft.sql.Types.DATETIMEOFFSET);
-			
+
 			sp.setBoolean("default_profile", user.isDefaultProfile());
 			sp.setBoolean("default_profile_image", user.isDefaultProfileImage());
 			sp.setBoolean("verified", user.isVerified());
@@ -525,7 +528,7 @@ public class DbConnector {
 	/**
 	 * Save Status in DB
 	 */
-	public void StoreStatus(long accID, Status status){
+	public void StoreStatus(long accID, Status status) {
 		try {
 			dbConnect();
 			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
@@ -534,11 +537,13 @@ public class DbConnector {
 			sp.setLong("tw_id", status.getId());
 			sp.setLong("user_id", accID);
 			sp.setString("status", status.toString());
-			sp.setLong("creator_id", status.getUser().getId()); 
+			sp.setLong("creator_id", status.getUser().getId());
 			sp.setObject("created_at",
-					Utils.getDateTimeOffset(status.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);			
+					Utils.getDateTimeOffset(status.getCreatedAt()),
+					microsoft.sql.Types.DATETIMEOFFSET);
 			sp.setInt("favorite_count", status.getFavoriteCount());
-			sp.setString("in_reply_to_screen_name", status.getInReplyToScreenName());
+			sp.setString("in_reply_to_screen_name",
+					status.getInReplyToScreenName());
 			sp.setLong("in_reply_to_status_id", status.getInReplyToStatusId());
 			sp.setLong("in_reply_to_user_id", status.getInReplyToUserId());
 			sp.setString("lang", status.getLang());
@@ -549,7 +554,7 @@ public class DbConnector {
 			sp.setBoolean("favorited", status.isFavorited());
 			sp.setBoolean("retweeted", status.isRetweeted());
 			sp.setBoolean("isRetweet", status.isRetweet());
-			
+
 			sp.execute();
 			sp.close();
 			sp = null;
@@ -560,11 +565,11 @@ public class DbConnector {
 			DbConnector.logger.error("StoreStatus exception", e);
 		}
 	}
-	
+
 	/**
 	 * Save Timing in DB
 	 */
-	public void StoreTiming(long accID, ArrayList<JobAtom> timing){
+	public void StoreTiming(long accID, ArrayList<JobAtom> timing) {
 		try {
 			dbConnect();
 			String query = "{call [dbo].[spTimingAdd](?,?)}";
@@ -578,7 +583,7 @@ public class DbConnector {
 			sp.close();
 
 			query = "{call [dbo].[spTimingRecordAdd](?,?,?)}";
-			
+
 			for (JobAtom job : timing) {
 				sp = conn.prepareCall(query);
 				sp.setLong("tmng_id", tmng_id);
@@ -587,7 +592,7 @@ public class DbConnector {
 				sp.execute();
 				sp.close();
 			}
-			
+
 			sp = null;
 			if (conn != null)
 				conn.close();
@@ -596,7 +601,59 @@ public class DbConnector {
 			DbConnector.logger.error("StoreTiming exception", e);
 		}
 	}
-	
+
+	/**
+	 * Get random ScreenName ant twitter_id to follow it
+	 */
+	public TwFriend GetRandomScreenName(long accID) {
+		TwFriend friend = null;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spGetRandomScreenName](?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("user_id", accID);
+			ResultSet rs = sp.executeQuery();
+			if (rs.next())
+				friend = new TwFriend(rs.getString("screen_name"),
+						rs.getLong("twitter_id"));
+			rs.close();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnector.logger.error("StoreTiming exception", e);
+		}
+		return friend;
+	}
+
+	/**
+	 * Save single Follow Info in DB
+	 */
+	public void StoreFollowInfo(long accID, long twitter_id, Boolean fwtype) {
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spFollowInfoUpd](?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+
+			sp.setLong("user_id", accID);
+			sp.setLong("twitter_id", twitter_id);
+			if (fwtype == null)
+				sp.setNull("fwtype", java.sql.Types.BIT);
+			else
+				sp.setBoolean("fwtype", fwtype);
+			sp.execute();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnector.logger.error("StoreFollowInfo exception", e);
+		}
+	}
+
 	private static void MakeHowmworks(Homeworks homeworks,
 			List<JobAtom> JobAtomList) {
 		for (JobAtom job : JobAtomList) {

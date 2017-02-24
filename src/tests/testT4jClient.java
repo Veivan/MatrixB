@@ -40,6 +40,8 @@ public class testT4jClient {
 
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
 				
+		//JobAtom job = new JobAtom(100L, "FOLLOW", "");  
+
 		ConcreteAcc acc = new ConcreteAcc(130L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		

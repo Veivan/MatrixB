@@ -1,2 +1,3 @@
+2017.2.24.1 - Add DicLang, mFollowInfo, spFollowInfoUpd, spGetRandomScreenName
 2017.2.21.1 - Add twTwits & spStatusAdd
 2017.2.5.1 - Add spProxyDeadDelete
