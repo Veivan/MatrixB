@@ -27,8 +27,6 @@ ALTER PROCEDURE [dbo].[spStatusAdd]
 AS BEGIN
 	SET NOCOUNT ON;
 
-	--DECLARE created_dt datetimeoffset(7)
-
 	MERGE [dbo].[twTwits] T
 	USING (SELECT [tw_id] = @tw_id ) I 
 		ON T.[tw_id] = I.[tw_id]

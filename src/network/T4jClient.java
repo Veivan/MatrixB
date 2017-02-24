@@ -274,6 +274,7 @@ public class T4jClient implements IJobExecutor {
 						.format("OperateTwitter shot %d ERROR : ", i+1);
 				try {
 					User user = twitter.verifyCredentials();
+					dbConnector.SaveAccExtended(this.acc.getAccID(), user);
 					switch (jobType) {
 					case TWIT:
 						Status status = SendTwit();

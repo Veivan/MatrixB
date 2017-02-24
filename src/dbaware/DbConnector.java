@@ -22,6 +22,7 @@ import service.Constants;
 import service.GenderChecker.Gender;
 import service.Utils;
 import twitter4j.Status;
+import twitter4j.User;
 import jobs.Homeworks;
 import jobs.JobAtom;
 import jobs.JobList;
@@ -211,6 +212,54 @@ public class DbConnector {
 		}
 
 		return user_id;
+	}
+
+	/**
+	 * Сохраняет расширенные данные аккаунта в БД
+	 */
+	public void SaveAccExtended(Long user_id, User user) {
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spAccountUpdExt](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+
+			sp.setLong("user_id", user_id);
+			sp.setLong("twitter_id", user.getId());
+			sp.setString("location", user.getLocation());
+			sp.setInt("followers_count", user.getFollowersCount()); 
+			sp.setInt("friends_count", user.getFriendsCount()); 
+			sp.setInt("listed_count", user.getListedCount()); 
+			sp.setInt("statuses_count", user.getStatusesCount()); 
+			sp.setString("url", user.getURL());
+			sp.setString("description", user.getDescription());
+			sp.setObject("created_at",
+					Utils.getDateTimeOffset(user.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);			
+			sp.setInt("utc_offset", user.getUtcOffset());
+			sp.setString("time_zone", user.getTimeZone()); 
+			sp.setString("lang", user.getLang());
+			sp.setBoolean("geo_enabled", user.isGeoEnabled());
+			
+			Status st = user.getStatus();
+			if (st != null)
+				sp.setObject("lasttweet_at",
+					Utils.getDateTimeOffset(st.getCreatedAt()), microsoft.sql.Types.DATETIMEOFFSET);
+			else
+				sp.setNull("lasttweet_at", microsoft.sql.Types.DATETIMEOFFSET);
+			
+			sp.setBoolean("default_profile", user.isDefaultProfile());
+			sp.setBoolean("default_profile_image", user.isDefaultProfileImage());
+			sp.setBoolean("verified", user.isVerified());
+
+			sp.execute();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			DbConnector.logger.error("SaveAccExtended exception", e);
+		}
+
 	}
 
 	/**

@@ -20,6 +20,14 @@ ALTER TABLE [dbo].[DicGroups] ADD  CONSTRAINT [DF_DicGroups_dcreate]  DEFAULT (g
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicLang](
+	[lang_id] [int] IDENTITY(1,1) NOT NULL,
+	[lang] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicPicType](
 	[ptype_id] [int] IDENTITY(1,1) NOT NULL,
 	[ptype_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL
@@ -55,12 +63,12 @@ CREATE TABLE [dbo].[mAccounts](
 	[statuses_count] [int] NULL,
 	[url] [nvarchar](250) COLLATE Cyrillic_General_CI_AS NULL,
 	[description] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
-	[created_at] [sql_variant] NULL,
+	[created_at] [datetimeoffset](2) NULL,
 	[utc_offset] [int] NULL,
 	[time_zone] [nvarchar](150) COLLATE Cyrillic_General_CI_AS NULL,
 	[lang_id] [int] NULL,
 	[geo_enabled] [bit] NULL,
-	[lasttweet_at] [smalldatetime] NULL,
+	[lasttweet_at] [datetimeoffset](2) NULL,
 	[default_profile] [bit] NULL,
 	[default_profile_image] [bit] NULL,
 	[verified] [bit] NULL,
