@@ -27,17 +27,30 @@ ALTER PROCEDURE [dbo].[spStatusAdd]
 AS BEGIN
 	SET NOCOUNT ON;
 
+	DECLARE @lang_id INT
+
+	MERGE [dbo].[DicLang] D
+	USING (SELECT [lang] = @lang ) I 
+		ON D.[lang] = I.[lang]
+	WHEN NOT MATCHED BY TARGET THEN INSERT
+		([lang])
+	VALUES
+		(@lang)
+	;
+
+	SELECT @lang_id = [lang_id] FROM [dbo].[DicLang] WHERE [lang] = @lang
+
 	MERGE [dbo].[twTwits] T
 	USING (SELECT [tw_id] = @tw_id ) I 
 		ON T.[tw_id] = I.[tw_id]
 	WHEN NOT MATCHED BY TARGET THEN INSERT
 		([tw_id], [user_id], [status], [creator_id], [created_at], [favorite_count], 
-		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id],
-		[lang], [retweet_count], [text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet])
+		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id], [lang_id], 
+		[retweet_count], [text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet])
 	VALUES
 		(@tw_id, @user_id, @status, @creator_id, @created_at, @favorite_count, 
-		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id,
-		@lang, @retweet_count, @text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet)
+		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id, @lang_id, 
+		@retweet_count, @text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet)
 	WHEN MATCHED THEN UPDATE SET
 		[status] = @status
 		,[favorite_count] = @favorite_count

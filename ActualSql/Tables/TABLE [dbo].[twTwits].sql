@@ -11,7 +11,7 @@ CREATE TABLE [dbo].[twTwits](
 	[in_reply_to_screen_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[in_reply_to_status_id] [bigint] NULL,
 	[in_reply_to_user_id] [bigint] NULL,
-	[lang] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[lang_id] [int] NULL,
 	[retweet_count] [int] NULL,
 	[text] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,
 	[place_json] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,

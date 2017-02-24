@@ -30,13 +30,14 @@ AS BEGIN
 
 	DECLARE @lang_id INT
 
-	-- У таблицы есть уникальный индекс. При вставке существующего @lang будет Exception
-	BEGIN TRY
-		INSERT INTO [dbo].[DicLang] ([lang]) VALUES (@lang)
-	END TRY
-	BEGIN CATCH
-		-- Ничего не делать
-	END CATCH 
+	MERGE [dbo].[DicLang] D
+	USING (SELECT [lang] = @lang ) I 
+		ON D.[lang] = I.[lang]
+	WHEN NOT MATCHED BY TARGET THEN INSERT
+		([lang])
+	VALUES
+		(@lang)
+	;
 
 	SELECT @lang_id = [lang_id] FROM [dbo].[DicLang] WHERE [lang] = @lang
 
