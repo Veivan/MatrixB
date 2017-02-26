@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	// Считать число оставшихся заданий.
 	// Равномерно распределить задания по оставшемуся времени.
 	// Приоритет заданий не учитывается
+	// Задания сортируются не по спискам, а по порядку следования в БД
 	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs) {
 		innerTiming.clear();
 		logger.info("Timing  rebuilding");
@@ -67,6 +69,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 				}
 			}
 		}
+		// Сортировка задач по ID из БД
+		Collections.sort(innerTiming, JobAtom.JobAtomComparatorByID);
 
 		Random random = new Random();
 		Set<Integer> intset = new HashSet<Integer>();

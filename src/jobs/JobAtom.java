@@ -1,5 +1,7 @@
 package jobs;
 
+import java.util.Comparator;
+
 import service.Constants;
 import service.Constants.JobType;
 
@@ -109,5 +111,14 @@ public class JobAtom {
 	public byte[] getProfileBanner() {
 		return profileBanner;
 	}
+
+	public static Comparator<JobAtom> JobAtomComparatorByID = new Comparator<JobAtom>() {
+		@Override
+		public int compare(JobAtom s1, JobAtom s2) {
+			long p1 = s1.JobID;
+			long p2 = s2.JobID;
+			return p2 > p1 ? 1 : p1 == p2 ? 0 : -1;
+		}
+	};
 
 }
