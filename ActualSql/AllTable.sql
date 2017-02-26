@@ -229,6 +229,7 @@ CREATE TABLE [dbo].[twTwits](
 	[coordinates_json] [nvarchar](500) COLLATE Cyrillic_General_CI_AS NULL,
 	[favorited] [bit] NULL,
 	[retweeted] [bit] NULL,
-	[isRetweet] [bit] NULL
+	[isRetweet] [bit] NULL,
+	[retweeted_id] [bigint] NULL
 ) ON [PRIMARY]
 

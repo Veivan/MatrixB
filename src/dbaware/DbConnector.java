@@ -531,7 +531,7 @@ public class DbConnector {
 	public void StoreStatus(long accID, Status status) {
 		try {
 			dbConnect();
-			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
 			sp.setLong("tw_id", status.getId());
@@ -555,6 +555,16 @@ public class DbConnector {
 			sp.setBoolean("retweeted", status.isRetweeted());
 			sp.setBoolean("isRetweet", status.isRetweet());
 
+			long retweeted_id = -1L;
+			if (status.isRetweet()) {
+				retweeted_id = status.getRetweetedStatus().getId();
+			}
+
+			if (retweeted_id > 0)
+				sp.setLong("retweeted_id", retweeted_id);
+			else
+				sp.setNull("retweeted_id", java.sql.Types.BIGINT);
+
 			sp.execute();
 			sp.close();
 			sp = null;
@@ -566,6 +576,34 @@ public class DbConnector {
 		}
 	}
 
+	
+	/**
+	 * Check if Status retweeted by user
+	 */
+	public boolean isRetweetedByUser(long statusId, long accID) {
+		boolean result = false;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[isRetweetedByUser](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("tw_id", statusId);
+			sp.setLong("user_id", accID);
+			ResultSet rs = sp.executeQuery();
+			if (rs.next())
+				result = rs.getBoolean("result");
+
+			rs.close();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("isRetweetedByUser exception", e);
+		}
+		return result;
+	}
+	
 	/**
 	 * Save Timing in DB
 	 */

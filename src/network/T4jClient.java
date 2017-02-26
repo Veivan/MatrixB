@@ -430,12 +430,17 @@ public class T4jClient implements IJobExecutor {
 			List<Status> notMineList = new ArrayList<Status>();
 			for (Status stat : statuses) {
 				dbConnector.StoreStatus(this.acc.getAccID(), stat);
-				if (!stat.isRetweetedByMe())
+				if (!dbConnector.isRetweetedByUser(stat.getId(), this.acc.getAccID()))
 					notMineList.add(stat);
 			}
 			if (notMineList.size() > 0) {
 				long status_id = Utils.GetPreferedStatus(notMineList,
 						Constants.CompareBy.RetwitCount);
+				
+				try {
+					Thread.sleep(Utils.getDelay());
+				} catch (InterruptedException e) {
+				}
 				Status statusrt = twitter.retweetStatus(status_id);
 				dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 			}

@@ -24,6 +24,7 @@ ALTER PROCEDURE [dbo].[spStatusAdd]
 	,@favorited BIT
 	,@retweeted BIT
 	,@isRetweet BIT
+	,@retweeted_id BIGINT
 AS BEGIN
 	SET NOCOUNT ON;
 
@@ -45,12 +46,12 @@ AS BEGIN
 		ON T.[tw_id] = I.[tw_id]
 	WHEN NOT MATCHED BY TARGET THEN INSERT
 		([tw_id], [user_id], [status], [creator_id], [created_at], [favorite_count], 
-		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id], [lang_id], 
-		[retweet_count], [text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet])
+		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id], [lang_id], [retweet_count], 
+		[text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet], [retweeted_id])
 	VALUES
 		(@tw_id, @user_id, @status, @creator_id, @created_at, @favorite_count, 
-		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id, @lang_id, 
-		@retweet_count, @text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet)
+		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id, @lang_id, @retweet_count,
+		@text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet, @retweeted_id)
 	WHEN MATCHED THEN UPDATE SET
 		[status] = @status
 		,[favorite_count] = @favorite_count

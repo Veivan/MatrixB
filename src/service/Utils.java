@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -177,11 +178,21 @@ public class Utils {
 		System.out.println(rt);
 		return rt;
 	}
+
+	/**
+	 * Формирование случайного числа секунд от 30 до 60
+	 * 
+	 * @return long
+	 */
+	public static long getDelay() {
+		Random random = new Random();
+		return (30 + random.nextInt(30)) * 1000;
+	}
 	
 /*	public static void main(String[] args) {
 		for (int i = 0; i < 5; i++) {
 			System.out.println(DoItByDice());
 		}
-	} */
-
+	} 
+*/
 }
