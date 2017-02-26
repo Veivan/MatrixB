@@ -461,6 +461,11 @@ public class T4jClient implements IJobExecutor {
 			}
 			long status_id = Utils.GetPreferedStatus(statuses,
 					Constants.CompareBy.FavoriteCount);
+			
+			try {
+				Thread.sleep(Utils.getDelay());
+			} catch (InterruptedException e) {
+			}
 			Status statusrt = twitter.createFavorite(status_id);
 			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 		}
