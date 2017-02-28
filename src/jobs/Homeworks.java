@@ -96,11 +96,17 @@ public class Homeworks implements Observable, Iterable<JobList>,
 	public boolean IsDifferent(Homeworks newsched) {
 		// Сравнение по дате валидности
 		if (!IsDatesEqual(this.getDatevalid(), newsched.getDatevalid()))
+		{
+			logger.debug("IsDifferent : Dates not Equal");
 			return true;
+		}
 
 		// Сравнение по числу списков
 		if (this.JobListsCount() != newsched.JobListsCount())
+		{
+			logger.debug("IsDifferent : JobListsCount not Equal");
 			return true;
+		}
 
 		// Сравнение по типам списков, числу элементов и по эдементам списков
 		this.First();

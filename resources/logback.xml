@@ -32,8 +32,8 @@
 
 	<!-- Логгеры -->
 	<!-- Корневой логгер -->
-	<root level="info">
-		<appender-ref ref="file" />
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
 	</root>
 
 <!-- root level="OFF">
