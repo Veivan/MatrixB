@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import service.Constants;
-import service.JobListComparator;
 
 /**
  * Класс - список списков заданий.
@@ -58,11 +57,10 @@ public class Homeworks implements Observable, Iterable<JobList>,
 		}
 		// If not found then make new one
 		if (targetList == null) {
-			JobListComparator comparator = new JobListComparator();
 			targetList = new JobList(job.Type);
 			HomeworksList.add(targetList);
 			// Добавлять в класс надо в порядке приоритета
-			Collections.sort(HomeworksList, comparator);
+			Collections.sort(HomeworksList, JobList.JobListComparatorByPriority);
 		}
 		targetList.AddJob(job);
 	}
