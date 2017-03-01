@@ -55,7 +55,7 @@ public class MatrixFace extends JFrame {
 		JTextArea memo3 = new JTextArea();
 		memo3.setEditable(false);
 
-    	MemoProxy memoProxy = new MemoProxy(memo);
+    	//MemoProxy memoProxy = new MemoProxy(memo);
 		MemoProxy StatusMemoProxy = new MemoProxy(memo3);
 
 		JLabel label1 = new JLabel("Start execution");
@@ -112,7 +112,7 @@ public class MatrixFace extends JFrame {
 
 		// setContentPane(windowContent);
 		getContentPane().add(windowContent);
-		setTitle("SenPit client");
+		setTitle("Matrix client");
 		setSize(600, 600);
 		setLocationRelativeTo(null);
 		setVisible(true);

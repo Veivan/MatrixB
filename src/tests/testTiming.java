@@ -11,7 +11,6 @@ import jobs.Homeworks;
 import org.junit.Before;
 import org.junit.Test;
 
-import service.Constants;
 import dbaware.DbConnector;
 import main.Timing;
 
@@ -39,7 +38,7 @@ public class testTiming {
 
 	@Test
 	public void testRebuildTiming() {
-		String time = "2017-02-28";
+		//String time = "2017-02-28";
 		try {
 			while (true) {
 				//long moment = dfm.parse(time).getTime();

@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import service.Constants;
-import twitter4j.GeoLocation;
 
 public class testT4jClient {
 	T4jClient t4wclient;
