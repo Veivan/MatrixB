@@ -1,5 +1,8 @@
 package main;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -72,10 +75,39 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		// Сортировка задач по ID из БД
 		Collections.sort(innerTiming, JobAtom.JobAtomComparatorByID);
 
+		Calendar rightNow = Calendar.getInstance();
+		
+		/*DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String time = "2017-03-01 23:30:00";
+		long unixtime = 0;
+		try {
+			unixtime = dfm.parse(time).getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		rightNow.setTimeInMillis(unixtime); */
+
+		int hour = rightNow.get(Calendar.HOUR_OF_DAY);
+		int minute = rightNow.get(Calendar.MINUTE);
+		int starttime = hour * 60 + minute;
+		int ActiveInterval = regim.ActiveH * 60;
+		
+		boolean doIncDay =  (starttime > regim.BedHour * 60);
+		boolean doCheckFinished = false; // Флаг - делать проверку заданий на завершение? 
+
+		if (starttime > regim.WakeHour * 60 && starttime < regim.BedHour * 60 ) {
+			ActiveInterval = regim.BedHour * 60 - starttime;
+			doCheckFinished = true;
+		}
+		else
+			starttime = regim.WakeHour * 60;
+
+		if (doCheckFinished) CheckInnerTiming(rightNow);
+			
 		Random random = new Random();
 		Set<Integer> intset = new HashSet<Integer>();
 		while (intset.size() < innerTiming.size()) {
-			int h = random.nextInt(regim.ActiveH * 60) + regim.WakeHour * 60;
+			int h = random.nextInt(ActiveInterval) + starttime;
 			if ((h > regim.Lounch * 60 && h < (regim.Lounch + 1) * 60)
 					|| (h > regim.Supper * 60 && h < (regim.Supper + 1) * 60))
 				continue;
@@ -93,6 +125,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 
 		GregorianCalendar date = new GregorianCalendar(
 				TimeZone.getTimeZone(timeZone));
+		if (doIncDay) date.add(Calendar.DAY_OF_MONTH, 1);
+			
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
 			// logger.debug("Value: {}", String.valueOf(t));
@@ -107,17 +141,25 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		printTiming();
 	}
 
-	public void StoreTiming(long AccID)
-	{
+	/**
+	 * Функция но основании данных из БД удаляет из списка innerTiming
+	 * выполненные акком задания в день rightNow.
+	 */
+	private void CheckInnerTiming(Calendar rightNow) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void StoreTiming(long AccID) {
 		dbConnector.StoreTiming(AccID, innerTiming);
 	}
-	
+
 	public void printTiming() {
 		for (JobAtom job : innerTiming) {
 			// for (int i = 0; i < 2; i++) {
 			// JobAtom job = innerTiming.get(i);
-			logger.info("Job ID = {} at : {} {}", job.JobID, Constants.dfm.format(job.timestamp),
-					job.timestamp);
+			logger.info("Job ID = {} at : {} {}", job.JobID,
+					Constants.dfm.format(job.timestamp), job.timestamp);
 		}
 	}
 

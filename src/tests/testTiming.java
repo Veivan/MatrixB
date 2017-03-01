@@ -38,6 +38,11 @@ public class testTiming {
 
 	@Test
 	public void testRebuildTiming() {
+
+	}
+	
+	//@Test
+	public void testCheckHomework() {
 		//String time = "2017-02-28";
 		try {
 			while (true) {
