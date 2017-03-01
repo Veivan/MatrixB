@@ -122,19 +122,28 @@ public class Homeworks implements Observable, Iterable<JobList>,
 					found = true;
 					// Размер совпадает?
 					if (thissize != jobListnew.getSize())
+					{
+						logger.debug("IsDifferent : Lists not Equal by size");
 						return true;
+					}
 					// Хэш совпадает?
 					String newhash = jobListnew.getHash();
 					logger.debug("thishash : {}, newhash : {}, equal {}",
 							thishash, newhash, thishash.equals(newhash));
 					if (!thishash.equals(newhash))
+					{
+						logger.debug("IsDifferent : Lists not Equal by content");
 						return true;
+					}
 					break;
 				}
 			}
 			// Список нашёлся?
 			if (!found)
+			{
+				logger.debug("IsDifferent : Another list");
 				return true;
+			}
 		}
 
 		return false;

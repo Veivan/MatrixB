@@ -116,7 +116,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		for (JobAtom job : innerTiming) {
 			// for (int i = 0; i < 2; i++) {
 			// JobAtom job = innerTiming.get(i);
-			logger.info("Job at : {} {}", Constants.dfm.format(job.timestamp),
+			logger.info("Job ID = {} at : {} {}", job.JobID, Constants.dfm.format(job.timestamp),
 					job.timestamp);
 		}
 	}
