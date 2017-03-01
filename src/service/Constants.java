@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 public final class Constants {
 
 	public static enum JobType {
-		SETAVA, SETBANNER, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT, UPDATEPROFILE, READHOMETIMELINE, READUSERTIMELINE, NEWUSER, NEWUSERBRUT, CHECKENABLED
+		SETAVA, SETBANNER, TWIT, RETWIT, LIKE, REPLAY, DIRECT, FOLLOW, UNFOLLOW, VISIT, UPDATEPROFILE, READHOMETIMELINE, READUSERTIMELINE, SEARCH, NEWUSER, NEWUSERBRUT, CHECKENABLED
 	}
 
 	// Приоритеты списков задач. Перечислены по порядку членов перечисления
@@ -43,7 +43,6 @@ public final class Constants {
 		RetwitCount, FavoriteCount
 	}
 
-
 	// Константы для SimpleVisitor
 	public static final int CONNECTION_TIMEOUT_MS = 20;
 	public static final int CONNECTION_REQUEST_TIMEOUT_MS = 20;
@@ -52,7 +51,8 @@ public final class Constants {
 	public static final String USER_AGENT = "Mozilla/5.0";
 	public static final String DEFAULT_OAUTH_CALLBACK = "http://www.ya.ru";
 
-	//public static final String URL_RANDOM_SERVLET = "http://localhost:8080/HelpChildren/getrandomid";
+	// public static final String URL_RANDOM_SERVLET =
+	// "http://localhost:8080/HelpChildren/getrandomid";
 	public static final String URL_RANDOM_SERVLET = "http://helpchildren.online/getrandomid";
 
 	// Константы для проверки прокси

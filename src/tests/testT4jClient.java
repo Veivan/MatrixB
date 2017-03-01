@@ -1,7 +1,5 @@
 package tests;
 
-import java.io.FileNotFoundException;
-
 import jobs.JobAtom;
 import model.ConcreteAcc;
 import model.ElementProxy;
@@ -12,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import service.Constants;
+import twitter4j.GeoLocation;
 
 public class testT4jClient {
 	T4jClient t4wclient;
@@ -34,18 +33,22 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");
-		
+		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");	
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
-
-		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  
+		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
+		//JobAtom job = new JobAtom(100L, "RETWIT", "");
+		//Moscow double lat = 55.751244; double lon = 37.618423
+		//"37.781157,-122.398720,10mi" "55.751244,37.618423,1km"
 				
-		JobAtom job = new JobAtom(100L, "RETWIT", "");  
+		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
+		String query = "#helpchildren";
+	      
+		JobAtom job = new JobAtom(102L, "SEARCH", query); 
 
 		ConcreteAcc acc = new ConcreteAcc(130L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "167.114.171.178:80"; // good HTTPS  
+		String proxy = "103.234.99.139:80"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];

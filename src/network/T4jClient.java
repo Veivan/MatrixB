@@ -20,6 +20,8 @@ import service.GenderChecker;
 import service.GenderChecker.Gender;
 import service.Utils;
 import twitter4j.GeoLocation;
+import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -385,6 +387,10 @@ public class T4jClient implements IJobExecutor {
 						break;
 					case UNFOLLOW:
 						break;
+					case SEARCH:
+						MakeTwitSearch();
+						result = true;
+						break;
 					default:
 						break;
 					}
@@ -430,13 +436,14 @@ public class T4jClient implements IJobExecutor {
 			List<Status> notMineList = new ArrayList<Status>();
 			for (Status stat : statuses) {
 				dbConnector.StoreStatus(this.acc.getAccID(), stat);
-				if (!dbConnector.isRetweetedByUser(stat.getId(), this.acc.getAccID()))
+				if (!dbConnector.isRetweetedByUser(stat.getId(),
+						this.acc.getAccID()))
 					notMineList.add(stat);
 			}
 			if (notMineList.size() > 0) {
 				long status_id = Utils.GetPreferedStatus(notMineList,
 						Constants.CompareBy.RetwitCount);
-				
+
 				try {
 					Thread.sleep(Utils.getDelay());
 				} catch (InterruptedException e) {
@@ -461,7 +468,7 @@ public class T4jClient implements IJobExecutor {
 			}
 			long status_id = Utils.GetPreferedStatus(statuses,
 					Constants.CompareBy.FavoriteCount);
-			
+
 			try {
 				Thread.sleep(Utils.getDelay());
 			} catch (InterruptedException e) {
@@ -469,6 +476,32 @@ public class T4jClient implements IJobExecutor {
 			Status statusrt = twitter.createFavorite(status_id);
 			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 		}
+	}
+
+	/**
+	 * Searches twits by condition in job.TContent
+	 * 
+	 * @return
+	 * @throws TwitterException
+	 * @throws InterruptedException 
+	 */
+	private void MakeTwitSearch() throws TwitterException, InterruptedException {
+		/*
+		 * // Moscow double lat = 55.751244; double lon = 37.618423;
+		 */
+		Query query = new Query(job.TContent); 
+		query.geoCode(new GeoLocation(55.751244,37.618423),10.0,"mi");
+		QueryResult result = null;
+		do {
+			result = twitter.search(query);
+			List<Status> tweets = result.getTweets();
+			for (Status tweet : tweets) {
+				System.out.println(tweet.getCreatedAt() + " @"
+						+ tweet.getUser().getScreenName() + " - "
+						+ tweet.getText());
+			}
+			Thread.sleep(5000);
+		} while ((query = result.nextQuery()) != null);
 	}
 
 	/**
