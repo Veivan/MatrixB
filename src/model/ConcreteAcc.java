@@ -74,7 +74,7 @@ public class ConcreteAcc implements IAccount {
 	public ConcreteAcc(long AccID) {
 		this.AccID = AccID;
 		this.regim = new Regimen();
-		this.timing = new Timing(this.cTimeZone, this.regim);
+		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
 		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
 	}
 
@@ -115,7 +115,8 @@ public class ConcreteAcc implements IAccount {
 	}
 	
 	public void RebuldAccTiming(Homeworks homeworks) {
-		this.timing.RebuildTiming(homeworks, this.GroupIDs);
+		long moment = System.currentTimeMillis();
+		this.timing.RebuildTiming(homeworks, this.GroupIDs, moment);
 		this.timing.StoreTiming(this.AccID);
 	}
 

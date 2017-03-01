@@ -288,7 +288,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("getFreeProxies spProxyFreeSelect exception", e);
+			logger.error("getFreeProxies exception", e);
 		}
 		return proxylist;
 	}
@@ -353,7 +353,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("setProxy4Acc spProxy4AccUpdate exception", e);
+			logger.error("setProxy4Acc exception", e);
 		}
 	}
 
@@ -380,7 +380,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("getProxy spProxy4AccSelect exception", e);
+			logger.error("getProxy4Acc exception", e);
 		}
 		return proxy;
 	}
@@ -410,7 +410,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("getCredentials spCredsSelect exception", e);
+			logger.error("getCredentials exception", e);
 		}
 		return creds;
 	}
@@ -435,7 +435,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			logger.error("StoreActResult failed", e);
+			logger.error("SaveToken failed", e);
 		}
 	}
 
@@ -591,7 +591,6 @@ public class DbConnector {
 			ResultSet rs = sp.executeQuery();
 			if (rs.next())
 				result = rs.getBoolean("result");
-
 			rs.close();
 			sp.close();
 			sp = null;
@@ -661,7 +660,7 @@ public class DbConnector {
 				conn.close();
 			conn = null;
 		} catch (Exception e) {
-			DbConnector.logger.error("StoreTiming exception", e);
+			DbConnector.logger.error("GetRandomScreenName exception", e);
 		}
 		return friend;
 	}
@@ -674,7 +673,6 @@ public class DbConnector {
 			dbConnect();
 			String query = "{call [dbo].[spFollowInfoUpd](?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
-
 			sp.setLong("user_id", accID);
 			sp.setLong("twitter_id", twitter_id);
 			if (fwtype == null)
@@ -690,6 +688,34 @@ public class DbConnector {
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreFollowInfo exception", e);
 		}
+	}
+
+	/**
+	 * Returns executed tasks info from DB
+	 */
+	public List<Long> getExecutionInfo(long accID, long moment) {		
+		Date now = new Date(moment);	
+		List<Long> listIds = new ArrayList<Long>();
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spExecutionSelect](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("user_id", accID);
+			sp.setDate("tdate", now);
+			ResultSet rs = sp.executeQuery();
+			while (rs.next()) {
+				listIds.add(rs.getLong("id_task"));
+			}
+			rs.close();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("getExecutionInfo exception", e);
+		}
+		return listIds;
 	}
 
 	private static void MakeHowmworks(Homeworks homeworks,

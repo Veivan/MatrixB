@@ -1,8 +1,5 @@
 package main;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Predicate;
 
 import model.Regimen;
 
@@ -34,6 +32,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	private static final int delay = 3; // мин
 	static Logger logger = LoggerFactory.getLogger(Timing.class);
 
+	private long AccID = 0;
 	private String timeZone;
 	private Regimen regim;
 
@@ -42,22 +41,32 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 
 	DbConnector dbConnector = new DbConnector();
 
-	public Timing() {
+	/**
+	 * Constructor for testing
+	 */
+	public Timing(long AccID) {
 		this.timeZone = "GMT+3";
 		this.regim = new Regimen();
+		this.AccID = AccID;
 	}
 
-	public Timing(String timeZone, Regimen regim) {
+	/**
+	 * Constructor for ConcreteAcc
+	 */
+	public Timing(String timeZone, Regimen regim, long AccID) {
 		this.timeZone = timeZone;
 		this.regim = regim;
+		this.AccID = AccID;
 	}
 
-	// Считать остаток рабочего времени (за минусом обеда и ужина)
-	// Считать число оставшихся заданий.
-	// Равномерно распределить задания по оставшемуся времени.
-	// Приоритет заданий не учитывается
-	// Задания сортируются не по спискам, а по порядку следования в БД
-	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs) {
+	/**
+	 * Считать остаток рабочего времени (за минусом обеда и ужина) Считать число
+	 * оставшихся заданий. Равномерно распределить задания по оставшемуся
+	 * времени. Приоритет заданий не учитывается Задания сортируются не по
+	 * спискам, а по порядку следования в БД
+	 */
+	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs,
+			long moment) {
 		innerTiming.clear();
 		logger.info("Timing  rebuilding");
 		// Формируем плоский список заданий.
@@ -76,34 +85,27 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		Collections.sort(innerTiming, JobAtom.JobAtomComparatorByID);
 
 		Calendar rightNow = Calendar.getInstance();
-		
-		/*DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String time = "2017-03-01 23:30:00";
-		long unixtime = 0;
-		try {
-			unixtime = dfm.parse(time).getTime();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		rightNow.setTimeInMillis(unixtime); */
+		rightNow.setTimeInMillis(moment);
 
 		int hour = rightNow.get(Calendar.HOUR_OF_DAY);
 		int minute = rightNow.get(Calendar.MINUTE);
 		int starttime = hour * 60 + minute;
 		int ActiveInterval = regim.ActiveH * 60;
-		
-		boolean doIncDay =  (starttime > regim.BedHour * 60);
-		boolean doCheckFinished = false; // Флаг - делать проверку заданий на завершение? 
 
-		if (starttime > regim.WakeHour * 60 && starttime < regim.BedHour * 60 ) {
+		// Флаг - инкрементировать дату?
+		boolean doIncDay = (starttime > regim.BedHour * 60);
+		// Флаг - делать проверку заданий на завершение?
+		boolean doCheckFinished = false;
+
+		if (starttime > regim.WakeHour * 60 && starttime < regim.BedHour * 60) {
 			ActiveInterval = regim.BedHour * 60 - starttime;
 			doCheckFinished = true;
-		}
-		else
+		} else
 			starttime = regim.WakeHour * 60;
 
-		if (doCheckFinished) CheckInnerTiming(rightNow);
-			
+		if (doCheckFinished && this.AccID > 0)
+			CheckInnerTiming(rightNow);
+
 		Random random = new Random();
 		Set<Integer> intset = new HashSet<Integer>();
 		while (intset.size() < innerTiming.size()) {
@@ -125,8 +127,9 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 
 		GregorianCalendar date = new GregorianCalendar(
 				TimeZone.getTimeZone(timeZone));
-		if (doIncDay) date.add(Calendar.DAY_OF_MONTH, 1);
-			
+		if (doIncDay)
+			date.add(Calendar.DAY_OF_MONTH, 1);
+
 		for (int i = 0; i < myArray.length; i++) {
 			int t = myArray[i];
 			// logger.debug("Value: {}", String.valueOf(t));
@@ -142,12 +145,28 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	}
 
 	/**
-	 * Функция но основании данных из БД удаляет из списка innerTiming
-	 * выполненные акком задания в день rightNow.
+	 * Функция но основании данных из БД удаляет из списка innerTiming задания,
+	 * выполненные акком в день rightNow.
 	 */
 	private void CheckInnerTiming(Calendar rightNow) {
-		// TODO Auto-generated method stub
-		
+		List<Long> listIds = dbConnector.getExecutionInfo(this.AccID,
+				rightNow.getTimeInMillis());
+		/*
+		 * Consumer<Long> stylelistIds = (Long p) ->
+		 * System.out.println("id:"+p.longValue());
+		 * listIds.forEach(stylelistIds);
+		 * 
+		 * Consumer<JobAtom> style = (JobAtom p) ->
+		 * System.out.println("id:"+p.JobID +", at : "+p.timestamp);
+		 * System.out.println("---Before check---"); innerTiming.forEach(style);
+		 */
+
+		Predicate<JobAtom> JobAtomPredicate = p -> listIds.contains(p.JobID);
+		innerTiming.removeIf(JobAtomPredicate);
+
+		/*
+		 * System.out.println("---After check---"); innerTiming.forEach(style);
+		 */
 	}
 
 	public void StoreTiming(long AccID) {

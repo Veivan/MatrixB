@@ -15,7 +15,8 @@ import dbaware.DbConnector;
 import main.Timing;
 
 public class testTiming {
-	DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
+	//DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd");
+	DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final long tick = 5000l; // ms
 
 	static DbConnector dbConnector = new DbConnector();
@@ -23,17 +24,20 @@ public class testTiming {
 	Timing timing;
 	Homeworks homeworks;
 	private List<Integer> GroupIDs = new ArrayList<Integer>();
+	long AccID = 130L;
 
 	@Before
 	public void setUp() throws Exception {
 		//MakeHowmworks(homeworks);
-		String time = "2017-02-25";
+		//String time = "2017-02-27 00:00:01";
+		String time = "2017-03-02 13:30:00";
 		long moment = dfm.parse(time).getTime();
 		//long moment = System.currentTimeMillis();
+		
 		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
 		homeworks = dbConnector.getHomeworks(moment);
-		timing = new Timing();
-		timing.RebuildTiming(homeworks, GroupIDs);
+		timing = new Timing(AccID);
+		timing.RebuildTiming(homeworks, GroupIDs, moment);
 	}
 
 	@Test
@@ -70,7 +74,7 @@ public class testTiming {
 		boolean ischanged = homeworks.IsDifferent(newschedule);
 		if (ischanged) {
 			homeworks.ReplaceWith(newschedule);
-			timing.RebuildTiming(homeworks, GroupIDs);
+			timing.RebuildTiming(homeworks, GroupIDs, newmoment);
 		}
 		//timing.printTiming();
 	}
