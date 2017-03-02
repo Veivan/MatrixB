@@ -140,9 +140,9 @@ public class ConcreteAcc implements IAccount {
 	public JobAtom getTimedJob(long moment) {
 		timing.First();
 		for (JobAtom job : timing) {
-			logger.debug("id={} job : {}, moment : {}", this.AccID,
+			/*logger.debug("id={} job : {}, moment : {}", this.AccID,
 					Constants.dfm.format(job.timestamp),
-					Constants.dfm.format(moment));
+					Constants.dfm.format(moment)); */
 			if (job.timestamp <= moment && !job.IsFinished) {
 				job.IsFinished = true;
 				if ((moment - job.timestamp) > late) {
