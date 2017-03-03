@@ -160,10 +160,11 @@ public class Homeworks implements Observable, Iterable<JobList>,
 			}
 		}
 		// Замена старого расписания новым
-		HomeworksList.clear();
+		this.datevalid = new Date(System.currentTimeMillis());
+		this.HomeworksList.clear();
 		newsched.First();
 		for (JobList jobList : newsched) {
-			HomeworksList.add(jobList);
+			this.HomeworksList.add(jobList);
 		}
 	}
 
