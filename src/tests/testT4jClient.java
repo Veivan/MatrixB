@@ -32,7 +32,7 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");	
+		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");	
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//JobAtom job = new JobAtom(100L, "RETWIT", "");
@@ -42,12 +42,13 @@ public class testT4jClient {
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		String query = "#helpchildren";
 	      
-		JobAtom job = new JobAtom(102L, "SEARCH", query); 
+		//JobAtom job = new JobAtom(102L, "SEARCH", query); 
 
-		ConcreteAcc acc = new ConcreteAcc(130L);
+		//ConcreteAcc acc = new ConcreteAcc(130L);
+		ConcreteAcc acc = new ConcreteAcc(61L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "103.234.99.139:80"; // good HTTPS  
+		String proxy = "78.111.92.59:8080"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];
