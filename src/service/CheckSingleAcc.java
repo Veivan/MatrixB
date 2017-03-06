@@ -10,10 +10,13 @@ import network.T4jClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnector;
+
 /**
  * Выполняет действия: - Проверяет один акк на доступность
  */
 public class CheckSingleAcc extends Thread {
+	private DbConnector dbConnector = new DbConnector();
 	private long user_id;
 	
 	// Настройка вручную
@@ -30,12 +33,14 @@ public class CheckSingleAcc extends Thread {
 		ConcreteAcc acc = new ConcreteAcc(user_id);
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
+		String jobtp = "CHECKENABLED";
+		JobAtom job = new JobAtom(job_id, jobtp, "");
+		MatrixAct theact = new MatrixAct(job, acc);
 		if (dbproxy == null) {
-			logger.error("AccImporter cant get proxy");
+			String failreason = "CheckSingleAcc cant get proxy";
+			logger.error(failreason);
+			dbConnector.StoreActResult(theact, false, failreason);
 		} else {
-			String jobtp = "CHECKENABLED";
-			JobAtom job = new JobAtom(job_id, jobtp, "");
-			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();
 		}

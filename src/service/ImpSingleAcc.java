@@ -70,14 +70,17 @@ public class ImpSingleAcc extends Thread {
 		long user_id = acc.getAccID();
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
+		
+		//String jobtp = (this.Datatype == cDatatype.EPN) ? "NEWUSERBRUT": "NEWUSER";		
+		String jobtp = "NEWUSERBRUT";
+		JobAtom job = new JobAtom(101L, jobtp, "");
+		MatrixAct theact = new MatrixAct(job, acc);
+
 		if (dbproxy == null) {
-			logger.error("AccImporter cant get proxy");
+			String failreason = "ImpSingleAcc cant get proxy";
+			logger.error(failreason);
+			dbConnector.StoreActResult(theact, false, failreason);
 		} else {
-			//String jobtp = (this.Datatype == cDatatype.EPN) ? "NEWUSERBRUT": "NEWUSER";		
-			String jobtp = "NEWUSERBRUT";
-			
-			JobAtom job = new JobAtom(101L, jobtp, "");
-			MatrixAct theact = new MatrixAct(job, acc);
 			T4jClient t4wclient = new T4jClient(theact, dbproxy);
 			t4wclient.Execute();
 		}

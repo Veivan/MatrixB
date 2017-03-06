@@ -3,6 +3,7 @@ package network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnector;
 import inrtfs.IJobExecutor;
 import service.Constants;
 import service.Constants.JobType;
@@ -21,7 +22,9 @@ public class ExecAssistant extends Thread {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(ExecAssistant.class);
+	DbConnector dbConnector = new DbConnector();
 
+	private final String failreason = "Executor cant get proxy";
 	private boolean GetProxy(boolean IsDebug) {
 		if (IsDebug) {
 
@@ -34,7 +37,7 @@ public class ExecAssistant extends Thread {
 		} else { 
 			dbproxy = ProxyGetter.getProxy(this.theact.getAcc().getAccID());
 			if (dbproxy == null) {
-				logger.error("Executor cant get proxy");
+				logger.error(failreason);
 				return false;
 			}
 		}
@@ -46,7 +49,10 @@ public class ExecAssistant extends Thread {
 		
 		boolean IsDebug = Constants.IsDebugProxy;
 		if (!GetProxy(IsDebug))
-			return;
+		{
+			dbConnector.StoreActResult(this.theact, false, failreason);
+			return;		
+		}
 		logger.info("Executor got proxy {} : accID = {} ID = {}",
 				IsDebug ? "Debug" : "", this.theact.getAcc().getAccID(), this.theact.getSelfID());
 		
