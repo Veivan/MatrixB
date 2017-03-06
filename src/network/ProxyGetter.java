@@ -32,7 +32,7 @@ public class ProxyGetter {
 				accproxy = null;
 			}
 
-			List<ElementProxy> proxylist = dbConnector.getFreeProxies();
+			List<ElementProxy> proxylist = dbConnector.getFreeProxies(AccID);
 
 			for (ElementProxy proxy : proxylist) {
 				if (CheckProxy(proxy)) {
@@ -69,7 +69,7 @@ public class ProxyGetter {
 			accproxy = null;
 		}
 		// Ищем другой свободный прокси
-		List<ElementProxy> proxylist = dbConnector.getFreeProxies();
+		List<ElementProxy> proxylist = dbConnector.getFreeProxies(AccID);
 		for (ElementProxy proxy : proxylist) {
 			if (CheckProxy(proxy)) {
 				accproxy = proxy;

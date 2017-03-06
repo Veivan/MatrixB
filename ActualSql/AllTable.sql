@@ -155,7 +155,8 @@ CREATE TABLE [dbo].[mProxies](
 	[prtypeID] [tinyint] NOT NULL,
 	[id_cn] [int] NOT NULL,
 	[alive] [bit] NOT NULL,
-	[blocked] [bit] NULL
+	[blocked] [bit] NULL,
+	[tempblocked] [bigint] NULL
 ) ON [PRIMARY]
 
 

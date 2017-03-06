@@ -46,7 +46,7 @@ public class testDbConnectSingle {
 
 	//@Test
 	public void testGetFreeProxies() {
-		List<ElementProxy> proxylist = dbConnector.getFreeProxies();
+		List<ElementProxy> proxylist = dbConnector.getFreeProxies(130L);
 		assertFalse(proxylist.size() == 0);
 	}
 

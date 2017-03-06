@@ -268,12 +268,13 @@ public class DbConnector {
 	/**
 	 * Returns free proxies from DB
 	 */
-	public List<ElementProxy> getFreeProxies() {
+	public List<ElementProxy> getFreeProxies(long AccID) {
 		List<ElementProxy> proxylist = new ArrayList<ElementProxy>();
 		try {
 			dbConnect();
-			String query = "{call [dbo].[spProxyFreeSelect]}";
+			String query = "{call [dbo].[spProxyFreeSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("user_id", AccID);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
 				ElementProxy proxy = new ElementProxy(rs.getString("ip"),
