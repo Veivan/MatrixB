@@ -20,13 +20,14 @@ AS BEGIN
 		(
 			SELECT TOP 3
 				P.[ProxyID]
-		FROM [dbo].[mProxies] P
-			LEFT JOIN [dbo].[mProxyAcc] PA ON P.[ProxyID] = PA.[ProxyID]
-			JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
-		WHERE 
-			P.[alive] = 1
-			AND ISNULL(P.[blocked], 0) <> 1
-			AND PA.[acprID] IS NULL) T ON T.[ProxyID] = P.[ProxyID]
+			FROM [dbo].[mProxies] P
+				LEFT JOIN [dbo].[mProxyAcc] PA ON P.[ProxyID] = PA.[ProxyID]
+				JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
+			WHERE 
+				P.[alive] = 1
+				AND ISNULL(P.[blocked], 0) <> 1
+				AND PA.[acprID] IS NULL
+		) T ON T.[ProxyID] = P.[ProxyID]
 	-- Выбор зарезервированных прокси
 	SELECT 
 		P.[ProxyID]
@@ -37,6 +38,8 @@ AS BEGIN
 	FROM [dbo].[mProxies] P
 		JOIN [dbo].[DicProxyType] D ON P.[prtypeID] = D.[prtypeID]
 	WHERE 
+		P.[blocked] = 1
+		AND
 		P.[tempblocked] = @user_id
 
 END

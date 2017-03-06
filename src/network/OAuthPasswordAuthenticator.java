@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -82,7 +83,7 @@ public class OAuthPasswordAuthenticator {
 			}
 			if (requestToken == null)
 				throw new ProxyException("Bad proxy when getOAuthRequestToken");
-			
+
 			final String oauth_token = requestToken.getToken();
 
 			logger.debug("Got request token.");
@@ -118,9 +119,18 @@ public class OAuthPasswordAuthenticator {
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 					paramList);
 
-			if (page2.contains("RetypeEmail") || page2.contains("RetypePhoneNumber"))
-				throw new AuthenticationException("Cannot get verifier - Retype.");
-			
+			if (page2.contains("RetypeEmail")
+					|| page2.contains("RetypePhoneNumber")) {
+				//System.out.println(page2);
+				/*String urlChallenge = GetChallengeUrl(page2); // + ";challenge_response=25242875@mail.ru";
+				List<NameValuePair> params = MakeChallengeParams(urlChallenge);
+				String url = params.get(0).getValue();
+				params.remove(0);
+				String page3 = sendPost(url, params); */
+				throw new AuthenticationException(
+						"Cannot get verifier - Retype.");
+				}
+
 			final String oauth_verifier = readOauthVerifier(page2);
 
 			if (oauth_verifier == null || oauth_verifier.isEmpty())
@@ -130,7 +140,7 @@ public class OAuthPasswordAuthenticator {
 				String msg = String.format(
 						"Get getOAuthAccessToken shot %d ERROR : ", i + 1);
 				try {
-					 accessToken = twitter.getOAuthAccessToken(requestToken,
+					accessToken = twitter.getOAuthAccessToken(requestToken,
 							oauth_verifier);
 					if (accessToken != null)
 						break;
@@ -186,7 +196,6 @@ public class OAuthPasswordAuthenticator {
 
 	private String sendPost(String url, List<NameValuePair> postParams)
 			throws Exception {
-
 		HttpResponse response = null;
 		String result = "";
 
@@ -203,7 +212,8 @@ public class OAuthPasswordAuthenticator {
 		post.setHeader("Referer", "https://twitter.com");
 		post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-		post.setEntity(new UrlEncodedFormEntity(postParams, "UTF-8"));
+		if (postParams != null)
+			post.setEntity(new UrlEncodedFormEntity(postParams, "UTF-8"));
 		response = client.execute(post);
 		int responseCode = response.getStatusLine().getStatusCode();
 
@@ -212,6 +222,36 @@ public class OAuthPasswordAuthenticator {
 		logger.debug("Response Code : " + responseCode);
 
 		result = ReadStream(response.getEntity().getContent());
+		return result;
+	}
+
+	private List<NameValuePair> MakeChallengeParams(String url)
+			throws Exception {
+		List<NameValuePair> paramList = new ArrayList<NameValuePair>();
+		int pos = url.indexOf("?");
+		String[] sp = {url.substring(0, pos), url.substring(pos+1)};
+		paramList.add(new BasicNameValuePair("url", URLEncoder.encode(sp[0], "UTF-8")));
+		String[] sp2 = sp[1].split("&");
+		for (String record : sp2) {
+			String[] sp3 = record.split("=");
+			paramList.add(new BasicNameValuePair(sp3[0], URLEncoder.encode(sp3[1], "UTF-8")));
+		}
+		paramList.add(new BasicNameValuePair("challenge_response", URLEncoder.encode("Luge94@yandex.ru", "UTF-8")));
+		return paramList;
+	} 
+
+	private String GetChallengeUrl(String html) throws Exception {
+		logger.debug("Extracting Challenge Url...");
+		String result = "";
+		Document doc = Jsoup.parse(html);
+		Element mBody = doc.body();
+		Elements urls = mBody.getElementsByTag("a");
+		for (Element url : urls) {
+			// ... и вытаскиваем их название...
+			System.out.println("\nhref Mayak <a> " + url.attr("href"));
+			result = url.attr("href");
+			break;
+		}
 		return result;
 	}
 
