@@ -11,11 +11,6 @@ ALTER PROCEDURE [dbo].[spProxyFreeSelect]
 AS BEGIN
 	SET NOCOUNT ON;
 
-	/*CREATE TABLE #tmp([acprID] BIGINT, [user_id] BIGINT, [ProxyID] BIGINT, 
-		[ip] NVARCHAR(50), [port] INT, [prtypeID] TINYINT, [typename] NVARCHAR(50))
-
-	INSERT INTO #tmp([acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename]) */
-
 	-- Резервирование прокси
 	UPDATE P SET 
 		P.[blocked] = 1, 

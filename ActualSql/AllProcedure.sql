@@ -468,9 +468,13 @@ ALTER PROCEDURE [dbo].[spProxy4AccUpdate]
 AS BEGIN
 	SET NOCOUNT ON;
 
-	IF (@ProxyID = 0) BEGIN
+	IF (@ProxyID = 0) BEGIN -- Acc has bad proxy - make proxy dead
 		SELECT @ProxyID = [ProxyID] FROM [dbo].[mProxyAcc] WHERE [user_id] = @user_id
 		UPDATE [dbo].[mProxies] SET [alive] = 0 WHERE [ProxyID] = @ProxyID
+		DELETE [dbo].[mProxyAcc] WHERE [user_id] = @user_id
+	END
+	ELSE
+	IF (@ProxyID = -1) BEGIN -- Make proxy free
 		DELETE [dbo].[mProxyAcc] WHERE [user_id] = @user_id
 	END
 	ELSE
@@ -523,11 +527,6 @@ ALTER PROCEDURE [dbo].[spProxyFreeSelect]
 	@user_id INT
 AS BEGIN
 	SET NOCOUNT ON;
-
-	/*CREATE TABLE #tmp([acprID] BIGINT, [user_id] BIGINT, [ProxyID] BIGINT, 
-		[ip] NVARCHAR(50), [port] INT, [prtypeID] TINYINT, [typename] NVARCHAR(50))
-
-	INSERT INTO #tmp([acprID], [user_id], [ProxyID], [ip], [port], [prtypeID], [typename]) */
 
 	-- Резервирование прокси
 	UPDATE P SET 

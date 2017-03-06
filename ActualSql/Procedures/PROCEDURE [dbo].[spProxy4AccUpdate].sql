@@ -12,9 +12,13 @@ ALTER PROCEDURE [dbo].[spProxy4AccUpdate]
 AS BEGIN
 	SET NOCOUNT ON;
 
-	IF (@ProxyID = 0) BEGIN
+	IF (@ProxyID = 0) BEGIN -- Acc has bad proxy - make proxy dead
 		SELECT @ProxyID = [ProxyID] FROM [dbo].[mProxyAcc] WHERE [user_id] = @user_id
 		UPDATE [dbo].[mProxies] SET [alive] = 0 WHERE [ProxyID] = @ProxyID
+		DELETE [dbo].[mProxyAcc] WHERE [user_id] = @user_id
+	END
+	ELSE
+	IF (@ProxyID = -1) BEGIN -- Make proxy free
 		DELETE [dbo].[mProxyAcc] WHERE [user_id] = @user_id
 	END
 	ELSE
