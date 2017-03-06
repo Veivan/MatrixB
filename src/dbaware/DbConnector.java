@@ -337,6 +337,28 @@ public class DbConnector {
 	}
 
 	/**
+	 * Освобождает прокси от указанного аккаунта
+	 */
+	public void makeProxy4AccFree(long accID) {
+		long ProxyID = -1;
+		try {
+			dbConnect();
+			String query = "{call [dbo].[spProxy4AccUpdate](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong(1, accID);
+			sp.setLong(2, ProxyID);
+			sp.execute();
+			sp.close();
+			sp = null;
+			if (conn != null)
+				conn.close();
+			conn = null;
+		} catch (Exception e) {
+			logger.error("makeProxy4AccFree exception", e);
+		}
+	}
+
+	/**
 	 * Устанавливает прокси для указанного аккаунта
 	 */
 	public void setProxy4Acc(long accID, ElementProxy accproxy) {

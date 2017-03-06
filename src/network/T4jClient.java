@@ -186,6 +186,7 @@ public class T4jClient implements IJobExecutor {
 			}
 		} catch (Exception e) {
 			logger.error("ERROR : ", e);
+			dbConnector.makeProxy4AccFree(this.acc.getAccID());
 			return false;
 		}
 
@@ -348,6 +349,8 @@ public class T4jClient implements IJobExecutor {
 								+ (IsEnabled ? "enabled" : "disabled"));
 						dbConnector.setAccIsEnabled(this.acc.getAccID(),
 								IsEnabled);
+						if (!IsEnabled)
+							dbConnector.makeProxy4AccFree(this.acc.getAccID());
 						result = true;
 						break;
 					case NEWUSER:
@@ -483,14 +486,14 @@ public class T4jClient implements IJobExecutor {
 	 * 
 	 * @return
 	 * @throws TwitterException
-	 * @throws InterruptedException 
+	 * @throws InterruptedException
 	 */
 	private void MakeTwitSearch() throws TwitterException, InterruptedException {
 		/*
 		 * // Moscow double lat = 55.751244; double lon = 37.618423;
 		 */
-		Query query = new Query(job.TContent); 
-		query.geoCode(new GeoLocation(55.751244,37.618423),10.0,"mi");
+		Query query = new Query(job.TContent);
+		query.geoCode(new GeoLocation(55.751244, 37.618423), 10.0, "mi");
 		QueryResult result = null;
 		do {
 			result = twitter.search(query);
