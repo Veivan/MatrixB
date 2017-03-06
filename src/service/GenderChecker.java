@@ -156,7 +156,7 @@ public class GenderChecker {
 	 */
 	private static Gender gender_by_surname() {
 		Gender gender = Gender.NEUTRAL;
-		if (surname == null || surname.isEmpty())
+		if (surname == null || surname.trim().isEmpty())
 			return gender;
 			
 		if (is_surname_completes(surname, Gender.FEMALE.ordinal()))
@@ -175,6 +175,7 @@ public class GenderChecker {
 		boolean is_surname_completes = false;
 		for (int i = 0; i < surname_completions[gender].length; i++) {
 			int count = surname_completions[gender][i].length();
+			if (count >= surname.length()) break;
 			String completion = surname.substring(surname.length() - count)
 					.toLowerCase();
 			if (completion.equals(surname_completions[gender][i])) {
