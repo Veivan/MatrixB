@@ -48,7 +48,7 @@ public class testOAuthPasswordAuthenticator {
 		TwitterFactory tf = new TwitterFactory(conf);
 		Twitter twitter = tf.getInstance();
 
-		auth = new OAuthPasswordAuthenticator(twitter, creds);
+		auth = new OAuthPasswordAuthenticator(twitter, creds, null);
 	}
 
 	@Test

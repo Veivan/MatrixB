@@ -124,7 +124,7 @@ public class T4jClient implements IJobExecutor {
 
 				AccessToken accessToken = null;
 				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
-						this.twitter, this.creds);
+						this.twitter, this.creds, this.acc);
 				for (int j = 0; j < Constants.cTryProxyCount; j++) {
 					for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 						String msg = String

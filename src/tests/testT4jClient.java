@@ -40,15 +40,15 @@ public class testT4jClient {
 		//"37.781157,-122.398720,10mi" "55.751244,37.618423,1km"
 				
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
-		String query = "#helpchildren";
+		//String query = "#helpchildren";
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", query); 
 
-		//ConcreteAcc acc = new ConcreteAcc(130L);
-		ConcreteAcc acc = new ConcreteAcc(61L);
+		ConcreteAcc acc = new ConcreteAcc(130L);
+		//ConcreteAcc acc = new ConcreteAcc(61L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "78.111.92.59:8080"; // good HTTPS  
+		String proxy = "51.15.128.178:8000"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];
