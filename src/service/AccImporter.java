@@ -17,7 +17,7 @@ public class AccImporter extends Thread {
 
 	// Настройка вручную
 	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.EPN;
-	private int group_id = 4;
+	private int group_id = 3;
 
 	@Override
 	public void run() {
@@ -42,6 +42,7 @@ public class AccImporter extends Thread {
 					.runAsync(new ImpSingleAcc(data, Datatype, group_id),
 							cachedPool);
 			futures.add(runnableFuture);
+			Thread.sleep(1000); // Задержка, чтобы выбиралмсь разные прокси
 		}
 		in.close();
 		cachedPool.shutdown();

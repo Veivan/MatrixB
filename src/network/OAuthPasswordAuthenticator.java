@@ -11,6 +11,7 @@ import java.net.CookieManager;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,22 +122,28 @@ public class OAuthPasswordAuthenticator {
 
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 					paramList);
-			if (page2.isEmpty() )
-				throw new AuthenticationException(
-						"It seems bad password.");
+			if (page2.isEmpty())
+				throw new AuthenticationException("It seems bad password.");
 			if (page2.contains("RetypeEmail")
 					|| page2.contains("RetypePhoneNumber")) {
-				logger.debug(page2);
+				logger.debug("Retype challenge : " + page2);
 
-				String urlChallenge = GetChallengeUrl(page2); 
+				String urlChallenge = GetChallengeUrl(page2);
 				List<NameValuePair> params = MakeChallengeParams(urlChallenge);
 				String url = params.get(0).getValue();
 				params.remove(0);
-				
-				// TODO make this.acc				(ConcreteAcc)this.acc.gete
-				params.add(new BasicNameValuePair("challenge_response",
-						"mishkakilasonia@yahoo.com"));
-				
+
+				if (page2.contains("RetypeEmail"))
+					params.add(new BasicNameValuePair("challenge_response",
+							((model.ConcreteAcc) this.acc).getEmail()));
+				else
+					// RetypePhoneNumber
+					params.add(new BasicNameValuePair("challenge_response",
+							((model.ConcreteAcc) this.acc).getPhone()));
+
+				Random random = new Random();
+				long delay = (1 + random.nextInt(30)) * 1000;
+				Thread.sleep(delay); // Случайная задержка, имитация чела
 				
 				String page3 = sendPost(url, params);
 				if (page3.contains("twitter.com/login/error"))

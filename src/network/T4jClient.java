@@ -345,7 +345,7 @@ public class T4jClient implements IJobExecutor {
 									System.currentTimeMillis(), TimeUnit.DAYS);
 							IsEnabled = interval > Constants.cIntervalOfLastUse;
 						}
-						System.out.println("@" + user.getScreenName() + " is "
+						logger.debug("@" + user.getScreenName() + " is "
 								+ (IsEnabled ? "enabled" : "disabled"));
 						dbConnector.setAccIsEnabled(this.acc.getAccID(),
 								IsEnabled);

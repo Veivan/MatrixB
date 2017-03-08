@@ -14,7 +14,8 @@ import org.slf4j.LoggerFactory;
 import dbaware.DbConnector;
 
 /**
- * Выполняет действия: - Берёт BRUTED акки из БД и проверяет, можно ли их использовать по сроку последнего использования
+ * Выполняет действия: - Берёт BRUTED акки из БД и проверяет, можно ли их
+ * использовать по сроку последнего использования
  */
 public class AccChecker extends Thread {
 	ArrayList<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
@@ -58,7 +59,7 @@ public class AccChecker extends Thread {
 			message = "Checked " + finished + " from " + all;
 			System.out.println(message);
 			Thread.sleep(3000);
-		} 
+		}
 		System.out.println("Finita");
 	}
 
