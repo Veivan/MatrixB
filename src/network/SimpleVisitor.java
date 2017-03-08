@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
+import java.net.URI;
 
 import javax.net.ssl.SSLContext;
 
@@ -11,9 +12,9 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
@@ -30,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import dbaware.DbConnector;
 import service.Constants;
 import service.Constants.ProxyType;
-import service.Constants.RequestType;
 import model.ElementProxy;
 import model.MatrixAct;
 import jobs.JobAtom;
@@ -96,13 +96,8 @@ public class SimpleVisitor implements IJobExecutor {
 
 		try {
 			HttpClientContext context = HttpClientContext.create();
-
-			TypedURI uricust = new TypedURI(this.job);
-			HttpRequestBase request;
-			if (uricust.getType() == RequestType.GET)
-				request = new HttpGet(uricust.getUri());
-			else
-				request = new HttpPost(uricust.getUri());
+			URI uri = new URIBuilder(job.TContent).build();
+			HttpRequestBase request = new HttpGet(uri);
 
 			if (this.proxyType == ProxyType.SOCKS) {
 				InetSocketAddress socksaddr = new InetSocketAddress(this.ip,
@@ -135,7 +130,7 @@ public class SimpleVisitor implements IJobExecutor {
 				response.close();
 			}
 		} catch (Exception e) {
-			logger.error("TWClient run thrown exception", e);
+			logger.error("SimpleVisitor run thrown exception", e);
 			failreason = e.getMessage();
 		} finally {
 			try {

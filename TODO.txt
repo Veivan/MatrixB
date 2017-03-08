@@ -16,15 +16,6 @@
 
 2. 
 
-2.1 в getOAuthAccessTokenSilent сделать проверку на редирект RetypePhoneNumber и RetypeEmail и его обработку
-<html>
- <head></head>
- <body>
-  You are being 
-  <a href="https://twitter.com/account/login_challenge?platform=web&amp;user_id=2878229963&amp;challenge_type=RetypePhoneNumber&amp;challenge_id=vMXBehSfw7ujK7dGAG0aR5qYXoMyig4d&amp;remember_me=false&amp;redirect_after_login_verification=%2F">redirected</a>.
- </body>
-</html>
-
 3. Надо cделать таблицы для хранения справочника Агентов для симуляции различных устройств.
 	Каждому прокси при импорте надо привязать запись из справочника, хранить эту связь в таблице и при работе с этим прокси загружать его Агент.
 	Это нужно, чтобы не забанили акк 
@@ -38,6 +29,5 @@
 6. Создавать акки
 7.
 8.  
-
 9. Можно создать своего HTTPClient для Twi :         //-Dtwitter4j.http.httpClient=twitter4j.HttpClient
 	Ему можно задать Socks proxy.
