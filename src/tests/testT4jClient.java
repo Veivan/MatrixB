@@ -18,6 +18,9 @@ public class testT4jClient {
 	
 	@Before
 	public void setUp() throws Exception {
+		String TWIT2 = "{\"command\": \"TWIT\" , "
+				+ " \"tags\" : [ \"#helpchildren\", \"Дети\" ] , "
+				+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
 		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
 
 		/*String name = "Лорик Соловаева";
@@ -32,7 +35,8 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", "");	
+		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);	
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//JobAtom job = new JobAtom(100L, "RETWIT", "");
@@ -41,11 +45,12 @@ public class testT4jClient {
 				
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
+		String SEARCH = "{\"command\": \"SEARCH\" , "
+				+ " \"query\" : \"#helpchildren\" } ";
 	      
-		//JobAtom job = new JobAtom(102L, "SEARCH", query); 
+		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
 		ConcreteAcc acc = new ConcreteAcc(130L);
-		//ConcreteAcc acc = new ConcreteAcc(61L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		String proxy = "51.15.128.178:8000"; // good HTTPS  

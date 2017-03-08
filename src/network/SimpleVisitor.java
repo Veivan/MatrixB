@@ -96,7 +96,7 @@ public class SimpleVisitor implements IJobExecutor {
 
 		try {
 			HttpClientContext context = HttpClientContext.create();
-			URI uri = new URIBuilder(job.TContent).build();
+			URI uri = new URIBuilder(job.GetContentProperty("url")).build();
 			HttpRequestBase request = new HttpGet(uri);
 
 			if (this.proxyType == ProxyType.SOCKS) {

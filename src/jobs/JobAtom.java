@@ -3,6 +3,7 @@ package jobs;
 import java.util.Comparator;
 
 import service.Constants;
+import service.JsonParser;
 import service.Constants.JobType;
 
 /** Класс описывает единицу задания - твит, ретвит... . */
@@ -14,15 +15,16 @@ public class JobAtom {
 
 	/**
 	 * Свойство - содержание задания. Например, содержание твита или ссылка для
-	 * посещения
+	 * посещения в формате json
 	 */
-	public String TContent;
+	private String TContent;
+	private JsonParser parser;
 
 	/**
 	 * Свойство - ID группы, которой назначено задание. Если = 0, значит задание
 	 * относится ко всем группам.
 	 */
-	public int group_id = 0;
+	public int group_id = 0;	
 
 	/**
 	 * Свойство - время выполнения задания. Заполняется при размещении задания в
@@ -46,6 +48,7 @@ public class JobAtom {
 		this.JobID = JobID;
 		this.Type = Constants.JobType.valueOf(Type.toUpperCase());
 		this.TContent = TContent;
+		this.parser = new JsonParser(TContent);
 	}
 
 	/** Construct for UPDATEPROFILE */
@@ -76,6 +79,7 @@ public class JobAtom {
 		this.TContent = job.TContent;
 		this.group_id = job.group_id;
 		this.timestamp = job.timestamp;
+		this.parser = new JsonParser(job.TContent);
 
 		this.name = job.name;
 		this.url = job.url;
@@ -120,5 +124,15 @@ public class JobAtom {
 			return p1 > p2 ? 1 : p1 == p2 ? 0 : -1;
 		}
 	};
+	
+	/**
+	 * Выполняет разбор json из TContent.
+	 * Возвращает значение атрибута key.
+	 */
+	public String GetContentProperty(String key)
+	{
+		String result = this.parser.GetContentProperty(key);		
+		return result;
+	}
 
 }
