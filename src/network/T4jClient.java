@@ -200,7 +200,7 @@ public class T4jClient implements IJobExecutor {
 	 */
 	private Status SendTwit() throws Exception {
 		StatusUpdate latestStatus = null;
-		String tags = job.GetContentProperty("tags");	
+		String tags = job.GetContentProperty("tags");
 		if (tags.contains("#helpchildren")) {
 			// Получение id и картинки
 			String page = Utils.GetPageContent(Constants.URL_RANDOM_SERVLET);
@@ -218,28 +218,25 @@ public class T4jClient implements IJobExecutor {
 			String message = String.format(
 					"%s %s. Требуется лечение, Вы можете помочь.%n", pname,
 					ppage)
-					+ "http://helpchildren.online/?id="
-					+ id
-					+ " "
-					+ tags; // + "#Дети" + " #ПодариЖизнь";
+					+ "http://helpchildren.online/?id=" + id + " " + tags; // +
+																			// "#Дети"
+																			// +
+																			// " #ПодариЖизнь";
 			latestStatus = new StatusUpdate(message);
 			// Загрузка картинки в твиттер
 			latestStatus.setMedia(fileName, is);
-		} else 
-		{
+		} else {
 			latestStatus = new StatusUpdate(job.GetContentProperty("twcontent"));
 		}
-		
+
 		// Добавление Гео
 		try {
 			double lat = Double.parseDouble(job.GetContentProperty("lat"));
 			double lon = Double.parseDouble(job.GetContentProperty("lon"));
 			latestStatus.setLocation(new GeoLocation(lat, lon));
+		} catch (Exception e) {
 		}
-		catch (Exception e)
-		{
-		}		
-		
+
 		// Твиттинг
 		return twitter.updateStatus(latestStatus);
 	}
@@ -503,16 +500,14 @@ public class T4jClient implements IJobExecutor {
 		 * // Moscow double lat = 55.751244; double lon = 37.618423;
 		 */
 		Query query = new Query(job.GetContentProperty("query"));
-		
-		/*/ Добавление Гео
-		try {
-			double lat = Double.parseDouble(job.GetContentProperty("lat"));
-			double lon = Double.parseDouble(job.GetContentProperty("lon"));
-			latestStatus.setLocation(new GeoLocation(lat, lon));
-		}
-		catch (Exception e)
-		{
-		}*/		
+
+		/*
+		 * / Добавление Гео try { double lat =
+		 * Double.parseDouble(job.GetContentProperty("lat")); double lon =
+		 * Double.parseDouble(job.GetContentProperty("lon"));
+		 * latestStatus.setLocation(new GeoLocation(lat, lon)); } catch
+		 * (Exception e) { }
+		 */
 
 		query.geoCode(new GeoLocation(55.751244, 37.618423), 10.0, "mi");
 		QueryResult result = null;

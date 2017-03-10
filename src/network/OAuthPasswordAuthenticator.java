@@ -122,7 +122,7 @@ public class OAuthPasswordAuthenticator {
 
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 					paramList);
-			if (page2.isEmpty())
+			if (page2.isEmpty() || page2.contains("login/error"))
 				throw new AuthenticationException("It seems bad password.");
 			if (page2.contains("RetypeEmail")
 					|| page2.contains("RetypePhoneNumber")) {
