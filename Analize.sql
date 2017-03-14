@@ -1,7 +1,7 @@
  -- Какие юзеры не смогли отправить твит с текстом #helpchildren
  select A.user_id, A.screen_name from mAccounts A
   join mExecution E on E.user_id = A.user_id 
-	and dateadd(S, [execdate], '1970-01-01') > '2017-02-24'
+	and DATEPART(dy, dateadd(S, [execdate], '1970-01-01')) = DATEPART(dy, '2017-03-10')
 	and E.result = 0
 	and id_task IN ( 14, 19)
   group by A.user_id, A.screen_name
@@ -12,5 +12,8 @@ SELECT *
 	  , [date] = dateadd(S, [execdate], '1970-01-01') 
  FROM [MatrixB].[dbo].[mExecution] E
 	JOIN [dbo].[mTasks] T ON T.id_Task = E.id_task
-WHERE dateadd(S, [execdate], '1970-01-01') > '2017-02-28'
-	and TContent = '#helpchildren'
+WHERE 
+	DATEPART(dy, dateadd(S, [execdate], '1970-01-01')) = DATEPART(dy, '2017-03-10')
+	and TContent LIKE '%#helpchildren%'
+	AND E.result = 1
+order by ae_id DESC
