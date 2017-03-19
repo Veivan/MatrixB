@@ -51,6 +51,7 @@ public class T4jClient implements IJobExecutor {
 	private ElementCredentials creds;
 	private Twitter twitter;
 	private String failreason = "";
+	private int errorCode = -1;
 
 	public T4jClient(MatrixAct theact, ElementProxy dbproxy) {
 		this.act = theact;
@@ -91,6 +92,9 @@ public class T4jClient implements IJobExecutor {
 				Constants.dfm.format(this.job.timestamp), this.acc.getAccID(),
 				this.ID);
 		dbConnector.StoreActResult(this.act, result, failreason);
+		if (errorCode == 326) {
+			dbConnector.setAccIsEnabled(this.acc.getAccID(), false);
+		}
 	}
 
 	private boolean GetCredentials() {
@@ -430,9 +434,11 @@ public class T4jClient implements IJobExecutor {
 
 		} catch (Exception e) {
 			String premess = "Failed to OperateTwitter";
-			logger.error(premess, e);
+			logger.error(premess + " acc = " + this.acc.getAccID(), e);
 			result = false;
 			failreason = premess + " : " + e.getMessage();
+			if (e instanceof TwitterException)
+				errorCode = ((TwitterException) e).getErrorCode();
 		}
 		return result;
 	}
