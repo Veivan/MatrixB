@@ -376,8 +376,11 @@ public class T4jClient implements IJobExecutor {
 						result = true;
 						break;
 					case RETWIT:
-						if (Utils.DoItByDice())
+						String twit_id = job.GetContentProperty("twit_id");
+						if (twit_id.isEmpty() && Utils.DoItByDice())
 							RetwitOne(twitter);
+						else
+							RetwitConcrete(twitter, Long.parseLong(twit_id));
 						result = true;
 						break;
 					case REPLAY:
@@ -462,6 +465,25 @@ public class T4jClient implements IJobExecutor {
 				dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 			}
 		}
+	}
+
+	/**
+	 * Function read home timeline and stores twits 2 DB. Then retweet single
+	 * twit with twit_id.
+	 * 
+	 * @return
+	 */
+	private void RetwitConcrete(Twitter twitter, long twit_id)
+			throws TwitterException {
+		List<Status> statuses = twitter.getHomeTimeline();
+		for (Status stat : statuses)
+			dbConnector.StoreStatus(this.acc.getAccID(), stat);
+		try {
+			Thread.sleep(Utils.getDelay());
+		} catch (InterruptedException e) {
+		}
+		Status statusrt = twitter.retweetStatus(twit_id);
+		dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 	}
 
 	/**

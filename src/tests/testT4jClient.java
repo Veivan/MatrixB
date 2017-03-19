@@ -18,9 +18,9 @@ public class testT4jClient {
 	
 	@Before
 	public void setUp() throws Exception {
-		String TWIT2 = "{\"command\": \"TWIT\" , "
-				+ " \"tags\" : [ \"#helpchildren\", \"Дети\" ] , "
-				+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
+		//String TWIT2 = "{\"command\": \"TWIT\" , "
+		//		+ " \"tags\" : [ \"#helpchildren\", \"Дети\" ] , "
+		//		+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
 		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
 
 		/*String name = "Лорик Соловаева";
@@ -35,25 +35,27 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);	
+		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
-		//JobAtom job = new JobAtom(100L, "RETWIT", "");
+		String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843322086215094274\"} ";
+		JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
+		
+			
 		//Moscow double lat = 55.751244; double lon = 37.618423
 		//"37.781157,-122.398720,10mi" "55.751244,37.618423,1km"
 				
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
-		String SEARCH = "{\"command\": \"SEARCH\" , "
-				+ " \"query\" : \"#helpchildren\" } ";
+		//String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#helpchildren\" } ";
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(130L);
+		ConcreteAcc acc = new ConcreteAcc(111L);
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "51.141.32.241:8080"; // good HTTPS  
+		String proxy = "188.126.55.44:8080"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			proxyIP = sp[0];

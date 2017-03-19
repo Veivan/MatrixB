@@ -32,7 +32,8 @@ public class JsonParser {
 						result += tags.getString(i) + " ";
 					}
 			} else
-				result = body.getString(key);
+				if (body.has(key))
+					result = body.getString(key);				
 		} catch (JSONException e) {
 			logger.error(e.getMessage());
 		}
