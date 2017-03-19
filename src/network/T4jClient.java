@@ -375,8 +375,11 @@ public class T4jClient implements IJobExecutor {
 					case DIRECT:
 						break;
 					case LIKE:
-						if (Utils.DoItByDice())
+						String twit_id2 = job.GetContentProperty("twit_id");
+						if (twit_id2.isEmpty() && Utils.DoItByDice())
 							LikeOne(twitter);
+						else
+							LikeConcrete(twitter, Long.parseLong(twit_id2));
 						result = true;
 						break;
 					case RETWIT:
@@ -515,6 +518,26 @@ public class T4jClient implements IJobExecutor {
 			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 		}
 	}
+
+	/**
+	 * Function read home timeline and stores twits 2 DB. Then likes single
+	 * twit with twit_id.
+	 * 
+	 * @return
+	 */
+	private void LikeConcrete(Twitter twitter, long twit_id)
+			throws TwitterException {
+		List<Status> statuses = twitter.getHomeTimeline();
+		for (Status stat : statuses)
+			dbConnector.StoreStatus(this.acc.getAccID(), stat);
+		try {
+			Thread.sleep(Utils.getDelay());
+		} catch (InterruptedException e) {
+		}
+		Status statusrt = twitter.createFavorite(twit_id);
+		dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+	}
+
 
 	/**
 	 * Searches twits by condition in job.TContent
