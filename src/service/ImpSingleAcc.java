@@ -29,9 +29,10 @@ public class ImpSingleAcc extends Thread {
 	/**
 	 * Легенда EPN - email, pass, name NPHEM - name, pass, phone, email,
 	 * mailpass NPEM - name, pass, email, mailpass
+	 * NP - name(email), pass
 	 */
 	public static enum cDatatype {
-		EPN, NPHEM, NPEM
+		EPN, NPHEM, NPEM, NP
 	}
 
 	static Logger logger = LoggerFactory.getLogger(AccImporter.class);
@@ -58,6 +59,11 @@ public class ImpSingleAcc extends Thread {
 			pass = sp[1];
 			email = sp[2];
 			mailpass = sp[3];
+			break;
+		case NP:
+			email = sp[0];
+			pass = sp[1];
+			name = sp[0];
 			break;
 		default:
 			break;
@@ -98,6 +104,9 @@ public class ImpSingleAcc extends Thread {
 			break;
 		case NPEM:
 			acc = new ConcreteAcc(user_id, email, pass, name, mailpass);
+			break;
+		case NP:
+			acc = new ConcreteAcc(user_id, email, pass, name);
 			break;
 		default:
 			break;
