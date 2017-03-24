@@ -118,7 +118,8 @@ public class SimpleVisitor implements IJobExecutor {
 				String message = response.getStatusLine().toString();
 				logger.info("ResponseStatus: {}", message);
 				result = (response.getStatusLine().getStatusCode() == 200);
-				
+				if (!result)
+					failreason = message;
 				/*
 				 * Not used// HttpEntity httpEntity = response.getEntity();
 				 * BufferedReader br = new BufferedReader(new InputStreamReader(

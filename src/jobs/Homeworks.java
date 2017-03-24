@@ -126,11 +126,10 @@ public class Homeworks implements Observable, Iterable<JobList>,
 					}
 					// Хэш совпадает?
 					String newhash = jobListnew.getHash();
-					logger.debug("thishash : {}, newhash : {}, equal {}",
-							thishash, newhash, thishash.equals(newhash));
+					//logger.debug("thishash : {}, newhash : {}, equal {}",	thishash, newhash, thishash.equals(newhash));
 					if (!thishash.equals(newhash))
 					{
-						logger.debug("IsDifferent : Lists not Equal by content");
+						//logger.debug("IsDifferent : Lists not Equal by content");
 						return true;
 					}
 					break;

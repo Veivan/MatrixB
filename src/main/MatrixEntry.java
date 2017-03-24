@@ -51,8 +51,7 @@ public class MatrixEntry extends Thread{
 		try {
 			while (!mIsStopped) {
 				long moment = System.currentTimeMillis();
-				logger.debug("MatrixEntry tick : {}",
-						Constants.dfm.format(moment));
+				//logger.debug("MatrixEntry tick : {}",	Constants.dfm.format(moment));
 				/*/ Accounts refreshing
 				List<IAccount> accounts = dbConnector.getAccounts();
 				brain.setAccounts(accounts);
@@ -85,10 +84,5 @@ public class MatrixEntry extends Thread{
 		this.interrupt();
 		engine.stop(); 
 	}
-
-	/*public static void main(String[] args) {
-		MatrixEntry matrix = new MatrixEntry();
-		matrix.run();
-	}*/
 
 }
