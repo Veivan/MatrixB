@@ -92,7 +92,7 @@ public class T4jClient implements IJobExecutor {
 				Constants.dfm.format(this.job.timestamp), this.acc.getAccID(),
 				this.ID);
 		dbConnector.StoreActResult(this.act, result, failreason);
-		if (errorCode == 326) {
+		if (errorCode == 64) {
 			dbConnector.setAccIsEnabled(this.acc.getAccID(), false);
 		}
 	}
