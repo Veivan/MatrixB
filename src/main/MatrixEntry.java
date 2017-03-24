@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
-import service.Constants;
 import service.MemoProxy;
 import jobs.Homeworks;
 

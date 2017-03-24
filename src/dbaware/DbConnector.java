@@ -467,20 +467,22 @@ public class DbConnector {
 	 */
 	public void StoreActResult(MatrixAct act, boolean result, String failreason) {
 		try {
-			dbConnect();
-			String query = "INSERT INTO [dbo].[mExecution] ([user_id],[id_task],[act_id],[result],[failreason],[execdate]) VALUES (?,?,?,?,?,?)";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setLong(1, act.getAcc().getAccID());
-			pstmt.setLong(2, act.getJob().JobID);
-			pstmt.setLong(3, act.getSelfID());
-			pstmt.setBoolean(4, result);
-			pstmt.setString(5, failreason);
+			dbConnect(); 
+			String query = "{call [dbo].[spExecutionInsert](?,?,?,?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+
+			sp.setLong("user_id", act.getAcc().getAccID());
+			sp.setLong("id_task", act.getJob().JobID);
+			sp.setLong("act_id", act.getSelfID());
+			sp.setBoolean("result", result);
+			sp.setString("failreason", failreason);
 			long dt = act.getJob().timestamp == 0l ? System.currentTimeMillis() / 1000
 					: act.getJob().timestamp / 1000;
-			pstmt.setLong(6, dt);
-			pstmt.execute();
-			pstmt.close();
-			pstmt = null;
+			sp.setLong("execdate", dt);
+
+			sp.execute();
+			sp.close();
+			sp = null;
 			if (conn != null)
 				conn.close();
 			conn = null;
