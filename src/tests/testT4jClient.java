@@ -35,14 +35,14 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
 		//JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
-		String LIKE = "{\"command\": \"LIKE\" , \"twit_id\" : \"843532240860659713\"} ";
-		JobAtom job = new JobAtom(102L, "LIKE", LIKE);
+		//String LIKE = "{\"command\": \"LIKE\" , \"twit_id\" : \"843532240860659713\"} ";
+		//JobAtom job = new JobAtom(102L, "LIKE", LIKE);
 			
 		//Moscow double lat = 55.751244; double lon = 37.618423
 		//"37.781157,-122.398720,10mi" "55.751244,37.618423,1km"
@@ -56,8 +56,8 @@ public class testT4jClient {
 		ConcreteAcc acc = new ConcreteAcc(111L);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "188.126.55.44:8080"; // good HTTPS  
-		//String proxy = "51.141.32.241:8080"; // good HTTPS  
+		//String proxy = "188.126.55.44:8080"; // good HTTPS  
+		String proxy = "103.224.28.110:1080"; // good SOCKS  
 		
 		// 130 51.141.32.241:8080 test error code
 		String[] sp = proxy.split(":");
@@ -66,7 +66,8 @@ public class testT4jClient {
 			proxyPort = Integer.parseInt(sp[1]);
 		}
 		
-		t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.HTTP, -1)); 		
+		//t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.HTTP, -1)); 		
+		t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.SOCKS, -1)); 		
 	}
 
 	@Test
