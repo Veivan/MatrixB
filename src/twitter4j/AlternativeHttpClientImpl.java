@@ -248,8 +248,8 @@ public class AlternativeHttpClientImpl extends HttpClientBase {
 				});
 			}
 
-			Proxy.Type prType = CONF.getHttpProxyHost().contains("HTTP") ? Proxy.Type.HTTP
-					: Proxy.Type.SOCKS;
+			Proxy.Type prType = CONF.getHttpProxyHost().contains("SOCKS") ? Proxy.Type.SOCKS
+					: Proxy.Type.HTTP;
 
 			final Proxy proxy = new Proxy(prType,
 					InetSocketAddress.createUnresolved(CONF.getHttpProxyHost(),
