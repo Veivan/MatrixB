@@ -189,73 +189,88 @@ public class AlternativeHttpClientImpl extends HttpClientBase {
 		}
 		return res;
 	}
-	
-    /**
-     * sets HTTP headers
-     *
-     * @param req        The request
-     * @param connection HttpURLConnection
-     */
-    private void setHeaders(HttpRequest req, HttpURLConnection connection) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request: ");
-            logger.debug(req.getMethod().name() + " ", req.getURL());
-        }
 
-        String authorizationHeader;
-        if (req.getAuthorization() != null && (authorizationHeader = req.getAuthorization().getAuthorizationHeader(req)) != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Authorization: ", authorizationHeader.replaceAll(".", "*"));
-            }
-            connection.addRequestProperty("Authorization", authorizationHeader);
-        }
-        if (req.getRequestHeaders() != null) {
-            for (String key : req.getRequestHeaders().keySet()) {
-                connection.addRequestProperty(key, req.getRequestHeaders().get(key));
-                logger.debug(key + ": " + req.getRequestHeaders().get(key));
-            }
-        }
-    }
+	/**
+	 * sets HTTP headers
+	 *
+	 * @param req
+	 *            The request
+	 * @param connection
+	 *            HttpURLConnection
+	 */
+	private void setHeaders(HttpRequest req, HttpURLConnection connection) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Request: ");
+			logger.debug(req.getMethod().name() + " ", req.getURL());
+		}
 
-    HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection con;
-        if (isProxyConfigured()) {
-            if (CONF.getHttpProxyUser() != null && !CONF.getHttpProxyUser().equals("")) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Proxy AuthUser: " + CONF.getHttpProxyUser());
-                    logger.debug("Proxy AuthPassword: " + CONF.getHttpProxyPassword().replaceAll(".", "*"));
-                }
-                Authenticator.setDefault(new Authenticator() {
-                    @Override
-                    protected PasswordAuthentication
-                    getPasswordAuthentication() {
-                        //respond only to proxy auth requests
-                        if (getRequestorType().equals(RequestorType.PROXY)) {
-                            return new PasswordAuthentication(CONF.getHttpProxyUser(),
-                                    CONF.getHttpProxyPassword().toCharArray());
-                        } else {
-                            return null;
-                        }
-                    }
-                });
-            }
-            final Proxy proxy = new Proxy(Proxy.Type.HTTP, InetSocketAddress
-                    .createUnresolved(CONF.getHttpProxyHost(), CONF.getHttpProxyPort()));
-            if (logger.isDebugEnabled()) {
-                logger.debug("Opening proxied connection(" + CONF.getHttpProxyHost() + ":" + CONF.getHttpProxyPort() + ")");
-            }
-            con = (HttpURLConnection) new URL(url).openConnection(proxy);
-        } else {
-            con = (HttpURLConnection) new URL(url).openConnection();
-        }
-        if (CONF.getHttpConnectionTimeout() > 0) {
-            con.setConnectTimeout(CONF.getHttpConnectionTimeout());
-        }
-        if (CONF.getHttpReadTimeout() > 0) {
-            con.setReadTimeout(CONF.getHttpReadTimeout());
-        }
-        con.setInstanceFollowRedirects(false);
-        return con;
-    }
+		String authorizationHeader;
+		if (req.getAuthorization() != null
+				&& (authorizationHeader = req.getAuthorization()
+						.getAuthorizationHeader(req)) != null) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Authorization: ",
+						authorizationHeader.replaceAll(".", "*"));
+			}
+			connection.addRequestProperty("Authorization", authorizationHeader);
+		}
+		if (req.getRequestHeaders() != null) {
+			for (String key : req.getRequestHeaders().keySet()) {
+				connection.addRequestProperty(key,
+						req.getRequestHeaders().get(key));
+				logger.debug(key + ": " + req.getRequestHeaders().get(key));
+			}
+		}
+	}
+
+	HttpURLConnection getConnection(String url) throws IOException {
+		HttpURLConnection con;
+		if (isProxyConfigured()) {
+			if (CONF.getHttpProxyUser() != null
+					&& !CONF.getHttpProxyUser().equals("")) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("Proxy AuthUser: " + CONF.getHttpProxyUser());
+					logger.debug("Proxy AuthPassword: "
+							+ CONF.getHttpProxyPassword().replaceAll(".", "*"));
+				}
+				Authenticator.setDefault(new Authenticator() {
+					@Override
+					protected PasswordAuthentication getPasswordAuthentication() {
+						// respond only to proxy auth requests
+						if (getRequestorType().equals(RequestorType.PROXY)) {
+							return new PasswordAuthentication(CONF
+									.getHttpProxyUser(), CONF
+									.getHttpProxyPassword().toCharArray());
+						} else {
+							return null;
+						}
+					}
+				});
+			}
+
+			Proxy.Type prType = CONF.getHttpProxyHost().contains("HTTP") ? Proxy.Type.HTTP
+					: Proxy.Type.SOCKS;
+
+			final Proxy proxy = new Proxy(prType,
+					InetSocketAddress.createUnresolved(CONF.getHttpProxyHost(),
+							CONF.getHttpProxyPort()));
+			if (logger.isDebugEnabled()) {
+				logger.debug("Opening proxied connection("
+						+ CONF.getHttpProxyHost() + ":"
+						+ CONF.getHttpProxyPort() + ")");
+			}
+			con = (HttpURLConnection) new URL(url).openConnection(proxy);
+		} else {
+			con = (HttpURLConnection) new URL(url).openConnection();
+		}
+		if (CONF.getHttpConnectionTimeout() > 0) {
+			con.setConnectTimeout(CONF.getHttpConnectionTimeout());
+		}
+		if (CONF.getHttpReadTimeout() > 0) {
+			con.setReadTimeout(CONF.getHttpReadTimeout());
+		}
+		con.setInstanceFollowRedirects(false);
+		return con;
+	}
 
 }
