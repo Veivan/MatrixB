@@ -3,7 +3,6 @@ package network;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
-import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -94,10 +93,11 @@ public class ProxyGetter {
 		boolean result = false;
 		String pHost = proxy.getIp();
 		int pPort = proxy.getPort();
-		SocketAddress addr = new InetSocketAddress(pHost, pPort);
 		Proxy.Type _pType = (proxy.getProxyType() == Constants.ProxyType.HTTP ? Proxy.Type.HTTP
 				: Proxy.Type.SOCKS);
-		Proxy httpProxy = new Proxy(_pType, addr);
+		final Proxy httpProxy = new Proxy(_pType,
+				InetSocketAddress.createUnresolved(pHost, pPort));
+
 		HttpURLConnection urlConn = null;
 		URL url;
 		for (int i = 0; i < 2; i++) {

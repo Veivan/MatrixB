@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
+import service.Constants.ProxyType;
 import service.CustExeptions.AuthenticationException;
 import service.CustExeptions.ProxyException;
 import service.Constants;
@@ -520,8 +521,8 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	/**
-	 * Function read home timeline and stores twits 2 DB. Then likes single
-	 * twit with twit_id.
+	 * Function read home timeline and stores twits 2 DB. Then likes single twit
+	 * with twit_id.
 	 * 
 	 * @return
 	 */
@@ -537,7 +538,6 @@ public class T4jClient implements IJobExecutor {
 		Status statusrt = twitter.createFavorite(twit_id);
 		dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 	}
-
 
 	/**
 	 * Searches twits by condition in job.TContent
@@ -590,6 +590,10 @@ public class T4jClient implements IJobExecutor {
 				.setOAuthAccessTokenSecret(creds.getACCESS_TOKEN_SECRET());
 
 		String ip = dbproxy.getIp();
+		// Таким спопсобом передаётся тип прокси в конфигурацию,
+		// потому что в конфигурации нет отдельного параметра для этого
+		if (dbproxy.getProxyType() == ProxyType.SOCKS)
+			ip = Constants.prefixSocks + ip;
 		int port = dbproxy.getPort();
 		if (ip != null)
 			cb.setHttpProxyHost(ip);
