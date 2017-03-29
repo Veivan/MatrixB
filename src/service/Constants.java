@@ -35,6 +35,7 @@ public final class Constants {
 		HTTP, SOCKS
 	}
 
+	public static final String prefixSocks = "SOCKS";
 	public enum RequestType {
 		GET, POST
 	}

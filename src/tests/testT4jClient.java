@@ -57,7 +57,7 @@ public class testT4jClient {
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "188.126.55.44:8080"; // good HTTPS  
-		String proxy = "202.76.26.20:1080"; // good SOCKS  
+		String proxy = "SOCKS202.76.26.20:1080"; // good SOCKS  
 		
 		// 130 51.141.32.241:8080 test error code
 		String[] sp = proxy.split(":");

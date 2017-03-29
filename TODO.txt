@@ -27,5 +27,3 @@
 6. Создавать акки
 7.
 8.  
-9. Можно создать своего HTTPClient для Twi :         //-Dtwitter4j.http.httpClient=twitter4j.HttpClient
-	Ему можно задать Socks proxy.

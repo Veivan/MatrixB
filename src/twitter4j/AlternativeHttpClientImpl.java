@@ -17,6 +17,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import service.Constants;
 import twitter4j.HttpClientBase;
 import twitter4j.HttpClientConfiguration;
 import twitter4j.HttpParameter;
@@ -248,16 +249,20 @@ public class AlternativeHttpClientImpl extends HttpClientBase {
 				});
 			}
 
-			Proxy.Type prType = CONF.getHttpProxyHost().contains("SOCKS") ? Proxy.Type.SOCKS
-					: Proxy.Type.HTTP;
+			Proxy.Type prType = Proxy.Type.HTTP;
+			String ProxyHost = CONF.getHttpProxyHost();
+			if (ProxyHost.contains(Constants.prefixSocks)) {
+				prType = Proxy.Type.SOCKS;
+				ProxyHost = ProxyHost.replace(Constants.prefixSocks, "");
+			}
 
 			final Proxy proxy = new Proxy(prType,
-					InetSocketAddress.createUnresolved(CONF.getHttpProxyHost(),
+					InetSocketAddress.createUnresolved(ProxyHost,
 							CONF.getHttpProxyPort()));
 			if (logger.isDebugEnabled()) {
-				logger.debug("Opening proxied connection("
-						+ CONF.getHttpProxyHost() + ":"
-						+ CONF.getHttpProxyPort() + ")");
+				logger.debug("Opening proxied connection(" + ProxyHost + ":"
+						+ CONF.getHttpProxyPort() + " " + prType.toString()
+						+ ")");
 			}
 			con = (HttpURLConnection) new URL(url).openConnection(proxy);
 		} else {
