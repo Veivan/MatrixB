@@ -735,7 +735,7 @@ AS BEGIN
 		T.[TaskDate] = @TDate
 		OR
 		T.[IsRepeat] = 1
-	ORDER BY T.[id_Task]
+	ORDER BY T.[ordernum]
 END
 GO
 
