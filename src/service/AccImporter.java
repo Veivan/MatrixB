@@ -16,8 +16,13 @@ public class AccImporter extends Thread {
 	ArrayList<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 
 	// Настройка вручную
-	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.NP;
-	private int group_id = 5;
+	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.NPEM;
+	private final int group_id = 6;
+	private MemoProxy memoProxy;
+
+	public AccImporter(MemoProxy memoProxy) {
+		this.memoProxy = memoProxy;
+	}
 
 	@Override
 	public void run() {
@@ -53,8 +58,11 @@ public class AccImporter extends Thread {
 		while (finished < all) {
 			finished = 0;
 			for (CompletableFuture<Void> future : futures) {
-				if (future.isDone())
+				if (future.isDone()) {
 					finished++;
+					message = "Imported " + finished + " from " + all;
+					memoProxy.println(message);
+				}
 			}
 			message = "Imported " + finished + " from " + all;
 			System.out.println(message);
@@ -63,9 +71,9 @@ public class AccImporter extends Thread {
 		System.out.println("Finita");
 	}
 
-	public static void main(String[] args) throws FileNotFoundException {
-		AccImporter pimp = new AccImporter();
-		pimp.run();
-	}
+	/*
+	 * public static void main(String[] args) throws FileNotFoundException {
+	 * AccImporter pimp = new AccImporter(); pimp.run(); }
+	 */
 
 }

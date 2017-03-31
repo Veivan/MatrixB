@@ -13,21 +13,26 @@ public class MemoProxy {
 		this.memo = memo;
 	}
 
-	public void println(String message){
-	SwingUtilities.invokeLater(new Runnable() {
-		public void run() {
+	public void println(String message) {
+
+		if (SwingUtilities.isEventDispatchThread()) {
 			memo.append(message + "\n");
+		} else {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					memo.append(message + "\n");
+				}
+			});
 		}
-	});
 	}
 
-	public void replacetext(String message){
-	SwingUtilities.invokeLater(new Runnable() {
-		public void run() {
-			memo.setText("");
-			memo.append(message + "\n");
-		}
-	});
+	public void replacetext(String message) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				memo.setText("");
+				memo.append(message + "\n");
+			}
+		});
 	}
 
 }

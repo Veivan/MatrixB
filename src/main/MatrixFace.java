@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import service.AccImporter;
 import service.MemoProxy;
 
 /**
@@ -27,7 +28,7 @@ public class MatrixFace extends JFrame {
 	JTextArea memo;
 	JButton btStartMatrix;
 	JButton btCheckDBproxies;
-	JButton btImportBanners;
+	JButton btImportAccounts;
 
 	MatrixFace() {
 		JPanel windowContent = new JPanel();
@@ -35,7 +36,7 @@ public class MatrixFace extends JFrame {
 		windowContent.setLayout(bl);
 
 		JPanel p1 = new JPanel();
-		GridLayout gl = new GridLayout(4, 2);
+		GridLayout gl = new GridLayout(2, 2);
 		p1.setLayout(gl);
 
 		JPanel p2 = new JPanel();
@@ -55,7 +56,7 @@ public class MatrixFace extends JFrame {
 		JTextArea memo3 = new JTextArea();
 		memo3.setEditable(false);
 
-    	//MemoProxy memoProxy = new MemoProxy(memo);
+    	MemoProxy memoProxy = new MemoProxy(memo);
 		MemoProxy StatusMemoProxy = new MemoProxy(memo3);
 
 		JLabel label1 = new JLabel("Start execution");
@@ -76,6 +77,16 @@ public class MatrixFace extends JFrame {
 				}
 			}
 		});				
+
+		JLabel label2 = new JLabel("Import accs");
+		btImportAccounts = new JButton("Start");
+		btImportAccounts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AccImporter pimp = new AccImporter(memoProxy);
+				pimp.run();
+				//JOptionPane.showMessageDialog(null,"Import accs to DB");
+			}
+		}); 				
 
 		// TODO Will use later
 		/*
@@ -98,9 +109,9 @@ public class MatrixFace extends JFrame {
 		
 		p1.add(label1);
 		p1.add(btStartMatrix);
-/*		p1.add(label2);
-		p1.add(btCheckDBproxies);
-		p1.add(label3);
+		p1.add(label2);
+		p1.add(btImportAccounts);
+/*		p1.add(label3);
 		p1.add(btImportBanners); */
 
 		p2.add(scroll);
