@@ -265,25 +265,27 @@ AS BEGIN
 	DECLARE @fr_id INT = NULL
 	SET NOCOUNT ON;
 
-	IF (@failreason IS NULL OR LTRIM(RTRIM(@failreason)) = '')
-		SELECT @fr_id = [fr_id]
-		FROM [dbo].[DicFailReason]
-		WHERE [errorcode] = 999
-	ELSE 
-		IF (@failreason LIKE '%Connect to%')
+	IF (@result = 0) BEGIN
+		IF (@failreason IS NULL OR LTRIM(RTRIM(@failreason)) = '')
 			SELECT @fr_id = [fr_id]
 			FROM [dbo].[DicFailReason]
-			WHERE [errorcode] = 1006
+			WHERE [errorcode] = 999
 		ELSE 
-			SELECT @fr_id = [fr_id]
-			FROM [dbo].[DicFailReason]
-			WHERE [failreason] LIKE @failreason
+			IF (@failreason LIKE '%Connect to%')
+				SELECT @fr_id = [fr_id]
+				FROM [dbo].[DicFailReason]
+				WHERE [errorcode] = 1006
+			ELSE 
+				SELECT @fr_id = [fr_id]
+				FROM [dbo].[DicFailReason]
+				WHERE [failreason] LIKE @failreason
 
-	IF (@fr_id IS NULL) BEGIN
-		INSERT [dbo].[DicFailReason] ([failreason]) VALUES (@failreason)
-		SELECT @fr_id = SCOPE_IDENTITY()
+		IF (@fr_id IS NULL) BEGIN
+			INSERT [dbo].[DicFailReason] ([failreason]) VALUES (@failreason)
+			SELECT @fr_id = SCOPE_IDENTITY()
+		END
 	END
-	
+
 	INSERT INTO [dbo].[mExecution] ([user_id],[id_task],[act_id],[result],[fr_id],[execdate]) 
 	VALUES (@user_id, @id_task, @act_id, @result, @fr_id, @execdate)
 END
