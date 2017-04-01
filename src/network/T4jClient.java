@@ -471,6 +471,8 @@ public class T4jClient implements IJobExecutor {
 					Thread.sleep(Utils.getDelay());
 				} catch (InterruptedException e) {
 				}
+				logger.debug("T4jClient RetwitOne : status_id = {} accID = {} ID = {} ",
+						status_id, this.acc.getAccID(), this.ID);
 				Status statusrt = twitter.retweetStatus(status_id);
 				dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 			}
@@ -515,6 +517,8 @@ public class T4jClient implements IJobExecutor {
 				Thread.sleep(Utils.getDelay());
 			} catch (InterruptedException e) {
 			}
+			logger.debug("T4jClient LikeOne : status_id = {} accID = {} ID = {} ",
+					status_id, this.acc.getAccID(), this.ID);
 			Status statusrt = twitter.createFavorite(status_id);
 			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
 		}
