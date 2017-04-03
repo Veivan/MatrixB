@@ -77,6 +77,8 @@ public class ImpSingleAcc extends Thread {
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
 		
+		//ElementProxy dbproxy = new ElementProxy("5.189.162.175", 3128, Constants.ProxyType.HTTP, -1); //Test
+		
 		//String jobtp = (this.Datatype == cDatatype.EPN) ? "NEWUSERBRUT": "NEWUSER";		
 		String jobtp = "NEWUSERBRUT";
 		JobAtom job = new JobAtom(101L, jobtp, "");
