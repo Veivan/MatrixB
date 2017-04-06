@@ -14,7 +14,7 @@ public class testImpSingleAcc {
 	@Test
 	public void test() {
 		int group_id = 6;
-		String data = "oN8PF9GftQAVxt9:ehpK1IJ16J:leonidkol26@list.ru:kystxR2m";
+		String data = "KfqBh03yWAVA3aw:31QRmdjjQd:egor0wln@mail.ru:zTytr6QrE";
 		ImpSingleAcc ipm = new ImpSingleAcc(data, ImpSingleAcc.cDatatype.NPEM, group_id);
 		ipm.run();
 	}

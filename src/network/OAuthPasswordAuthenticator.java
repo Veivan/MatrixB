@@ -146,6 +146,7 @@ public class OAuthPasswordAuthenticator {
 				Thread.sleep(delay); // Случайная задержка, имитация чела
 				
 				String page3 = sendPost(url, params);
+				logger.debug("After Retype challenge : " + page3);
 				if (page3.contains("twitter.com/login/error"))
 					throw new AuthenticationException(
 							"Cannot get verifier - Retype.");
