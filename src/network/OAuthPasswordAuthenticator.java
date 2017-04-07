@@ -98,12 +98,13 @@ public class OAuthPasswordAuthenticator {
 			// make sure cookies is turn on
 			CookieHandler.setDefault(new CookieManager());
 
+			// Read page "Request OAUTH" to get authenticity_token
 			String page = GetPageContent(requestToken.getAuthorizationURL());
-
-			String authenticity_token = readAuthenticityToken(page);
+			String formname = "oauth_form";
+			String authenticity_token = readAuthenticityToken(page, formname);
 			if (authenticity_token.isEmpty())
 				throw new AuthenticationException(
-						"Cannot get authenticity_token.");
+						"Cannot get authenticity_token for " + formname);
 
 			final Configuration conf = twitter.getConfiguration();
 			logger.debug("OAuthAuthorizationURL : "
@@ -120,6 +121,7 @@ public class OAuthPasswordAuthenticator {
 			paramList.add(new BasicNameValuePair("authenticity_token",
 					URLEncoder.encode(authenticity_token, "UTF-8")));
 
+			// Fill page "Request OAUTH" with data and send POST
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 					paramList);
 			if (page2.isEmpty() || page2.contains("login/error"))
@@ -133,14 +135,21 @@ public class OAuthPasswordAuthenticator {
 				String url = params.get(0).getValue();
 				params.remove(0);
 
-				if (page2.contains("RetypeEmail"))
-					params.add(new BasicNameValuePair("challenge_response",
-							((model.ConcreteAcc) this.acc).getEmail()));
-				else
-					// RetypePhoneNumber
-					params.add(new BasicNameValuePair("challenge_response",
-							((model.ConcreteAcc) this.acc).getPhone()));
-
+				String challenge_response = page2.contains("RetypeEmail") ? ((model.ConcreteAcc) this.acc).getEmail() :
+					((model.ConcreteAcc) this.acc).getPhone();
+				params.add(new BasicNameValuePair("challenge_response", challenge_response));
+						
+				// Read page "Challenge" to get authenticity_token
+				String pageChallenge = GetPageContent(urlChallenge);
+				logger.debug("Page challenge : " + pageChallenge);
+				
+				formname = "login-challenge-form";
+				authenticity_token = readAuthenticityToken(pageChallenge, formname);
+				if (authenticity_token.isEmpty())
+					throw new AuthenticationException(
+							"Cannot get authenticity_token for " + formname);
+				params.add(new BasicNameValuePair("authenticity_token", authenticity_token));
+			
 				Random random = new Random();
 				long delay = (1 + random.nextInt(30)) * 1000;
 				Thread.sleep(delay); // Случайная задержка, имитация чела
@@ -307,12 +316,13 @@ public class OAuthPasswordAuthenticator {
 		return buf.toString();
 	}
 
-	private static String readAuthenticityToken(String html) throws Exception {
+	private static String readAuthenticityToken(String html, String formname) throws Exception {
 		logger.debug("Extracting authenticity_token...");
 		Document doc = Jsoup.parse(html);
+		Element mBody = doc.body();
 		String result = "";
 		// Login form id
-		Element loginform = doc.getElementById("oauth_form");
+		Element loginform = mBody.getElementById(formname);
 		Elements inputElements = loginform.getElementsByTag("input");
 
 		for (Element inputElement : inputElements) {
@@ -323,6 +333,7 @@ public class OAuthPasswordAuthenticator {
 				break;
 			}
 		}
+		logger.debug("authenticity_token = " + result);
 		return result;
 	}
 
