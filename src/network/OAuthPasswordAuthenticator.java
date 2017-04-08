@@ -49,6 +49,7 @@ public class OAuthPasswordAuthenticator {
 	private ElementCredentials creds;
 	private IAccount acc;
 	private String cookies;
+	private String authenticity_token;
 
 	static Logger logger = LoggerFactory
 			.getLogger(OAuthPasswordAuthenticator.class);
@@ -98,7 +99,10 @@ public class OAuthPasswordAuthenticator {
 			// make sure cookies is turn on
 			CookieHandler.setDefault(new CookieManager());
 
-			// Read page "Request OAUTH" to get authenticity_token
+			// Request Page to get OAUTH verifier
+			String page2 = RequestOAUTHPage(requestToken.getAuthorizationURL(), oauth_token, true);
+			
+			/*/ Read page "Request OAUTH" to get authenticity_token
 			String page = GetPageContent(requestToken.getAuthorizationURL());
 			String formname = "oauth_form";
 			String authenticity_token = readAuthenticityToken(page, formname);
@@ -123,9 +127,9 @@ public class OAuthPasswordAuthenticator {
 
 			// Fill page "Request OAUTH" with data and send POST
 			String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
-					paramList);
+					paramList);*/
 			if (page2.isEmpty() || page2.contains("login/error"))
-				throw new AuthenticationException("It seems bad password.");
+				throw new AuthenticationException("It seems bad password."); 
 			if (page2.contains("RetypeEmail")
 					|| page2.contains("RetypePhoneNumber")) {
 				logger.debug("Retype challenge : " + page2);
@@ -140,27 +144,31 @@ public class OAuthPasswordAuthenticator {
 				params.add(new BasicNameValuePair("challenge_response", challenge_response));
 						
 				// Read page "Challenge" to get authenticity_token
-				String pageChallenge = GetPageContent(urlChallenge);
+				/*String pageChallenge = GetPageContent(urlChallenge);
 				logger.debug("Page challenge : " + pageChallenge);
 				
-				formname = "login-challenge-form";
-				authenticity_token = readAuthenticityToken(pageChallenge, formname);
+				String formname = "login-challenge-form";
+				String authenticity_token = readAuthenticityToken(pageChallenge, formname); 
 				if (authenticity_token.isEmpty())
 					throw new AuthenticationException(
-							"Cannot get authenticity_token for " + formname);
+							"Cannot get authenticity_token for " + formname);*/
 				params.add(new BasicNameValuePair("authenticity_token", authenticity_token));
 			
 				Random random = new Random();
 				long delay = (1 + random.nextInt(30)) * 1000;
 				Thread.sleep(delay); // Случайная задержка, имитация чела
 				
-				String page3 = sendPost(url, params);
-				logger.debug("After Retype challenge : " + page3);
-				if (page3.contains("twitter.com/login/error"))
+				page2 = sendPost(url, params);
+				logger.debug("After Retype challenge : " + page2);
+				if (page2.contains("twitter.com/login/error"))
 					throw new AuthenticationException(
 							"Cannot get verifier - Retype.");
+				
+				//page2 = GetPageContent("https://twitter.com/");
+				page2 = RequestOAUTHPage(requestToken.getAuthorizationURL(), oauth_token, false);
 			}
 
+			logger.debug("page2 : " + page2);
 			final String oauth_verifier = readOauthVerifier(page2);
 
 			if (oauth_verifier == null || oauth_verifier.isEmpty())
@@ -199,6 +207,39 @@ public class OAuthPasswordAuthenticator {
 		} catch (Exception e) {
 			throw e;
 		}
+	}
+
+	private String RequestOAUTHPage(String url, String oauth_token, boolean doGet) throws Exception {
+		if (doGet) {
+		// Read page "Request OAUTH" to get authenticity_token
+		String page = GetPageContent(url);
+		String formname = "oauth_form";
+		this.authenticity_token = readAuthenticityToken(page, formname);
+		if (authenticity_token.isEmpty())
+			throw new AuthenticationException(
+					"Cannot get authenticity_token for " + formname);
+		}
+		final Configuration conf = twitter.getConfiguration();
+		logger.debug("OAuthAuthorizationURL : "
+				+ conf.getOAuthAuthorizationURL());
+
+		List<NameValuePair> paramList = new ArrayList<NameValuePair>();
+
+		paramList.add(new BasicNameValuePair("oauth_token", URLEncoder
+				.encode(oauth_token, "UTF-8")));
+		paramList.add(new BasicNameValuePair("session[username_or_email]",
+				URLEncoder.encode(this.creds.getUSER(), "UTF-8")));
+		paramList.add(new BasicNameValuePair("session[password]",
+				URLEncoder.encode(this.creds.getUSER_PASS(), "UTF-8")));
+		paramList.add(new BasicNameValuePair("authenticity_token",
+				URLEncoder.encode(authenticity_token, "UTF-8")));
+
+		// Fill page "Request OAUTH" with data and send POST
+		String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
+				paramList);
+		if (page2.isEmpty() || page2.contains("login/error"))
+			throw new AuthenticationException("It seems bad password.");
+		return page2;
 	}
 
 	private String GetPageContent(String url) throws Exception {
