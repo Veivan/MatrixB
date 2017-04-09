@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
 import service.Constants.ProxyType;
+import service.CustExeptions.AuthRetypeException;
 import service.CustExeptions.AuthenticationException;
 import service.CustExeptions.ProxyException;
 import service.Constants;
@@ -128,14 +129,14 @@ public class T4jClient implements IJobExecutor {
 					&& Utils.empty(this.creds.getACCESS_TOKEN_SECRET())) {
 
 				AccessToken accessToken = null;
-				OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
-						this.twitter, this.creds, this.acc);
 				for (int j = 0; j < Constants.cTryProxyCount; j++) {
 					for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 						String msg = String
 								.format("Get accessToken shot %d with proxy %d ERROR : ",
 										i + 1, j + 1);
 						try {
+							OAuthPasswordAuthenticator auth = new OAuthPasswordAuthenticator(
+									this.twitter, this.creds, this.acc);
 							accessToken = auth.getOAuthAccessTokenSilent();
 							if (accessToken != null)
 								break;
@@ -164,10 +165,17 @@ public class T4jClient implements IJobExecutor {
 							// с сетью (400...500)
 							// не баним прокси, а выходим из цикла
 							throw new AuthenticationException(String.format(
-									" Сant get AccessToken for acc = %d - %s",
+									" Cant get AccessToken for acc = %d - %s",
 									this.acc.getAccID(), te.getMessage()));
 						} catch (AuthenticationException e) {
 							throw e;
+						} catch (AuthRetypeException e) {				
+							logger.error(msg, e);
+							// Creating twitter
+							conf = buildTwitterConfiguration(creds, dbproxy);
+							tf = new TwitterFactory(conf);
+							this.twitter = tf.getInstance();
+							continue;
 						} catch (Exception e) {
 							logger.error(msg, e);
 						}

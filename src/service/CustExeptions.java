@@ -42,8 +42,21 @@ public class CustExeptions {
 		public ProxyException(final String message) {
 			super(message);
 			logger.error(ident + message);
+		}		
+	}
+	
+	public static class AuthRetypeException extends IOException {
+		private static final long serialVersionUID = -7529966783610067769L;
+		private final String ident = "AuthRetypeException : ";
+		static Logger logger = LoggerFactory.getLogger(AuthRetypeException.class);
+
+		AuthRetypeException() {
 		}
-		
+
+		public AuthRetypeException(final String message) {
+			super(message);
+			logger.error(ident + message);
+		}
 	}
 
 }
