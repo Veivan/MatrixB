@@ -11,9 +11,10 @@ AS BEGIN
 	SET @result = 0
 	SELECT * 
 	FROM [dbo].[twTwits] T
-		INNER JOIN [dbo].[mAccounts] A ON A.[twitter_id] = T.[creator_id]
-	WHERE T.[retweeted_id] = @tw_id
-		AND A.[user_id] = @user_id
+		INNER JOIN [dbo].[mAccounts] A ON A.[twitter_id] = T.[creator_id] AND A.[user_id] = @user_id
+	WHERE 
+		T.[retweeted_id] = @tw_id
+		
 	IF @@ROWCOUNT > 0
 		SET @result = 1
 	SELECT @result as result

@@ -553,14 +553,13 @@ public class DbConnector {
 	/**
 	 * Save Status in DB
 	 */
-	public void StoreStatus(long accID, Status status) {
+	public void StoreStatus(Status status) {
 		try {
 			dbConnect();
-			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
 			sp.setLong("tw_id", status.getId());
-			sp.setLong("user_id", accID);
 			sp.setString("status", status.toString());
 			sp.setLong("creator_id", status.getUser().getId());
 			sp.setObject("created_at",

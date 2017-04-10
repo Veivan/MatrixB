@@ -8,7 +8,6 @@ GO
 -- ================================================
 ALTER PROCEDURE [dbo].[spStatusAdd]
 	@tw_id BIGINT
-	,@user_id BIGINT
 	,@status NVARCHAR(1000)
 	,@creator_id BIGINT
 	,@created_at datetimeoffset(2)
@@ -45,11 +44,11 @@ AS BEGIN
 	USING (SELECT [tw_id] = @tw_id ) I 
 		ON T.[tw_id] = I.[tw_id]
 	WHEN NOT MATCHED BY TARGET THEN INSERT
-		([tw_id], [user_id], [status], [creator_id], [created_at], [favorite_count], 
+		([tw_id],[status], [creator_id], [created_at], [favorite_count], 
 		[in_reply_to_screen_name], [in_reply_to_status_id], [in_reply_to_user_id], [lang_id], [retweet_count], 
 		[text], [place_json], [coordinates_json], [favorited], [retweeted], [isRetweet], [retweeted_id])
 	VALUES
-		(@tw_id, @user_id, @status, @creator_id, @created_at, @favorite_count, 
+		(@tw_id, @status, @creator_id, @created_at, @favorite_count, 
 		@in_reply_to_screen_name, @in_reply_to_status_id, @in_reply_to_user_id, @lang_id, @retweet_count,
 		@text, @place_json, @coordinates_json, @favorited, @retweeted, @isRetweet, @retweeted_id)
 	WHEN MATCHED THEN UPDATE SET

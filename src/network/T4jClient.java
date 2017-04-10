@@ -304,7 +304,7 @@ public class T4jClient implements IJobExecutor {
 					switch (jobType) {
 					case TWIT:
 						Status status = SendTwit();
-						dbConnector.StoreStatus(this.acc.getAccID(), status);
+						dbConnector.StoreStatus(status);
 						result = true;
 						break;
 					case SETAVA:
@@ -337,8 +337,7 @@ public class T4jClient implements IJobExecutor {
 									+ "'s home timeline.");
 							for (Status stat : statuses) {
 								System.out.println(stat.toString());
-								dbConnector.StoreStatus(this.acc.getAccID(),
-										stat);
+								dbConnector.StoreStatus(stat);
 							}
 						}
 						result = true;
@@ -466,7 +465,7 @@ public class T4jClient implements IJobExecutor {
 		if (statuses.size() > 0) {
 			List<Status> notMineList = new ArrayList<Status>();
 			for (Status stat : statuses) {
-				dbConnector.StoreStatus(this.acc.getAccID(), stat);
+				dbConnector.StoreStatus(stat);
 				if (!dbConnector.isRetweetedByUser(stat.getId(),
 						this.acc.getAccID()))
 					notMineList.add(stat);
@@ -474,7 +473,6 @@ public class T4jClient implements IJobExecutor {
 			if (notMineList.size() > 0) {
 				long status_id = Utils.GetPreferedStatus(notMineList,
 						Constants.CompareBy.RetwitCount);
-
 				try {
 					Thread.sleep(Utils.getDelay());
 				} catch (InterruptedException e) {
@@ -482,7 +480,7 @@ public class T4jClient implements IJobExecutor {
 				logger.debug("T4jClient RetwitOne : status_id = {} accID = {} ID = {} ",
 						status_id, this.acc.getAccID(), this.ID);
 				Status statusrt = twitter.retweetStatus(status_id);
-				dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+				dbConnector.StoreStatus(statusrt);
 			}
 		}
 	}
@@ -497,13 +495,13 @@ public class T4jClient implements IJobExecutor {
 			throws TwitterException {
 		List<Status> statuses = twitter.getHomeTimeline();
 		for (Status stat : statuses)
-			dbConnector.StoreStatus(this.acc.getAccID(), stat);
+			dbConnector.StoreStatus(stat);
 		try {
 			Thread.sleep(Utils.getDelay());
 		} catch (InterruptedException e) {
 		}
 		Status statusrt = twitter.retweetStatus(twit_id);
-		dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+		dbConnector.StoreStatus(statusrt);
 	}
 
 	/**
@@ -516,11 +514,10 @@ public class T4jClient implements IJobExecutor {
 		List<Status> statuses = twitter.getHomeTimeline();
 		if (statuses.size() > 0) {
 			for (Status stat : statuses) {
-				dbConnector.StoreStatus(this.acc.getAccID(), stat);
+				dbConnector.StoreStatus(stat);
 			}
 			long status_id = Utils.GetPreferedStatus(statuses,
 					Constants.CompareBy.FavoriteCount);
-
 			try {
 				Thread.sleep(Utils.getDelay());
 			} catch (InterruptedException e) {
@@ -528,7 +525,7 @@ public class T4jClient implements IJobExecutor {
 			logger.debug("T4jClient LikeOne : status_id = {} accID = {} ID = {} ",
 					status_id, this.acc.getAccID(), this.ID);
 			Status statusrt = twitter.createFavorite(status_id);
-			dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+			dbConnector.StoreStatus(statusrt);
 		}
 	}
 
@@ -542,13 +539,13 @@ public class T4jClient implements IJobExecutor {
 			throws TwitterException {
 		List<Status> statuses = twitter.getHomeTimeline();
 		for (Status stat : statuses)
-			dbConnector.StoreStatus(this.acc.getAccID(), stat);
+			dbConnector.StoreStatus(stat);
 		try {
 			Thread.sleep(Utils.getDelay());
 		} catch (InterruptedException e) {
 		}
 		Status statusrt = twitter.createFavorite(twit_id);
-		dbConnector.StoreStatus(this.acc.getAccID(), statusrt);
+		dbConnector.StoreStatus(statusrt);
 	}
 
 	/**

@@ -37,7 +37,7 @@ AS BEGIN
 			SELECT @fr_id = SCOPE_IDENTITY()
 		END
 	END
-
+	
 	INSERT INTO [dbo].[mExecution] ([user_id],[id_task],[act_id],[result],[fr_id],[execdate]) 
 	VALUES (@user_id, @id_task, @act_id, @result, @fr_id, @execdate)
 END

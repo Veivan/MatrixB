@@ -1,3 +1,4 @@
+2017.4.10.1 - Change twTwits, spStatusAdd, isRetweetedByUser - remove user_id
 2017.3.31.1 - Fix spExecutionInsert. Add [ordernum] to mTasks. spTasksSelect changed.
 2017.3.24.1 - Add DicFailReason & spExecutionInsert
 2017.3.7.1 - Fix spProxyFreeSelect

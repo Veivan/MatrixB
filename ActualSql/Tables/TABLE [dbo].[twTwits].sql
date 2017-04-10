@@ -3,7 +3,6 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[twTwits](
 	[tw_id] [bigint] NOT NULL,
-	[user_id] [bigint] NOT NULL,
 	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,
 	[creator_id] [bigint] NULL,
 	[created_at] [datetimeoffset](2) NULL,

@@ -17,7 +17,7 @@ public class AccImporter extends Thread {
 
 	// Настройка вручную
 	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.NPEM;
-	private final int group_id = 6;
+	private final int group_id = 7;
 	private MemoProxy memoProxy;
 
 	public AccImporter(MemoProxy memoProxy) {
