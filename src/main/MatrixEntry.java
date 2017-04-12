@@ -47,6 +47,15 @@ public class MatrixEntry extends Thread{
 		 * engine.setUserAction(1, "act3", "");
 		 */
 	
+		// Homeworks refreshing
+		Homeworks newschedule = dbConnector.getHomeworks(System.currentTimeMillis());
+		boolean ischanged = homeworks.IsDifferent(newschedule);
+		if (ischanged) {
+			homeworks.ReplaceWith(newschedule);
+			// Запустить формирование тайминга
+			homeworks.notifyObservers();
+		}
+
 		try {
 			while (!mIsStopped) {
 				long moment = System.currentTimeMillis();
@@ -57,13 +66,15 @@ public class MatrixEntry extends Thread{
 				engine.setAccounts(accounts); */
 
 				// Homeworks refreshing
-				Homeworks newschedule = dbConnector.getHomeworks(moment);
+				// Достаточно сделать один раз перед циклом, чтобы не грузить систему.
+				// Если требуется изменить список задач, то надо перезапускать программу
+				/*Homeworks newschedule = dbConnector.getHomeworks(moment);
 				boolean ischanged = homeworks.IsDifferent(newschedule);
 				if (ischanged) {
 					homeworks.ReplaceWith(newschedule);
 					// Запустить формирование тайминга
 					homeworks.notifyObservers();
-				}
+				} */
 
 				engine.ReadTimings(moment);
 				engine.Execute();

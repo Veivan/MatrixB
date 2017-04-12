@@ -214,7 +214,7 @@ AS BEGIN
 	IF EXISTS (SELECT * FROM [dbo].[mTokens] WHERE [user_id] = @user_id)
 		SELECT TOP 1
 			U.[user_id]
-			,U.[name]
+			,U.[screen_name]
 			,U.[pass]
 			,T.[token]
 			,T.[token_secret]
@@ -229,7 +229,7 @@ AS BEGIN
 	ELSE
 		SELECT TOP 1
 			U.[user_id]
-			,U.[name]
+			,U.[screen_name]
 			,U.[pass]
 			,[token] = NULL
 			,[token_secret] = NULL

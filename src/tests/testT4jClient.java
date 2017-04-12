@@ -35,12 +35,13 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
-		//JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
+		String RETWIT = "{\"command\": \"RETWIT\"} ";
+		JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
 		//String LIKE = "{\"command\": \"LIKE\" , \"twit_id\" : \"843532240860659713\"} ";
 		//JobAtom job = new JobAtom(102L, "LIKE", LIKE);
 			

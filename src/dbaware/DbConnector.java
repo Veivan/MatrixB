@@ -422,7 +422,7 @@ public class DbConnector {
 			// Читаем только первую запись
 			rs.next();
 			creds = new ElementCredentials(rs.getString("cons_key"),
-					rs.getString("cons_secret"), rs.getString("name"),
+					rs.getString("cons_secret"), rs.getString("screen_name"),
 					rs.getString("pass"), rs.getString("token"),
 					rs.getString("token_secret"), rs.getInt("user_id"),
 					rs.getInt("id_app"));
