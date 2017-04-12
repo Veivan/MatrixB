@@ -147,13 +147,13 @@ public class ConcreteAcc implements IAccount {
 				job.IsFinished = true;
 				if ((moment - job.timestamp) > late) {
 					logger.info(
-							"ConcreteAcc id={} found job too late : {}, moment : {}",
-							this.AccID, Constants.dfm.format(job.timestamp),
+							"ConcreteAcc id={} found job {} too late : {}, moment : {}",
+							this.AccID, job.Type.name(), Constants.dfm.format(job.timestamp),
 							Constants.dfm.format(moment));
 				} else {
 					logger.info(
-							"ConcreteAcc id={} found job : {}, moment : {}",
-							this.AccID, Constants.dfm.format(job.timestamp),
+							"ConcreteAcc id={} found job {} : {}, moment : {}",
+							this.AccID, job.Type.name(), Constants.dfm.format(job.timestamp),
 							Constants.dfm.format(moment));
 					return job;
 				}
