@@ -48,13 +48,13 @@ public class MatrixEntry extends Thread{
 		 */
 	
 		// Homeworks refreshing
-		Homeworks newschedule = dbConnector.getHomeworks(System.currentTimeMillis());
+		/*Homeworks newschedule = dbConnector.getHomeworks(System.currentTimeMillis());
 		boolean ischanged = homeworks.IsDifferent(newschedule);
 		if (ischanged) {
 			homeworks.ReplaceWith(newschedule);
 			// Запустить формирование тайминга
 			homeworks.notifyObservers();
-		}
+		} */
 
 		try {
 			while (!mIsStopped) {
@@ -68,13 +68,13 @@ public class MatrixEntry extends Thread{
 				// Homeworks refreshing
 				// Достаточно сделать один раз перед циклом, чтобы не грузить систему.
 				// Если требуется изменить список задач, то надо перезапускать программу
-				/*Homeworks newschedule = dbConnector.getHomeworks(moment);
+				Homeworks newschedule = dbConnector.getHomeworks(moment);
 				boolean ischanged = homeworks.IsDifferent(newschedule);
 				if (ischanged) {
 					homeworks.ReplaceWith(newschedule);
 					// Запустить формирование тайминга
 					homeworks.notifyObservers();
-				} */
+				} 
 
 				engine.ReadTimings(moment);
 				engine.Execute();

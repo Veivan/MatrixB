@@ -82,8 +82,10 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 			}
 		}
 		// Сортировка задач по ID из БД
-		Collections.sort(innerTiming, JobAtom.JobAtomComparatorByID);
-
+		//Collections.sort(innerTiming, JobAtom.JobAtomComparatorByID);
+		// Задачи будут подаваться в случайном порядке
+		Collections.shuffle(innerTiming);
+		 
 		Calendar rightNow = Calendar.getInstance();
 		rightNow.setTimeInMillis(moment);
 
