@@ -53,8 +53,10 @@ public class MatrixEntry extends Thread{
 		if (ischanged) {
 			homeworks.ReplaceWith(newschedule);
 			// Запустить формирование тайминга
-			homeworks.notifyObservers();
+			//homeworks.notifyObservers();
+			brain.perform(homeworks);
 		} 
+		logger.info("MatrixEntry finished perform homeworks");
 
 		try {
 			while (!mIsStopped) {

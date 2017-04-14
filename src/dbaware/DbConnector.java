@@ -41,6 +41,8 @@ public class DbConnector {
 	private final static String db_userid = "sa";
 	private final static String db_password = "123456";
 
+	private Connection conn = null;
+
 	static Logger logger = LoggerFactory.getLogger(DbConnector.class);
 
 	private DbConnector() {
@@ -66,21 +68,23 @@ public class DbConnector {
 	 * @throws SQLException
 	 */
 	private Connection getConnection() throws SQLException {
-		Connection conn = null;
+		//Connection conn = null;
+		if (conn == null)
 		conn = DriverManager.getConnection(db_connect_string, db_userid,
 				db_password);
 		return conn;
 	}
 
 	public void freeConnection(Connection conn) {
-		if (conn != null) {
+		return;
+		/*if (conn != null) {
 			try {
 				conn.close();
 			} catch (Exception e) {
 				logger.error("freeConnection exception", e);
 			}
 			conn = null;
-		}
+		}*/
 	}
 
 	/**

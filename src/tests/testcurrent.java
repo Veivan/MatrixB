@@ -1,18 +1,40 @@
 package tests;
 
-import java.net.Proxy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 
 public class testcurrent {
 
-	public static void main(String[] args) {
-		String ProxyHost = "SOCKS192.7.1.56";
-		String prop = "SOCKS";
-		if (ProxyHost.contains(prop)){
-			ProxyHost = ProxyHost.replace(prop, "");
+	private class TestThread extends Thread {
+		private int index;
+
+		public TestThread(int j) {
+			index = j;
 		}
-		System.out.println(ProxyHost);
-		Proxy.Type prType = Proxy.Type.HTTP;
-		System.out.println(prType.toString());
+
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("" + index + " finished");
+		}
+	}
+
+	public static void main(String[] args) {
+		testcurrent x = new testcurrent();
+		//ExecutorService cachedPool = Executors.newCachedThreadPool();
+		
+		ExecutorService service = Executors.newFixedThreadPool(10);
+
+		for (int j = 0; j < 20; j++) {
+			service.submit(x.new TestThread(j));
+		}
+		service.shutdown();
 	}
 
 }
