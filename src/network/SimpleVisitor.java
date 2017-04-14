@@ -61,7 +61,7 @@ public class SimpleVisitor implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(SimpleVisitor.class);
-	DbConnector dbConnector = new DbConnector();
+	DbConnector dbConnector = DbConnector.getInstance();
 
 	@Override
 	public void Execute() {

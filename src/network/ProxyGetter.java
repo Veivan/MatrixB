@@ -23,7 +23,7 @@ public class ProxyGetter {
 	 * Первичное получение прокси для акка из БД
 	 */
 	public static ElementProxy getProxy(long AccID) {
-		DbConnector dbConnector = new DbConnector();
+		DbConnector dbConnector = DbConnector.getInstance();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		if (!CheckProxy(accproxy)) {
 			if (accproxy != null) {
@@ -59,7 +59,7 @@ public class ProxyGetter {
 	 * существующего приводит к ошибке
 	 */
 	public static ElementProxy getAnotherProxy(long AccID) {
-		DbConnector dbConnector = new DbConnector();
+		DbConnector dbConnector = DbConnector.getInstance();
 		ElementProxy accproxy = dbConnector.getProxy4Acc(AccID);
 		accproxy = dbConnector.getProxy4Acc(AccID);
 		// Баним старый прокси

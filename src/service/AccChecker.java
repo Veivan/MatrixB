@@ -20,7 +20,7 @@ import dbaware.DbConnector;
 public class AccChecker extends Thread {
 	ArrayList<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 
-	private static DbConnector dbConnector = new DbConnector();
+	private static DbConnector dbConnector = DbConnector.getInstance();
 	static Logger logger = LoggerFactory.getLogger(AccChecker.class);
 
 	// Настройка вручную

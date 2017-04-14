@@ -32,36 +32,53 @@ import model.ElementProxy;
 import model.MatrixAct;
 import model.TwFriend;
 
+/**
+ * Класс для работы с БД. Singleton
+ */
 public class DbConnector {
-
-	private Connection conn = null;
-	private String db_connect_string = ";databaseName=MatrixB;";
+	private static volatile DbConnector instance;
+	private static Connection conn = null;
+	private static String db_connect_string = ";databaseName=MatrixB;";
 
 	static Logger logger = LoggerFactory.getLogger(DbConnector.class);
 
-	public DbConnector() {
+	private DbConnector() {
 		try {
-			this.db_connect_string = Utils.ReadConnStrINI()
-					+ this.db_connect_string;
+			db_connect_string = Utils.ReadConnStrINI() + db_connect_string;
 		} catch (Exception e) {
 			logger.error("DbConnector exception", e);
 		}
 	}
 
-	/**
-	 * @return the conn
-	 */
-	public Connection getConn() {
-		return conn;
+	public static DbConnector getInstance() {
+		if (instance == null)
+			synchronized (DbConnector.class) {
+				if (instance == null)
+					instance = new DbConnector();
+			}
+		try {
+			dbConnect();
+		} catch (ClassNotFoundException | SQLException e) {
+			logger.error("DbConnector dbConnect exception", e);
+		}
+		return instance;
 	}
 
-	private String db_userid = "sa";
-	private String db_password = "123456";
+	/**
+	 * @return the conn
+	 * 
+	 *         public Connection getConn() { return conn; }
+	 */
 
-	private void dbConnect() throws ClassNotFoundException, SQLException {
-		Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-		conn = DriverManager.getConnection(db_connect_string, db_userid,
-				db_password);
+	private static String db_userid = "sa";
+	private static String db_password = "123456";
+
+	private static void dbConnect() throws ClassNotFoundException, SQLException {
+		if (conn == null) {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			conn = DriverManager.getConnection(db_connect_string, db_userid,
+					db_password);
+		}
 	}
 
 	/**
@@ -467,7 +484,7 @@ public class DbConnector {
 	 */
 	public void StoreActResult(MatrixAct act, boolean result, String failreason) {
 		try {
-			dbConnect(); 
+			dbConnect();
 			String query = "{call [dbo].[spExecutionInsert](?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
@@ -600,7 +617,6 @@ public class DbConnector {
 		}
 	}
 
-	
 	/**
 	 * Check if Status retweeted by user
 	 */
@@ -626,7 +642,7 @@ public class DbConnector {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Save Timing in DB
 	 */
@@ -717,8 +733,8 @@ public class DbConnector {
 	/**
 	 * Returns executed tasks info from DB
 	 */
-	public List<Long> getExecutionInfo(long accID, long moment) {		
-		Date now = new Date(moment);	
+	public List<Long> getExecutionInfo(long accID, long moment) {
+		Date now = new Date(moment);
 		List<Long> listIds = new ArrayList<Long>();
 		try {
 			dbConnect();

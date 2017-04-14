@@ -25,7 +25,7 @@ public class testDbConnectSingle {
 
 	@Before
 	public void setUp() throws Exception {
-		dbConnector = new DbConnector();
+		dbConnector = DbConnector.getInstance();
 	}
 
 	//@Test

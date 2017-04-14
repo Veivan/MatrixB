@@ -19,7 +19,7 @@ public class testTiming {
 	DateFormat dfm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final long tick = 5000l; // ms
 
-	static DbConnector dbConnector = new DbConnector();
+	static DbConnector dbConnector = DbConnector.getInstance();
 	//Homeworks homeworks = new Homeworks();
 	Timing timing;
 	Homeworks homeworks;

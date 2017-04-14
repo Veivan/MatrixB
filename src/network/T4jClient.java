@@ -64,7 +64,7 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(T4jClient.class);
-	DbConnector dbConnector = new DbConnector();
+	DbConnector dbConnector = DbConnector.getInstance();
 
 	@Override
 	public void Execute() {

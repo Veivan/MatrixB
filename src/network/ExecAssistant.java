@@ -22,7 +22,7 @@ public class ExecAssistant extends Thread {
 	}
 
 	static Logger logger = LoggerFactory.getLogger(ExecAssistant.class);
-	DbConnector dbConnector = new DbConnector();
+	DbConnector dbConnector = DbConnector.getInstance();
 
 	private final String failreason = "Executor cant get proxy";
 	private boolean GetProxy(boolean IsDebug) {

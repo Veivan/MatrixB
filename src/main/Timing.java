@@ -39,7 +39,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	private ArrayList<JobAtom> innerTiming = new ArrayList<JobAtom>();
 	private int index = 0;
 
-	DbConnector dbConnector = new DbConnector();
+	DbConnector dbConnector = DbConnector.getInstance();
 
 	/**
 	 * Constructor for testing

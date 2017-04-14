@@ -16,7 +16,7 @@ import dbaware.DbConnector;
  * Выполняет действия: - Проверяет один акк на доступность
  */
 public class CheckSingleAcc extends Thread {
-	private DbConnector dbConnector = new DbConnector();
+	private DbConnector dbConnector = DbConnector.getInstance();
 	private long user_id;
 	
 	// Настройка вручную

@@ -35,7 +35,7 @@ public class MatrixEntry extends Thread{
 		Brain brain = new Brain(homeworks);
 		engine = new Engine();
 
-		DbConnector dbConnector = new DbConnector();
+		DbConnector dbConnector = DbConnector.getInstance();
 
 		// If read Accounts in cycle then need to refresh their timings 
 		List<IAccount> accounts = dbConnector.getAccounts();

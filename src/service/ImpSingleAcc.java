@@ -16,7 +16,7 @@ import dbaware.DbConnector;
  * Выполняет действия: - Импортит в БД один акк
  */
 public class ImpSingleAcc extends Thread {
-	private DbConnector dbConnector = new DbConnector();
+	private DbConnector dbConnector = DbConnector.getInstance();
 	private cDatatype Datatype;
 	private int group_id;
 
