@@ -121,8 +121,9 @@ AS BEGIN
 		INNER JOIN [dbo].[mBelong2] B ON B.[user_id] = A.[user_id] 
 		LEFT JOIN [dbo].[mTokens] T ON T.[user_id] = A.[user_id]
 		WHERE 	
-			T.[id_creds] IS NOT NULL
-			AND (@group_id IS NULL OR B.[group_id] = @group_id)
+			--T.[id_creds] IS NOT NULL
+			--AND 
+			(@group_id IS NULL OR B.[group_id] = @group_id)
 			AND (@enabled IS NULL OR  A.[enabled] = @enabled)
 			--AND A.[enabled] IS NULL
 	ORDER BY A.[user_id] 
@@ -237,10 +238,8 @@ AS BEGIN
 			,A.[cons_secret]
 			,A.[id_app]
 		FROM [dbo].[mAccounts] U
-			LEFT JOIN (SELECT TOP 1 [user_id] = @user_id, A.[cons_key]
-				,A.[cons_secret]
-				,A.[id_app] 
-				FROM [dbo].[mApplications] A) A ON A.[user_id] = U.[user_id]
+			INNER JOIN [dbo].[mAcc2App] P ON P.[user_id] = U.[user_id]
+			INNER JOIN [dbo].[mApplications] A ON A.[id_app] = P.[id_app]
 		WHERE 
 			U.[user_id] = @user_id
 

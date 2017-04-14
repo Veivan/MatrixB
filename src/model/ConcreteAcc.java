@@ -117,9 +117,9 @@ public class ConcreteAcc implements IAccount {
 	public void RebuldAccTiming(Homeworks homeworks) {
 		long moment = System.currentTimeMillis();
 		this.timing.RebuildTiming(homeworks, this.GroupIDs, moment);
-		logger.debug("Rebuilded Accid={}", this.AccID); 
+		//logger.debug("Rebuilded Accid={}", this.AccID); 
 		this.timing.StoreTiming(this.AccID);
-		logger.debug("Stored Accid={}", this.AccID); 
+		//logger.debug("Stored Accid={}", this.AccID); 
 	}
 
 	public void printTiming() {

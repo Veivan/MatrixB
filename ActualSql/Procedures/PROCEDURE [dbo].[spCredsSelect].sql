@@ -36,10 +36,8 @@ AS BEGIN
 			,A.[cons_secret]
 			,A.[id_app]
 		FROM [dbo].[mAccounts] U
-			LEFT JOIN (SELECT TOP 1 [user_id] = @user_id, A.[cons_key]
-				,A.[cons_secret]
-				,A.[id_app] 
-				FROM [dbo].[mApplications] A) A ON A.[user_id] = U.[user_id]
+			INNER JOIN [dbo].[mAcc2App] P ON P.[user_id] = U.[user_id]
+			INNER JOIN [dbo].[mApplications] A ON A.[id_app] = P.[id_app]
 		WHERE 
 			U.[user_id] = @user_id
 
