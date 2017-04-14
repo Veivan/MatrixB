@@ -37,13 +37,15 @@ import model.TwFriend;
  */
 public class DbConnector {
 	private static volatile DbConnector instance;
-	private static Connection conn = null;
 	private static String db_connect_string = ";databaseName=MatrixB;";
+	private final static String db_userid = "sa";
+	private final static String db_password = "123456";
 
 	static Logger logger = LoggerFactory.getLogger(DbConnector.class);
 
 	private DbConnector() {
 		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			db_connect_string = Utils.ReadConnStrINI() + db_connect_string;
 		} catch (Exception e) {
 			logger.error("DbConnector exception", e);
@@ -56,28 +58,28 @@ public class DbConnector {
 				if (instance == null)
 					instance = new DbConnector();
 			}
-		try {
-			dbConnect();
-		} catch (ClassNotFoundException | SQLException e) {
-			logger.error("DbConnector dbConnect exception", e);
-		}
 		return instance;
 	}
 
 	/**
-	 * @return the conn
-	 * 
-	 *         public Connection getConn() { return conn; }
+	 * @return new connection
+	 * @throws SQLException
 	 */
+	private Connection getConnection() throws SQLException {
+		Connection conn = null;
+		conn = DriverManager.getConnection(db_connect_string, db_userid,
+				db_password);
+		return conn;
+	}
 
-	private static String db_userid = "sa";
-	private static String db_password = "123456";
-
-	private static void dbConnect() throws ClassNotFoundException, SQLException {
-		if (conn == null) {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			conn = DriverManager.getConnection(db_connect_string, db_userid,
-					db_password);
+	public void freeConnection(Connection conn) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (Exception e) {
+				logger.error("freeConnection exception", e);
+			}
+			conn = null;
 		}
 	}
 
@@ -91,7 +93,7 @@ public class DbConnector {
 	public List<IAccount> getAccounts(Integer group_id, Boolean enabled) {
 		List<IAccount> accounts = new ArrayList<IAccount>();
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			// String query =
 			// "SELECT [user_id] FROM [dbo].[mAccounts] WHERE [enabled] = 1";
 			String query = "{call [dbo].[spAccountsSelect](?,?)}";
@@ -112,9 +114,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getAccounts exception", e);
 		}
@@ -127,7 +127,7 @@ public class DbConnector {
 	public byte[] getRandomPicture(Gender gender, int ptype_id) {
 		byte[] bytes = null;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spGetRandomImage](?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.registerOutParameter(3, java.sql.Types.BLOB);
@@ -151,9 +151,7 @@ public class DbConnector {
 			baos.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getRandomPicture exception", e);
 		}
@@ -166,7 +164,7 @@ public class DbConnector {
 	public IAccount getAccount(Long user_id) {
 		ConcreteAcc acc = null;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "SELECT TOP 1 [name],[screen_name],[email],[phone],[pass],[twitter_id] = ISNULL([twitter_id], -1) "
 					+ ",[mailpass], [gender] = ISNULL([gender], 2) FROM [dbo].[mAccounts] WHERE [user_id] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
@@ -182,9 +180,7 @@ public class DbConnector {
 			}
 			pstmt.close();
 			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getAccounts exception", e);
 		}
@@ -197,7 +193,7 @@ public class DbConnector {
 	public long SaveAcc2Db(ConcreteAcc acc, int group_id) {
 		long user_id = -1;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spAccountAdd](?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.registerOutParameter(1, java.sql.Types.BIGINT);
@@ -222,9 +218,7 @@ public class DbConnector {
 
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("SaveAcc2Db exception", e);
 		}
@@ -237,7 +231,7 @@ public class DbConnector {
 	 */
 	public void SaveAccExtended(Long user_id, User user) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spAccountUpdExt](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
@@ -273,9 +267,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("SaveAccExtended exception", e);
 		}
@@ -288,7 +280,7 @@ public class DbConnector {
 	public List<ElementProxy> getFreeProxies(long AccID) {
 		List<ElementProxy> proxylist = new ArrayList<ElementProxy>();
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spProxyFreeSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong("user_id", AccID);
@@ -302,9 +294,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getFreeProxies exception", e);
 		}
@@ -316,7 +306,7 @@ public class DbConnector {
 	 */
 	public void setProxyIsAlive(long ProxyID, boolean IsAlive) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "UPDATE [dbo].[mProxies] SET [alive] = ? WHERE [ProxyID] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, IsAlive ? 1 : 0);
@@ -324,9 +314,7 @@ public class DbConnector {
 			pstmt.execute();
 			pstmt.close();
 			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("setProxyIsAlive exception", e);
 		}
@@ -337,7 +325,7 @@ public class DbConnector {
 	 */
 	public void setProxyIsBlocked(long ProxyID, boolean Isblocked) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "UPDATE [dbo].[mProxies] SET [blocked] = ? WHERE [ProxyID] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, Isblocked ? 1 : 0);
@@ -345,9 +333,7 @@ public class DbConnector {
 			pstmt.execute();
 			pstmt.close();
 			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("setProxyIsBlocked exception", e);
 		}
@@ -359,7 +345,7 @@ public class DbConnector {
 	public void makeProxy4AccFree(long accID) {
 		long ProxyID = -1;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spProxy4AccUpdate](?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong(1, accID);
@@ -367,9 +353,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("makeProxy4AccFree exception", e);
 		}
@@ -381,7 +365,7 @@ public class DbConnector {
 	public void setProxy4Acc(long accID, ElementProxy accproxy) {
 		long ProxyID = (accproxy == null) ? 0 : accproxy.getProxyID();
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spProxy4AccUpdate](?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong(1, accID);
@@ -389,9 +373,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("setProxy4Acc exception", e);
 		}
@@ -403,7 +385,7 @@ public class DbConnector {
 	public ElementProxy getProxy4Acc(long AccID) {
 		ElementProxy proxy = null;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spProxy4AccSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong(1, AccID);
@@ -416,9 +398,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getProxy4Acc exception", e);
 		}
@@ -431,7 +411,7 @@ public class DbConnector {
 	public ElementCredentials getCredentials(long AccID) {
 		ElementCredentials creds = null;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spCredsSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong(1, AccID);
@@ -446,9 +426,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getCredentials exception", e);
 		}
@@ -461,7 +439,7 @@ public class DbConnector {
 	public void SaveToken(long accID, long id_app, String token,
 			String tokenSecret) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "INSERT INTO [dbo].[mTokens] ([user_id],[id_app],[token],[token_secret]) VALUES (?,?,?,?)";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setLong(1, accID);
@@ -471,9 +449,7 @@ public class DbConnector {
 			pstmt.execute();
 			pstmt.close();
 			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("SaveToken failed", e);
 		}
@@ -484,7 +460,7 @@ public class DbConnector {
 	 */
 	public void StoreActResult(MatrixAct act, boolean result, String failreason) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spExecutionInsert](?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
@@ -500,9 +476,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("StoreActResult failed", e);
 		}
@@ -519,7 +493,7 @@ public class DbConnector {
 		Date now = new Date(moment);
 		// Tasks from DB
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spTasksSelect](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setDate(1, now);
@@ -533,9 +507,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getHomeworks spTasksSelect exception", e);
 		}
@@ -551,7 +523,7 @@ public class DbConnector {
 	 */
 	public void setAccIsEnabled(long accID, boolean IsEnabled) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "UPDATE [dbo].[mAccounts] SET [enabled] = ? WHERE [user_id] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setInt(1, IsEnabled ? 1 : 0);
@@ -559,9 +531,7 @@ public class DbConnector {
 			pstmt.execute();
 			pstmt.close();
 			pstmt = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("setAccIsEnabled exception", e);
 		}
@@ -572,7 +542,7 @@ public class DbConnector {
 	 */
 	public void StoreStatus(Status status) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spStatusAdd](?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
@@ -609,9 +579,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreStatus exception", e);
 		}
@@ -623,7 +591,7 @@ public class DbConnector {
 	public boolean isRetweetedByUser(long statusId, long accID) {
 		boolean result = false;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[isRetweetedByUser](?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong("tw_id", statusId);
@@ -634,9 +602,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("isRetweetedByUser exception", e);
 		}
@@ -648,7 +614,7 @@ public class DbConnector {
 	 */
 	public void StoreTiming(long accID, ArrayList<JobAtom> timing) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spTimingAdd](?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 
@@ -671,9 +637,7 @@ public class DbConnector {
 			}
 
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreTiming exception", e);
 		}
@@ -685,7 +649,7 @@ public class DbConnector {
 	public TwFriend GetRandomScreenName(long accID) {
 		TwFriend friend = null;
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spGetRandomScreenName](?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong("user_id", accID);
@@ -696,9 +660,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("GetRandomScreenName exception", e);
 		}
@@ -710,7 +672,7 @@ public class DbConnector {
 	 */
 	public void StoreFollowInfo(long accID, long twitter_id, Boolean fwtype) {
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spFollowInfoUpd](?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong("user_id", accID);
@@ -722,9 +684,7 @@ public class DbConnector {
 			sp.execute();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreFollowInfo exception", e);
 		}
@@ -737,7 +697,7 @@ public class DbConnector {
 		Date now = new Date(moment);
 		List<Long> listIds = new ArrayList<Long>();
 		try {
-			dbConnect();
+			Connection conn = getConnection();
 			String query = "{call [dbo].[spExecutionSelect](?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setLong("user_id", accID);
@@ -749,9 +709,7 @@ public class DbConnector {
 			rs.close();
 			sp.close();
 			sp = null;
-			if (conn != null)
-				conn.close();
-			conn = null;
+			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("getExecutionInfo exception", e);
 		}
