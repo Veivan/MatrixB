@@ -35,13 +35,13 @@ public class testT4jClient {
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
 				
-		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
-		String RETWIT = "{\"command\": \"RETWIT\"} ";
-		JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
+		//String RETWIT = "{\"command\": \"RETWIT\"} ";
+		//JobAtom job = new JobAtom(100L, "RETWIT", RETWIT);
 		//String LIKE = "{\"command\": \"LIKE\" , \"twit_id\" : \"843532240860659713\"} ";
 		//JobAtom job = new JobAtom(102L, "LIKE", LIKE);
 			
@@ -54,11 +54,11 @@ public class testT4jClient {
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(111L);  
+		ConcreteAcc acc = new ConcreteAcc(2647);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		//String proxy = "188.126.55.44:8080"; // good HTTPS  
-		String proxy = "176.115.73.8:1080"; // good SOCKS5  
+		String proxy = "88.195.119.39:3128"; // good HTTPS  
+		//String proxy = "176.115.73.8:1080"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
 		String[] sp = proxy.split(":");
