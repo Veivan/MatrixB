@@ -233,6 +233,15 @@ CREATE TABLE [dbo].[mTokens](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mUnlock](
+	[un_id] [int] IDENTITY(1,1) NOT NULL,
+	[ae_id] [bigint] NOT NULL,
+	[dunlock] [datetime] NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[twTwits](
 	[tw_id] [bigint] NOT NULL,
 	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,

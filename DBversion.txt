@@ -1,3 +1,4 @@
+2017.4.18.1 - Add mUnlock
 2017.4.15.1 - Add mAcc2App, new view 'Count users by groups'. Change [spCredsSelect]
 2017.4.13.1 - Fix [spCredsSelect]
 2017.4.10.1 - Change twTwits, spStatusAdd, isRetweetedByUser - remove user_id

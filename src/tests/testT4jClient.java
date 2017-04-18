@@ -54,11 +54,11 @@ public class testT4jClient {
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(2647);  
+		ConcreteAcc acc = new ConcreteAcc(2077);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "88.195.119.39:3128"; // good HTTPS  
-		//String proxy = "176.115.73.8:1080"; // good SOCKS5  
+		//String proxy = "88.195.119.39:3128"; // good HTTPS  
+		String proxy = "176.115.73.8:1080"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
 		String[] sp = proxy.split(":");

@@ -127,9 +127,15 @@ public class OAuthPasswordAuthenticator {
 				 * задержка, имитация чела
 				 */
 				page2 = sendPost(url, params);
+				logger.debug(page2);
+				
+				if (page2.contains("incorrect_solution=true"))
+					throw new AuthenticationException(
+							"Cannot get verifier - Retype - incorrect_solution=true.");
+				
 				if (page2.contains("twitter.com/login/error"))
 					throw new AuthenticationException(
-							"Cannot get verifier - Retype.");
+							"Cannot get verifier - Retype - login/error.");
 
 				page2 = GetPageContent("https://twitter.com/");
 
