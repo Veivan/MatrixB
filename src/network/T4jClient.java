@@ -94,8 +94,8 @@ public class T4jClient implements IJobExecutor {
 				Constants.dfm.format(this.job.timestamp), this.acc.getAccID(),
 				this.ID);
 		dbConnector.StoreActResult(this.act, result, failreason);
-		if (errorCode == 64) {
-			dbConnector.setAccIsEnabled(this.acc.getAccID(), false);
+		if (errorCode > 0) {
+			dbConnector.setAccIsEnabled(this.acc.getAccID(), false, errorCode);
 		}
 	}
 
@@ -199,6 +199,8 @@ public class T4jClient implements IJobExecutor {
 			}
 		} catch (Exception e) {
 			logger.error("ERROR : ", e);
+			if (e instanceof AuthenticationException)
+				errorCode = ((AuthenticationException) e).getErrorCode();
 			dbConnector.makeProxy4AccFree(this.acc.getAccID());
 			return false;
 		}
@@ -367,7 +369,7 @@ public class T4jClient implements IJobExecutor {
 						logger.debug("@" + user.getScreenName() + " is "
 								+ (IsEnabled ? "enabled" : "disabled"));
 						dbConnector.setAccIsEnabled(this.acc.getAccID(),
-								IsEnabled);
+								IsEnabled, -1);
 						if (!IsEnabled)
 							dbConnector.makeProxy4AccFree(this.acc.getAccID());
 						result = true;

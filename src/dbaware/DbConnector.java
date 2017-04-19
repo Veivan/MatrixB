@@ -25,7 +25,6 @@ import twitter4j.Status;
 import twitter4j.User;
 import jobs.Homeworks;
 import jobs.JobAtom;
-import jobs.JobList;
 import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
@@ -441,18 +440,18 @@ public class DbConnector {
 	 * Сохраняет токены для указанного аккаунта
 	 */
 	public void SaveToken(long accID, long id_app, String token,
-			String tokenSecret) {
+			String token_secret) {
 		try {
 			Connection conn = getConnection();
-			String query = "INSERT INTO [dbo].[mTokens] ([user_id],[id_app],[token],[token_secret]) VALUES (?,?,?,?)";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setLong(1, accID);
-			pstmt.setLong(2, id_app);
-			pstmt.setString(3, token);
-			pstmt.setString(4, tokenSecret);
-			pstmt.execute();
-			pstmt.close();
-			pstmt = null;
+			String query = "{call [dbo].[spSaveToken](?,?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("user_id", accID);
+			sp.setLong("id_app", id_app);
+			sp.setString("token", token);
+			sp.setString("token_secret", token_secret);
+			sp.execute();
+			sp.close();
+			sp = null;
 			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("SaveToken failed", e);
@@ -525,16 +524,17 @@ public class DbConnector {
 	/**
 	 * Set acc "enabled"
 	 */
-	public void setAccIsEnabled(long accID, boolean IsEnabled) {
+	public void setAccIsEnabled(long accID, boolean IsEnabled, int errorcode) {
 		try {
 			Connection conn = getConnection();
-			String query = "UPDATE [dbo].[mAccounts] SET [enabled] = ? WHERE [user_id] = ?";
-			PreparedStatement pstmt = conn.prepareStatement(query);
-			pstmt.setInt(1, IsEnabled ? 1 : 0);
-			pstmt.setLong(2, accID);
-			pstmt.execute();
-			pstmt.close();
-			pstmt = null;
+			String query = "{call [dbo].[spAccSetAccessibility](?,?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setLong("user_id", accID);
+			sp.setBoolean("enabled", IsEnabled);
+			sp.setInt("errorcode", errorcode);
+			sp.execute();
+			sp.close();
+			sp = null;
 			freeConnection(conn);
 		} catch (Exception e) {
 			logger.error("setAccIsEnabled exception", e);
@@ -725,24 +725,6 @@ public class DbConnector {
 		for (JobAtom job : JobAtomList) {
 			JobAtom jobcopy = new JobAtom(job);
 			homeworks.AddJob(jobcopy);
-		}
-	}
-
-	// 4 debug without DB
-	private static void MakeHowmworks(Homeworks homeworks) {
-		JobAtom job = new JobAtom(5L, "SETAVA", "");
-		homeworks.AddJob(job);
-
-		for (int i = 0; i < 2; i++) {
-			job = new JobAtom((long) i, "LIKE", "");
-			homeworks.AddJob(job);
-		}
-
-		homeworks.First();
-		for (JobList jobList : homeworks) {
-			jobList.First();
-			logger.debug("joblist : {} {}", jobList.getType(),
-					jobList.getPriority());
 		}
 	}
 

@@ -105,7 +105,7 @@ public class OAuthPasswordAuthenticator {
 					oauth_token);
 
 			if (page2.isEmpty() || page2.contains("login/error"))
-				throw new AuthenticationException("It seems bad password.");
+				throw new AuthenticationException("It seems bad password.", 1006);
 			if (page2.contains("RetypeEmail")
 					|| page2.contains("RetypePhoneNumber")) {
 
@@ -131,11 +131,11 @@ public class OAuthPasswordAuthenticator {
 				
 				if (page2.contains("incorrect_solution=true"))
 					throw new AuthenticationException(
-							"Cannot get verifier - Retype - incorrect_solution=true.");
+							"Cannot get verifier - Retype - incorrect_solution=true.", 1005);
 				
 				if (page2.contains("twitter.com/login/error"))
 					throw new AuthenticationException(
-							"Cannot get verifier - Retype - login/error.");
+							"Cannot get verifier - Retype - login/error.", 1007);
 
 				page2 = GetPageContent("https://twitter.com/");
 
@@ -216,7 +216,7 @@ public class OAuthPasswordAuthenticator {
 		String page2 = sendPost(conf.getOAuthAuthorizationURL().toString(),
 				paramList);
 		if (page2.isEmpty() || page2.contains("login/error"))
-			throw new AuthenticationException("It seems bad password.");
+			throw new AuthenticationException("It seems bad password.", 1006);
 		return page2;
 	}
 

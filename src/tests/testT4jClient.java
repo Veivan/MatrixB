@@ -54,7 +54,7 @@ public class testT4jClient {
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(2077);  
+		ConcreteAcc acc = new ConcreteAcc(3);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "88.195.119.39:3128"; // good HTTPS  

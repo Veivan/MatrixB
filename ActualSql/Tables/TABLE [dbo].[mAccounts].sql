@@ -29,6 +29,7 @@ CREATE TABLE [dbo].[mAccounts](
 	[twitter_id] [bigint] NULL,
 	[mailpass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[gender] [bit] NULL,
-	[enabled] [bit] NULL
+	[enabled] [bit] NULL,
+	[adr_id] [int] NULL
 ) ON [PRIMARY]
 

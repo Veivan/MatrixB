@@ -117,15 +117,15 @@ AS BEGIN
 		,[phone]
 		,[email]
 		,[mailpass] 
+		,A.[enabled] 
 	FROM [dbo].[mAccounts] A 
 		INNER JOIN [dbo].[mBelong2] B ON B.[user_id] = A.[user_id] 
 		LEFT JOIN [dbo].[mTokens] T ON T.[user_id] = A.[user_id]
-		WHERE 	
-			--T.[id_creds] IS NOT NULL
-			--AND 
-			(@group_id IS NULL OR B.[group_id] = @group_id)
-			AND (@enabled IS NULL OR  A.[enabled] = @enabled)
-			--AND A.[enabled] IS NULL
+	WHERE 	
+		--T.[id_creds] IS NOT NULL
+		--AND 
+		(@group_id IS NULL OR B.[group_id] = @group_id)
+		AND (@enabled IS NULL OR  A.[enabled] = @enabled)
 	ORDER BY A.[user_id] 
 END
 GO
@@ -197,6 +197,34 @@ AS BEGIN
 		,[sinsert] = GETDATE()
 	;
 
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:	Vetrov
+-- Description:	Set account enabled or not
+-- =============================================
+ALTER PROCEDURE [dbo].[spAccSetAccessibility]
+	@user_id BIGINT,
+	@enabled BIT,
+	@errorcode INT
+AS BEGIN
+	SET NOCOUNT ON
+	DECLARE @adr_id INT = NULL
+
+	IF (@enabled = 0) BEGIN
+		SELECT @adr_id = [adr_id] 
+		FROM [dbo].[DicAccDisReason]
+		WHERE [errorcode] = @errorcode
+	END
+	UPDATE [dbo].[mAccounts] SET 
+		[enabled] = @enabled
+		,[adr_id] = @adr_id
+	WHERE [user_id] = @user_id
 END
 GO
 
@@ -642,6 +670,36 @@ AS BEGIN
 		VALUES
 			(@ip, @port, @prtypeID, @id_cn, @alive)
 		;
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- ================================================
+-- Author:	Vetrov
+-- Description:	Saving tokens 2 DB
+-- ================================================
+ALTER PROCEDURE [dbo].[spSaveToken]
+	@user_id BIGINT 
+	,@id_app BIGINT 
+	,@token NVARCHAR(50) 
+	,@token_secret NVARCHAR(50) 
+AS BEGIN
+	SET NOCOUNT ON;
+
+	MERGE [dbo].[mTokens] P
+	USING (SELECT [user_id] = @user_id, [id_app] = @id_app) I 
+		ON P.[user_id] = I.[user_id] AND P.[id_app] = I.[id_app]
+	WHEN NOT MATCHED BY TARGET THEN INSERT
+		([user_id], [id_app], [token], [token_secret])
+	VALUES
+		(@user_id, @id_app, @token, @token_secret)
+	WHEN MATCHED THEN UPDATE SET
+		[token] = @token
+		,[token_secret] = @token_secret
+	;
 END
 GO
 

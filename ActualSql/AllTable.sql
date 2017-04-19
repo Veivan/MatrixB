@@ -1,6 +1,15 @@
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicAccDisReason](
+	[adr_id] [int] IDENTITY(1,1) NOT NULL,
+	[errorcode] [int] NULL,
+	[comment] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicCountry](
 	[id_cn] [int] IDENTITY(1,1) NOT NULL,
 	[country_code] [nvarchar](10) COLLATE Cyrillic_General_CI_AS NOT NULL,
@@ -99,7 +108,8 @@ CREATE TABLE [dbo].[mAccounts](
 	[twitter_id] [bigint] NULL,
 	[mailpass] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
 	[gender] [bit] NULL,
-	[enabled] [bit] NULL
+	[enabled] [bit] NULL,
+	[adr_id] [int] NULL
 ) ON [PRIMARY]
 
 
