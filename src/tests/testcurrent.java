@@ -3,6 +3,8 @@ package tests;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import service.GenderChecker.Gender;
+
 
 public class testcurrent {
 
@@ -29,12 +31,14 @@ public class testcurrent {
 		testcurrent x = new testcurrent();
 		//ExecutorService cachedPool = Executors.newCachedThreadPool();
 		
-		ExecutorService service = Executors.newFixedThreadPool(10);
+		
+		System.out.println("" + Gender.values()[2]);
+	/*	ExecutorService service = Executors.newFixedThreadPool(10);
 
 		for (int j = 0; j < 20; j++) {
 			service.submit(x.new TestThread(j));
 		}
-		service.shutdown();
+		service.shutdown(); */
 	}
 
 }

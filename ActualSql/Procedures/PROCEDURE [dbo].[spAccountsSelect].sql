@@ -25,6 +25,7 @@ AS BEGIN
 		,[email]
 		,[mailpass] 
 		,A.[enabled] 
+		,[gender] = ISNULL(A.[gender], -1)
 	FROM [dbo].[mAccounts] A 
 		INNER JOIN [dbo].[mBelong2] B ON B.[user_id] = A.[user_id] 
 		LEFT JOIN [dbo].[mTokens] T ON T.[user_id] = A.[user_id]

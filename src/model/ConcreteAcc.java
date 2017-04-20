@@ -71,11 +71,50 @@ public class ConcreteAcc implements IAccount {
 
 	static Logger logger = LoggerFactory.getLogger(ConcreteAcc.class);
 
-	public ConcreteAcc(long AccID) {
+	public ConcreteAcc(long AccID, int intgeder) {
 		this.AccID = AccID;
 		this.regim = new Regimen();
 		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
 		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
+		
+		if (intgeder > -1)
+			this.gender = Gender.values()[intgeder];
+
+	}
+
+	/**
+	 * @param email the email to set
+	 */
+	public final void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * @param pass the pass to set
+	 */
+	public final void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	/**
+	 * @param screenname the screenname to set
+	 */
+	public final void setScreenname(String screenname) {
+		this.screenname = screenname;
+	}
+
+	/**
+	 * @param phone the phone to set
+	 */
+	public final void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	/**
+	 * @param mailpass the mailpass to set
+	 */
+	public final void setMailpass(String mailpass) {
+		this.mailpass = mailpass;
 	}
 
 	/**

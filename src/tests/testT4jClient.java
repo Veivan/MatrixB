@@ -34,9 +34,11 @@ public class testT4jClient {
 		
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\pexels-photo-67475.jpeg");	
 		JobAtom job = new JobAtom(10L, "SETAVA", img); */
+		String SETAVA = "{\"command\": \"SETAVA\" } ";
+		JobAtom job = new JobAtom(10L, "SETAVA", SETAVA); 
 				
-		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+//		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+//		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
@@ -54,7 +56,7 @@ public class testT4jClient {
 	      
 		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(3);  
+		ConcreteAcc acc = new ConcreteAcc(1797, 0);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
 		//String proxy = "88.195.119.39:3128"; // good HTTPS  

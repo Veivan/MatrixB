@@ -30,7 +30,7 @@ public class CheckSingleAcc extends Thread {
 	
 	@Override
 	public void run() {
-		ConcreteAcc acc = new ConcreteAcc(user_id);
+		ConcreteAcc acc = new ConcreteAcc(user_id, 0);
 		System.out.println(user_id);
 		ElementProxy dbproxy = ProxyGetter.getProxy(user_id);
 		String jobtp = "CHECKENABLED";
