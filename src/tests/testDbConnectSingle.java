@@ -28,10 +28,10 @@ public class testDbConnectSingle {
 		dbConnector = DbConnector.getInstance();
 	}
 
-	//@Test
+	@Test
 	public void testgetRandomPicture() throws Exception {
 		Gender gender = Gender.FEMALE;
-		int ptype_id = 1;
+		int ptype_id = 2;
 		byte[] bytes = dbConnector.getRandomPicture(gender, ptype_id);
 		
 		String filename =  "D:/temp/13.jpg";
@@ -57,7 +57,7 @@ public class testDbConnectSingle {
 		assertNotNull(accproxy); 		
 	}
 
-	@Test
+	//@Test
 	public void testGetRandomScreenName() {
 		int AccID = 130;
 		TwFriend friend = dbConnector.GetRandomScreenName(AccID);

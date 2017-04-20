@@ -169,7 +169,7 @@ public class T4jClient implements IJobExecutor {
 									this.acc.getAccID(), te.getMessage()));
 						} catch (AuthenticationException e) {
 							throw e;
-						} catch (AuthRetypeException e) {				
+						} catch (AuthRetypeException e) {
 							logger.error(msg, e);
 							// Creating twitter
 							conf = buildTwitterConfiguration(creds, dbproxy);
@@ -310,10 +310,16 @@ public class T4jClient implements IJobExecutor {
 						result = true;
 						break;
 					case SETAVA:
-						buf = job.getProfileImage();
-						bis = new ByteArrayInputStream(buf);
-						twitter.updateProfileImage(bis);
-						bis.close();
+						if (user.isDefaultProfileImage()) {
+							ConcreteAcc theAcc = (ConcreteAcc) this.acc;
+							buf = dbConnector.getRandomPicture(
+									theAcc.getGender(), 2);
+							if (buf != null) {
+								bis = new ByteArrayInputStream(buf);
+								twitter.updateProfileImage(bis);
+								bis.close();
+							}
+						}
 						result = true;
 						break;
 					case SETBANNER:
@@ -479,7 +485,8 @@ public class T4jClient implements IJobExecutor {
 					Thread.sleep(Utils.getDelay());
 				} catch (InterruptedException e) {
 				}
-				logger.debug("T4jClient RetwitOne : status_id = {} accID = {} ID = {} ",
+				logger.debug(
+						"T4jClient RetwitOne : status_id = {} accID = {} ID = {} ",
 						status_id, this.acc.getAccID(), this.ID);
 				Status statusrt = twitter.retweetStatus(status_id);
 				dbConnector.StoreStatus(statusrt);
@@ -524,7 +531,8 @@ public class T4jClient implements IJobExecutor {
 				Thread.sleep(Utils.getDelay());
 			} catch (InterruptedException e) {
 			}
-			logger.debug("T4jClient LikeOne : status_id = {} accID = {} ID = {} ",
+			logger.debug(
+					"T4jClient LikeOne : status_id = {} accID = {} ID = {} ",
 					status_id, this.acc.getAccID(), this.ID);
 			Status statusrt = twitter.createFavorite(status_id);
 			dbConnector.StoreStatus(statusrt);

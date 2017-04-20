@@ -111,7 +111,14 @@ public class DbConnector {
 				sp.setBoolean("enabled", enabled);
 			ResultSet rs = sp.executeQuery();
 			while (rs.next()) {
-				ConcreteAcc acc = new ConcreteAcc(rs.getLong("user_id"));
+				ConcreteAcc acc = new ConcreteAcc(rs.getLong("user_id"), rs.getInt("gender"));
+				acc.setScreenname(rs.getString("screen_name"));
+				acc.setPass(rs.getString("pass"));
+				acc.setPhone(rs.getString("phone"));
+				acc.setEmail(rs.getString("email"));
+				acc.setMailpass(rs.getString("mailpass"));
+				//acc.setName(rs.getString("name"));
+				//acc.setTwitter_id(rs.getLong("twitter_id"));
 				accounts.add(acc);
 			}
 			rs.close();

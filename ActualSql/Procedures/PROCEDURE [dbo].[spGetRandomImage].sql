@@ -16,21 +16,30 @@ AS
 BEGIN
 	SET NOCOUNT ON;	
 	CREATE TABLE #tmp(nnid INT IDENTITY(1,1), [pic_id] INT)
-	DECLARE @randomnum INT, @reccnt INT, @pic_id INT
+	DECLARE @randomnum INT, @reccnt INT, @pic_id INT, @selid INT
 
 	INSERT INTO #tmp ([pic_id])
-	SELECT [pic_id] FROM [dbo].[mPicture]
-	WHERE [ptype_id] = @ptype_id AND
-	((@gender IS NULL AND [gender] IS NULL)
-	OR
-	(@gender IS NOT NULL AND [gender] = @gender))
+	SELECT [pic_id] FROM [dbo].[mPicture] (tablockx)
+	WHERE 
+		[ptype_id] = @ptype_id 
+		AND ISNULL([isused], 0) = 0
+		AND
+			((@gender IS NULL AND [gender] IS NULL)
+			OR
+			(@gender IS NOT NULL AND [gender] = @gender))
 
 	SET @reccnt = @@ROWCOUNT
 	SET @randomnum = Ceiling(Rand() * @reccnt)
+
+	SELECT @selid = [pic_id]
+	FROM #tmp
+	WHERE [nnid] = @randomnum
+
+	UPDATE [dbo].[mPicture] SET [isused] = 1
+	WHERE [pic_id] = @selid
  
 	SELECT @pic = [fpicture], @pic_id = P.[pic_id] FROM [dbo].[mPicture] P
-		INNER JOIN #tmp T ON T.[pic_id] = P.[pic_id]
-	WHERE [nnid] = @randomnum
+	WHERE [pic_id] = @selid
 
 	--PRINT @pic_id
 END

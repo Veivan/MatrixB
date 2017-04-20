@@ -61,7 +61,7 @@ public class Engine {
 	public void setUserAction(int user, String actiontxt, String tcontent) {
 		MatrixActList.clear();
 		JobAtom job = new JobAtom(5L, actiontxt, tcontent);
-		ConcreteAcc acc = new ConcreteAcc(1L);
+		ConcreteAcc acc = new ConcreteAcc(1L, 0);
 
 		MatrixAct theact = new MatrixAct(job, acc);
 		MatrixActList.add(theact);

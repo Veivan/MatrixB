@@ -1,3 +1,4 @@
+2017.4.20.1 - Change mPicture, spGetRandomImage
 2017.4.19.1 - Add DicAccDisReason, spAccSetAccessibility, [spSaveToken].
 2017.4.18.1 - Add mUnlock
 2017.4.15.1 - Add mAcc2App, new view 'Count users by groups'. Change [spCredsSelect]

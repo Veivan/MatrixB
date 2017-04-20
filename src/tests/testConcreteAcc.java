@@ -12,7 +12,7 @@ public class testConcreteAcc {
 
 	@Before
 	public void setUp() throws Exception {
-		acc = new ConcreteAcc(1);
+		acc = new ConcreteAcc(1, 0);
 	}
 
 	@Test
@@ -21,7 +21,7 @@ public class testConcreteAcc {
 	}
 
 	public static void main(String[] args) {
-		ConcreteAcc acc = new ConcreteAcc(1);
+		ConcreteAcc acc = new ConcreteAcc(1, 0);
 		Homeworks howmworks = new Homeworks();
 		MakeHowmworks(howmworks);
 		acc.RebuldAccTiming(howmworks);
