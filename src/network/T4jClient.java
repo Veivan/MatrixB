@@ -4,8 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
@@ -13,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
+import service.Constants.JobType;
 import service.Constants.ProxyType;
 import service.CustExeptions.AuthRetypeException;
 import service.CustExeptions.AuthenticationException;
@@ -297,12 +301,14 @@ public class T4jClient implements IJobExecutor {
 		List<Status> statuses = null;
 		boolean result = false;
 		try {
+			User user = twitter.verifyCredentials();
+			dbConnector.SaveAccExtended(this.acc.getAccID(), user);
+			Thread.sleep(Utils.getDelay());
+
 			for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 				String msg = String.format("OperateTwitter shot %d ERROR : ",
 						i + 1);
 				try {
-					User user = twitter.verifyCredentials();
-					dbConnector.SaveAccExtended(this.acc.getAccID(), user);
 					switch (jobType) {
 					case TWIT:
 						Status status = SendTwit();
@@ -430,6 +436,18 @@ public class T4jClient implements IJobExecutor {
 					default:
 						break;
 					}
+
+					final Set<JobType> JobTypeSet = new HashSet<JobType>(
+							Arrays.asList(JobType.SETAVA, JobType.SETBANNER,
+									JobType.UPDATEPROFILE /*
+														 * , JobType.FOLLOW,
+														 * JobType.UNFOLLOW
+														 */));
+					if (JobTypeSet.contains(jobType)) {
+						user = twitter.verifyCredentials();
+						dbConnector.SaveAccExtended(this.acc.getAccID(), user);
+					}
+
 				} catch (TwitterException te) {
 					// При возникновении TwitterException, не связанных
 					// с сетью (400...500) выходим из цикла
