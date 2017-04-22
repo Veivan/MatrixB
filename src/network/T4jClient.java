@@ -2,16 +2,13 @@ package network;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +26,6 @@ import twitter4j.GeoLocation;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -45,6 +41,7 @@ import model.ConcreteAcc;
 import model.TwFriend;
 import inrtfs.IAccount;
 import inrtfs.IJobExecutor;
+import inrtfs.TwiCommand;
 
 public class T4jClient implements IJobExecutor {
 
@@ -213,54 +210,6 @@ public class T4jClient implements IJobExecutor {
 	}
 
 	/**
-	 * directly update status
-	 * 
-	 * @return Status
-	 */
-	private Status SendTwit() throws Exception {
-		StatusUpdate latestStatus = null;
-		String tags = job.GetContentProperty("tags");
-		if (tags.contains("#helpchildren")) {
-			// Получение id и картинки
-			String page = Utils.GetPageContent(Constants.URL_RANDOM_SERVLET);
-			JSONObject json = new JSONObject(page);
-			int id = json.getInt("id");
-			String pname = json.getString("name");
-			String ppage = json.getString("age");
-			String picenc = json.getString("picture");
-			byte[] decodedBytes = Base64.getDecoder().decode(picenc.getBytes());
-
-			// Формирование Статуса
-			InputStream is = new ByteArrayInputStream(decodedBytes);
-			String fileName = Integer.toString(id) + ".jpg";
-
-			String message = String.format(
-					"%s %s. Требуется лечение, Вы можете помочь.%n", pname,
-					ppage)
-					+ "http://helpchildren.online/?id=" + id + " " + tags; // +
-																			// "#Дети"
-																			// +
-																			// " #ПодариЖизнь";
-			latestStatus = new StatusUpdate(message);
-			// Загрузка картинки в твиттер
-			latestStatus.setMedia(fileName, is);
-		} else {
-			latestStatus = new StatusUpdate(job.GetContentProperty("twcontent"));
-		}
-
-		// Добавление Гео
-		try {
-			double lat = Double.parseDouble(job.GetContentProperty("lat"));
-			double lon = Double.parseDouble(job.GetContentProperty("lon"));
-			latestStatus.setLocation(new GeoLocation(lat, lon));
-		} catch (Exception e) {
-		}
-
-		// Твиттинг
-		return twitter.updateStatus(latestStatus);
-	}
-
-	/**
 	 * directly make new user
 	 * 
 	 * @return
@@ -294,16 +243,20 @@ public class T4jClient implements IJobExecutor {
 		}
 	}
 
-	private boolean OperateTwitter() {
+	private boolean OperateTwitter() {	
 		Constants.JobType jobType = this.job.Type;
 		byte[] buf = null;
 		ByteArrayInputStream bis = null;
 		List<Status> statuses = null;
+		
 		boolean result = false;
 		try {
 			User user = twitter.verifyCredentials();
 			dbConnector.SaveAccExtended(this.acc.getAccID(), user);
 			Thread.sleep(Utils.getDelay());
+
+			TwiCommand twicommand = null;
+			CommandBuilder combuilder = new CommandBuilder(this.job, twitter, user);
 
 			for (int i = 0; i < Constants.cTrySameProxyCount; i++) {
 				String msg = String.format("OperateTwitter shot %d ERROR : ",
@@ -311,8 +264,13 @@ public class T4jClient implements IJobExecutor {
 				try {
 					switch (jobType) {
 					case TWIT:
-						Status status = SendTwit();
-						dbConnector.StoreStatus(status);
+						twicommand = combuilder.GetCommand();
+						twicommand.execute();
+						result = true;
+						break;
+					case READHOMETIMELINE:
+						twicommand = combuilder.GetCommand();
+						twicommand.execute();
 						result = true;
 						break;
 					case SETAVA:
@@ -341,19 +299,6 @@ public class T4jClient implements IJobExecutor {
 								job.getDescription());
 						System.out.println(us.getScreenName() + " : "
 								+ us.getId());
-						result = true;
-						break;
-					case READHOMETIMELINE:
-						if (Utils.DoItByDice()) {
-							statuses = twitter.getHomeTimeline();
-							System.out.println("Showing @"
-									+ user.getScreenName()
-									+ "'s home timeline.");
-							for (Status stat : statuses) {
-								System.out.println(stat.toString());
-								dbConnector.StoreStatus(stat);
-							}
-						}
 						result = true;
 						break;
 					case READUSERTIMELINE:
