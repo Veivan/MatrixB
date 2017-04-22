@@ -169,6 +169,39 @@ public class DbConnector {
 	}
 
 	/**
+	 * Возвращает указанную картинку из БД
+	 */
+	public byte[] getPictureByID(int pic_id) {
+		byte[] bytes = null;
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spGetPictureByID](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.registerOutParameter(2, java.sql.Types.BLOB);
+			sp.setInt("pic_id", pic_id);
+
+			sp.executeUpdate();
+			Blob pic = sp.getBlob("pic");
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			InputStream in = pic.getBinaryStream();
+			int n = 0;
+			while ((n = in.read(buf)) >= 0) {
+				baos.write(buf, 0, n);
+			}
+			in.close();
+			bytes = baos.toByteArray();
+			baos.close();
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			logger.error("getPictureByID exception", e);
+		}
+		return bytes;
+	}
+
+	/**
 	 * Returns Single Account from DB
 	 */
 	public IAccount getAccount(Long user_id) {

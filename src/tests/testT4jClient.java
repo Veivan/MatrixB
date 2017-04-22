@@ -19,9 +19,17 @@ public class testT4jClient {
 	@Before
 	public void setUp() throws Exception {
 		//String TWIT2 = "{\"command\": \"TWIT\" , "
+		//		+ " \"twit_id\" : \"1\" ] , "
 		//		+ " \"tags\" : [ \"#helpchildren\", \"Дети\" ] , "
 		//		+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
 		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
+
+		String TWIT2 = "{\"command\": \"TWIT\" , "
+				+ " \"twit_id\" : \"0\" , " 
+				+ " \"twcontent\" : \"Крутяк\" , " 
+				+ " \"pic_id\" : \"9\" , " 
+				+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
+		JobAtom job = new JobAtom(12L, "TWIT", TWIT2); 
 
 		/*String name = "Лорик Соловаева";
 		String url = "";
@@ -37,8 +45,8 @@ public class testT4jClient {
 //		String SETAVA = "{\"command\": \"SETAVA\" } ";
 //		JobAtom job = new JobAtom(10L, "SETAVA", SETAVA); 
 				
-		String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";

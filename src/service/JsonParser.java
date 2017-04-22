@@ -17,7 +17,7 @@ public class JsonParser {
 	/**
 	 * Выполняет разбор json. Возвращает значение атрибута key.
 	 * 
-	 * Возможны ключи : command, url, twcontent, tags, lat, lon, query
+	 * Возможны ключи : command, url, twcontent, tags, lat, lon, query, twit_id, pic_id
 	 */
 	public String GetContentProperty(String key) {
 		String result = "";
@@ -25,7 +25,7 @@ public class JsonParser {
 		JSONObject body;
 		try {
 			body = new JSONObject(this.rawjson);
-			if (key == "tags") {
+			if (key == "tags" && body.has(key)) {
 				JSONArray tags = body.getJSONArray("tags");
 				if (tags != null)
 					for (int i = 0; i < tags.length(); i++) {

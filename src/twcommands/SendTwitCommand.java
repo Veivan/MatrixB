@@ -17,20 +17,36 @@ import jobs.JobAtom;
 import inrtfs.TwiCommand;
 
 public class SendTwitCommand implements TwiCommand {
-	private JobAtom job;
-	private Twitter twitter;
-	StatusUpdate latestStatus = null;
+	private final JobAtom job;
+	private final Twitter twitter;
 	DbConnector dbConnector = DbConnector.getInstance();
 
-	public SendTwitCommand(JobAtom job, Twitter twitter) {
+	public SendTwitCommand(final JobAtom job, final Twitter twitter) {
 		this.job = job;
 		this.twitter = twitter;
 	}
 
 	@Override
 	public void execute() throws Exception {
+		StatusUpdate latestStatus = null;
+		String twit_id = job.GetContentProperty("twit_id");
 		String tags = job.GetContentProperty("tags");
-		if (tags.contains("#helpchildren")) {
+		String twcontent = job.GetContentProperty("twcontent");
+		String pic_id = job.GetContentProperty("pic_id");
+		String fileName = "";
+		InputStream is = null;
+		switch (twit_id) {
+		case "0": // обычный твит
+			if (!Utils.empty(pic_id)) {
+				byte[] buf = dbConnector.getPictureByID(Integer
+						.parseInt(pic_id));
+				if (buf != null) {
+					is = new ByteArrayInputStream(buf);
+					fileName = "pic" + System.currentTimeMillis() + ".jpg";
+				}
+			}
+			break;
+		case "1": // helpchildren
 			// Получение id и картинки
 			String page = Utils.GetPageContent(Constants.URL_RANDOM_SERVLET);
 			JSONObject json = new JSONObject(page);
@@ -40,23 +56,23 @@ public class SendTwitCommand implements TwiCommand {
 			String picenc = json.getString("picture");
 			byte[] decodedBytes = Base64.getDecoder().decode(picenc.getBytes());
 
-			// Формирование Статуса
-			InputStream is = new ByteArrayInputStream(decodedBytes);
-			String fileName = Integer.toString(id) + ".jpg";
-
-			String message = String.format(
+			twcontent = String.format(
 					"%s %s. Требуется лечение, Вы можете помочь.%n", pname,
 					ppage)
-					+ "http://helpchildren.online/?id=" + id + " " + tags; // +
-																			// "#Дети"
-																			// +
-																			// " #ПодариЖизнь";
-			latestStatus = new StatusUpdate(message);
+					+ "http://helpchildren.online/?id=" + id;
+
+			if (decodedBytes != null) {
+				is = new ByteArrayInputStream(decodedBytes);
+				fileName = Integer.toString(id) + ".jpg";
+			}
+		}
+		latestStatus = new StatusUpdate(twcontent + " " + tags); // " #ПодариЖизнь";
+
+		if (!Utils.empty(fileName))
 			// Загрузка картинки в твиттер
 			latestStatus.setMedia(fileName, is);
-		} else {
-			latestStatus = new StatusUpdate(job.GetContentProperty("twcontent"));
-		}
+		if (is != null)
+			is.close();
 
 		// Добавление Гео
 		try {
@@ -65,10 +81,10 @@ public class SendTwitCommand implements TwiCommand {
 			latestStatus.setLocation(new GeoLocation(lat, lon));
 		} catch (Exception e) {
 		}
+
 		// Твиттинг
 		Status sendedstatus = twitter.updateStatus(latestStatus);
 		dbConnector.StoreStatus(sendedstatus);
-		
 	}
 
 }
