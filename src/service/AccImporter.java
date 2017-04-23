@@ -16,8 +16,9 @@ public class AccImporter extends Thread {
 	ArrayList<CompletableFuture<Void>> futures = new ArrayList<CompletableFuture<Void>>();
 
 	// Настройка вручную
-	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.NPEM;
-	private final int group_id = 7;
+	private ImpSingleAcc.cDatatype Datatype = ImpSingleAcc.cDatatype.NPHEM;
+	private final int group_id = 8;
+	
 	private MemoProxy memoProxy;
 
 	public AccImporter(MemoProxy memoProxy) {
