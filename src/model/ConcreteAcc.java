@@ -13,6 +13,8 @@ import main.Timing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import dbaware.DbConnector;
+
 public class ConcreteAcc implements IAccount {
 	private long AccID;
 	private String email;
@@ -32,6 +34,8 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> FolwrsList;
 	private List<IAccount> FriendsList;
 	private List<IAccount> UnFolwdList;
+
+	DbConnector dbConnector = DbConnector.getInstance();
 
 	/**
 	 * @return the folwrsList
@@ -76,7 +80,7 @@ public class ConcreteAcc implements IAccount {
 		this.regim = new Regimen();
 		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
 		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
-		
+		GroupIDs.addAll(dbConnector.getAccountGroupIDs(AccID));
 		if (intgeder > -1)
 			this.gender = Gender.values()[intgeder];
 

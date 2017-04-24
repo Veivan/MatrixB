@@ -132,6 +132,30 @@ public class DbConnector {
 	}
 
 	/**
+	 * Returns Single Account Belongs2 from DB
+	 */
+	public List<Integer> getAccountGroupIDs(Long user_id) {
+		List<Integer> GroupIDs = new ArrayList<Integer>();
+		try {
+			Connection conn = getConnection();
+			String query = "SELECT [group_id] FROM [dbo].[mBelong2] WHERE [user_id] = ?";
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setLong(1, user_id);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				GroupIDs.add(rs.getInt("group_id"));
+			}
+			pstmt.close();
+			pstmt = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			logger.error("getAccountGroupIDs exception", e);
+		}
+		return GroupIDs;
+	}
+
+
+	/**
 	 * Возвращает случайную картинку из БД
 	 */
 	public byte[] getRandomPicture(Gender gender, int ptype_id) {
@@ -225,7 +249,7 @@ public class DbConnector {
 			pstmt = null;
 			freeConnection(conn);
 		} catch (Exception e) {
-			logger.error("getAccounts exception", e);
+			logger.error("getAccount exception", e);
 		}
 		return acc;
 	}

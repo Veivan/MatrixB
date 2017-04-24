@@ -1,3 +1,4 @@
+2017.4.25.1 - Change spAccountsSelect
 2017.4.23.1 - Add spGetPictureByID
 2017.4.21.1 - Add [active] to mApplications. Add views [Temporary locked accounts], [Count users by app].
 2017.4.20.1 - Change mPicture, spGetRandomImage

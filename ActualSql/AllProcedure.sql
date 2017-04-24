@@ -120,13 +120,14 @@ AS BEGIN
 		,A.[enabled] 
 		,[gender] = ISNULL(A.[gender], -1)
 	FROM [dbo].[mAccounts] A 
-		INNER JOIN [dbo].[mBelong2] B ON B.[user_id] = A.[user_id] 
+		--INNER JOIN [dbo].[mBelong2] B ON B.[user_id] = A.[user_id] 
 		LEFT JOIN [dbo].[mTokens] T ON T.[user_id] = A.[user_id]
 	WHERE 	
 		--T.[id_creds] IS NOT NULL
 		--AND 
-		(@group_id IS NULL OR B.[group_id] = @group_id)
-		AND (@enabled IS NULL OR  A.[enabled] = @enabled)
+		--(@group_id IS NULL OR B.[group_id] = @group_id)
+		--AND 
+		(@enabled IS NULL OR  A.[enabled] = @enabled)
 	ORDER BY A.[user_id] 
 END
 GO
