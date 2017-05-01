@@ -138,7 +138,8 @@ public class DbConnector {
 		List<Integer> GroupIDs = new ArrayList<Integer>();
 		try {
 			Connection conn = getConnection();
-			String query = "SELECT [group_id] FROM [dbo].[mBelong2] WHERE [user_id] = ?";
+			String query = 
+				"SELECT B.[group_id] FROM [dbo].[mBelong2] B JOIN [dbo].[mTasks] T ON T.group_id = B.group_id WHERE [user_id] = ?";
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			pstmt.setLong(1, user_id);
 			ResultSet rs = pstmt.executeQuery();

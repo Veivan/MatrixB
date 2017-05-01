@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
+import dbaware.SQLiteConnector;
 
 public class ConcreteAcc implements IAccount {
 	private long AccID;
@@ -29,13 +30,14 @@ public class ConcreteAcc implements IAccount {
 	private final String cTimeZone = "GMT+3";
 	private static final long late = 300000l; // ms = 5min
 
-	private Regimen regim = new Regimen();
+	private Regimen regim;
 
 	private List<IAccount> FolwrsList;
 	private List<IAccount> FriendsList;
 	private List<IAccount> UnFolwdList;
 
 	DbConnector dbConnector = DbConnector.getInstance();
+	SQLiteConnector dbltConnector = SQLiteConnector.getInstance();
 
 	/**
 	 * @return the folwrsList
@@ -75,15 +77,16 @@ public class ConcreteAcc implements IAccount {
 
 	static Logger logger = LoggerFactory.getLogger(ConcreteAcc.class);
 
-	public ConcreteAcc(long AccID, int intgeder) {
+	public ConcreteAcc(long AccID, int intgender) {
 		this.AccID = AccID;
-		this.regim = new Regimen();
-		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
-		GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
+		//GroupIDs.add(0); // Для выбора заданий, относящихся ко всем группам
+		// Акк будет относиться только к одной группе
 		GroupIDs.addAll(dbConnector.getAccountGroupIDs(AccID));
-		if (intgeder > -1)
-			this.gender = Gender.values()[intgeder];
-
+		if(GroupIDs.size() > 0)
+			this.regim = dbltConnector.selectRegimByGroupID(GroupIDs.get(0));
+		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
+		if (intgender > -1)
+			this.gender = Gender.values()[intgender];
 	}
 
 	/**

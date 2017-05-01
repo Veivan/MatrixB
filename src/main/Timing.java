@@ -46,7 +46,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	 */
 	public Timing(long AccID) {
 		this.timeZone = "GMT+3";
-		this.regim = new Regimen();
+		this.regim = new Regimen(3, 23);
 		this.AccID = AccID;
 	}
 
@@ -68,7 +68,13 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	public void RebuildTiming(Homeworks homeworks, List<Integer> GroupIDs,
 			long moment) {
 		innerTiming.clear();
-		logger.info("Timing  rebuilding");
+		if (this.regim == null)
+		{
+			logger.info("No regim for Timing.");
+			return;
+		}
+		
+		logger.info("Timing rebuilding");
 		// Формируем плоский список заданий.
 		homeworks.First();
 		for (JobList jobList : homeworks) {
@@ -92,7 +98,7 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		int hour = rightNow.get(Calendar.HOUR_OF_DAY);
 		int minute = rightNow.get(Calendar.MINUTE);
 		int starttime = hour * 60 + minute;
-		int ActiveInterval = regim.ActiveH * 60;
+		int ActiveInterval = regim.getActiveH() * 60;
 
 		// Флаг - инкрементировать дату?
 		boolean doIncDay = (starttime > regim.BedHour * 60);
@@ -112,9 +118,10 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 		Set<Integer> intset = new HashSet<Integer>();
 		while (intset.size() < innerTiming.size()) {
 			int h = random.nextInt(ActiveInterval) + starttime;
-			if ((h > regim.Lounch * 60 && h < (regim.Lounch + 1) * 60)
+			// Исключение часов приёма пищи из раписания - отрубаю
+			/*if ((h > regim.Lounch * 60 && h < (regim.Lounch + 1) * 60)
 					|| (h > regim.Supper * 60 && h < (regim.Supper + 1) * 60))
-				continue;
+				continue; */
 			intset.add(h);
 		}
 		// Сортировка по возрастанию времени
@@ -172,7 +179,8 @@ public class Timing implements Iterable<JobAtom>, Iterator<JobAtom> {
 	}
 
 	public void StoreTiming(long AccID) {
-		dbConnector.StoreTiming(AccID, innerTiming);
+		if (innerTiming.size() > 0)
+			dbConnector.StoreTiming(AccID, innerTiming);
 	}
 
 	public void printTiming() {
