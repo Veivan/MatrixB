@@ -24,12 +24,12 @@ public class testT4jClient {
 		//		+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
 		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
 
-		String TWIT2 = "{\"command\": \"TWIT\" , "
+		/*String TWIT2 = "{\"command\": \"TWIT\" , "
 				+ " \"twit_id\" : \"0\" , " 
 				+ " \"twcontent\" : \"Крутяк\" , " 
 				+ " \"pic_id\" : \"9\" , " 
 				+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
-		JobAtom job = new JobAtom(12L, "TWIT", TWIT2); 
+		JobAtom job = new JobAtom(12L, "TWIT", TWIT2); */ 
 
 		/*String name = "Лорик Соловаева";
 		String url = "";
@@ -45,8 +45,9 @@ public class testT4jClient {
 //		String SETAVA = "{\"command\": \"SETAVA\" } ";
 //		JobAtom job = new JobAtom(10L, "SETAVA", SETAVA); 
 				
-		//String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
-		//JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE);			
+		/*String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
+		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE); */
+		
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
@@ -61,14 +62,14 @@ public class testT4jClient {
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
 		//String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#helpchildren\" } ";
-	      
-		//JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
+		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"Сувар Девелопмент\" } ";
+		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
-		ConcreteAcc acc = new ConcreteAcc(1797, 0);  
+		ConcreteAcc acc = new ConcreteAcc(2702, 0);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		//String proxy = "88.195.119.39:3128"; // good HTTPS  
-		String proxy = "176.115.73.8:1080"; // good SOCKS5  
+		String proxy = "38.96.9.226:8008"; // good HTTPS  
+		//String proxy = "66.110.216.105:39431"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
 		String[] sp = proxy.split(":");
@@ -77,8 +78,8 @@ public class testT4jClient {
 			proxyPort = Integer.parseInt(sp[1]);
 		}
 		
-		//t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.HTTP, -1)); 		
-		t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.SOCKS, -1)); 		
+		t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.HTTP, -1)); 		
+		//t4wclient = new T4jClient(theact, new ElementProxy(proxyIP, proxyPort, Constants.ProxyType.SOCKS, -1)); 		
 	}
 
 	@Test

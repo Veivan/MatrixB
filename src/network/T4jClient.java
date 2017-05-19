@@ -542,7 +542,7 @@ public class T4jClient implements IJobExecutor {
 		 * (Exception e) { }
 		 */
 
-		query.geoCode(new GeoLocation(55.751244, 37.618423), 10.0, "mi");
+		//query.geoCode(new GeoLocation(55.751244, 37.618423), 10.0, "mi");
 		QueryResult result = null;
 		do {
 			result = twitter.search(query);
@@ -551,6 +551,7 @@ public class T4jClient implements IJobExecutor {
 				System.out.println(tweet.getCreatedAt() + " @"
 						+ tweet.getUser().getScreenName() + " - "
 						+ tweet.getText());
+				dbConnector.StoreStatus(tweet);
 			}
 			Thread.sleep(5000);
 		} while ((query = result.nextQuery()) != null);

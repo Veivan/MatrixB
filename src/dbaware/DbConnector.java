@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import service.Constants;
 import service.GenderChecker.Gender;
 import service.Utils;
+import twitter4j.GeoLocation;
+import twitter4j.Place;
 import twitter4j.Status;
 import twitter4j.User;
 import jobs.Homeworks;
@@ -629,8 +631,25 @@ public class DbConnector {
 			sp.setString("lang", status.getLang());
 			sp.setInt("retweet_count", status.getRetweetCount());
 			sp.setString("text", status.getText());
-			sp.setNull("place_json", java.sql.Types.NVARCHAR);
-			sp.setNull("coordinates_json", java.sql.Types.NVARCHAR);
+			
+			Place place = status.getPlace();
+			String place_json = null;
+			if (place != null)
+				place_json = place.getFullName();
+			if (place_json == null)
+				sp.setNull("place_json", java.sql.Types.NVARCHAR);
+			else
+				sp.setString("place_json", place_json); 
+			
+			GeoLocation loc = status.getGeoLocation();
+			String coordinates_json = null;
+			if (loc != null)
+				coordinates_json = loc.toString();
+			if (coordinates_json == null)
+				sp.setNull("coordinates_json", java.sql.Types.NVARCHAR);
+			else
+				sp.setString("coordinates_json", coordinates_json);
+		
 			sp.setBoolean("favorited", status.isFavorited());
 			sp.setBoolean("retweeted", status.isRetweeted());
 			sp.setBoolean("isRetweet", status.isRetweet());
