@@ -22,7 +22,6 @@ import service.Constants;
 import service.GenderChecker;
 import service.GenderChecker.Gender;
 import service.Utils;
-import twitter4j.GeoLocation;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;

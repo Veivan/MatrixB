@@ -1,3 +1,4 @@
+2017.5.24.1 - Add mGroupRegim table
 2017.5.2.1 - Add "forwork" to DicGroups
 2017.4.25.1 - Change spAccountsSelect
 2017.4.23.1 - Add spGetPictureByID

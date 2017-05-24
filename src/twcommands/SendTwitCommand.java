@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import dbaware.DbConnector;
 import service.Constants;
 import service.Utils;
-import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
@@ -74,13 +73,13 @@ public class SendTwitCommand implements TwiCommand {
 		if (is != null)
 			is.close();
 
-		// Добавление Гео
+		/*/ Добавление Гео
 		try {
 			double lat = Double.parseDouble(job.GetContentProperty("lat"));
 			double lon = Double.parseDouble(job.GetContentProperty("lon"));
 			latestStatus.setLocation(new GeoLocation(lat, lon));
 		} catch (Exception e) {
-		}
+		} */
 
 		// Твиттинг
 		Status sendedstatus = twitter.updateStatus(latestStatus);

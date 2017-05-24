@@ -31,6 +31,7 @@ import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
+import model.Regimen;
 import model.TwFriend;
 
 /**
@@ -802,6 +803,31 @@ public class DbConnector {
 			logger.error("getExecutionInfo exception", e);
 		}
 		return listIds;
+	}
+
+	/**
+	 * select Regim by group ID
+	 */
+	public Regimen selectRegimByGroupID(int groupid) {
+		String query = "SELECT groupid, WakeHour, BedHour FROM mGroupRegim WHERE groupid = ?";
+		Regimen regim = null;
+		try 
+		{
+			Connection conn = getConnection();
+			PreparedStatement pstmt = conn.prepareStatement(query);
+			pstmt.setInt(1, groupid);
+			ResultSet rs = pstmt.executeQuery();
+			// loop through the result set
+			while (rs.next()) {				
+				regim = new Regimen(rs.getInt("WakeHour"), rs.getInt("BedHour"));
+			}
+			pstmt.close();
+			pstmt = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			logger.error("selectRegimByGroupID exception", e);
+		}
+		return regim;
 	}
 
 	private static void MakeHowmworks(Homeworks homeworks,

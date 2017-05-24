@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import dbaware.DbConnector;
-import dbaware.SQLiteConnector;
 
 public class ConcreteAcc implements IAccount {
 	private long AccID;
@@ -37,7 +36,6 @@ public class ConcreteAcc implements IAccount {
 	private List<IAccount> UnFolwdList;
 
 	DbConnector dbConnector = DbConnector.getInstance();
-	SQLiteConnector dbltConnector = SQLiteConnector.getInstance();
 
 	/**
 	 * @return the folwrsList
@@ -83,7 +81,7 @@ public class ConcreteAcc implements IAccount {
 		// Акк будет относиться только к одной группе
 		GroupIDs.addAll(dbConnector.getAccountGroupIDs(AccID));
 		if(GroupIDs.size() > 0)
-			this.regim = dbltConnector.selectRegimByGroupID(GroupIDs.get(0));
+			this.regim = dbConnector.selectRegimByGroupID(GroupIDs.get(0));
 		this.timing = new Timing(this.cTimeZone, this.regim, AccID);
 		if (intgender > -1)
 			this.gender = Gender.values()[intgender];

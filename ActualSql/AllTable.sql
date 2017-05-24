@@ -32,7 +32,8 @@ SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[DicGroups](
 	[group_id] [int] IDENTITY(1,1) NOT NULL,
 	[group_name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NOT NULL,
-	[dcreate] [date] NULL
+	[dcreate] [date] NULL,
+	[forwork] [smallint] NULL
 ) ON [PRIMARY]
 
 ALTER TABLE [dbo].[DicGroups] ADD  CONSTRAINT [DF_DicGroups_dcreate]  DEFAULT (getdate()) FOR [dcreate]
@@ -169,6 +170,16 @@ EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'0-follower 1- 
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mGroupRegim](
+	[grg_id] [int] IDENTITY(1,1) NOT NULL,
+	[groupid] [int] NOT NULL,
+	[WakeHour] [int] NOT NULL,
+	[BedHour] [int] NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mPicture](
 	[pic_id] [int] IDENTITY(1,1) NOT NULL,
 	[gender] [bit] NULL,
@@ -258,7 +269,7 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[twTwits](
 	[tw_id] [bigint] NOT NULL,
-	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,
+	[status] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
 	[creator_id] [bigint] NULL,
 	[created_at] [datetimeoffset](2) NULL,
 	[favorite_count] [int] NULL,

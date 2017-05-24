@@ -31,8 +31,7 @@ AS BEGIN
 		LEFT JOIN [dbo].[mTokens] T ON T.[user_id] = A.[user_id]
 	WHERE 	
 		--T.[id_creds] IS NOT NULL
-		--AND 
-		--(@group_id IS NULL OR B.[group_id] = @group_id)
+		--AND 		(@group_id IS NULL OR B.[group_id] = @group_id)
 		--AND 
 		(@enabled IS NULL OR  A.[enabled] = @enabled)
 	ORDER BY A.[user_id] 

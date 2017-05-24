@@ -8,7 +8,7 @@ GO
 -- ================================================
 ALTER PROCEDURE [dbo].[spStatusAdd]
 	@tw_id BIGINT
-	,@status NVARCHAR(1000)
+	,@status NVARCHAR(MAX)
 	,@creator_id BIGINT
 	,@created_at datetimeoffset(2)
 	,@favorite_count INT
