@@ -62,13 +62,13 @@ public class testT4jClient {
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
 		//String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#helpchildren\" } ";
-		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"Сувар Девелопмент\" } ";
+		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#бетон\" } ";
 		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
 		ConcreteAcc acc = new ConcreteAcc(2702, 0);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "38.96.9.226:8008"; // good HTTPS  
+		String proxy = "144.217.242.194:1080"; // good HTTPS  
 		//String proxy = "66.110.216.105:39431"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
