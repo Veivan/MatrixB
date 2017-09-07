@@ -8,6 +8,8 @@ import network.T4jClient;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import service.Constants;
 
@@ -16,6 +18,8 @@ public class testT4jClient {
 	private String proxyIP;
 	private int proxyPort; 
 	
+	static Logger logger = LoggerFactory.getLogger(testT4jClient.class);
+
 	@Before
 	public void setUp() throws Exception {
 		//String TWIT2 = "{\"command\": \"TWIT\" , "
@@ -62,13 +66,13 @@ public class testT4jClient {
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
 		//String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#helpchildren\" } ";
-		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#бетон\" } ";
+		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#посудасервиз\" } ";
 		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
 
 		ConcreteAcc acc = new ConcreteAcc(2702, 0);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "144.217.242.194:1080"; // good HTTPS  
+		String proxy = "37.9.40.132:8085"; // good HTTPS  
 		//String proxy = "66.110.216.105:39431"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
@@ -92,12 +96,15 @@ public class testT4jClient {
 		}
 	}
 	
-/*	public static void main(String[] args) throws FileNotFoundException {
+/**/	
+	public static void main(String[] args) {
 		testT4jClient t= new testT4jClient();
-		JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
-		ConcreteAcc acc = new ConcreteAcc(130L);
+		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#посудасервиз\" } ";
+		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
+		//JobAtom job = new JobAtom(12L, "TWIT", "#helpchildren"); 
+		ConcreteAcc acc = new ConcreteAcc(2702, 0);
 		MatrixAct theact = new MatrixAct(job, acc);
-		String proxy = "185.2.101.31:3128"; // good HTTPS 
+		String proxy = "37.9.40.132:8085"; // good HTTPS  
 		String[] sp = proxy.split(":");
 		if (sp.length > 1) {
 			t.proxyIP = sp[0];
@@ -110,8 +117,9 @@ public class testT4jClient {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
-	} */
+	} 
 
 
 }

@@ -17,3 +17,14 @@ WHERE
 	and TContent LIKE '%#helpchildren%'
 	AND E.result = 1
 order by ae_id DESC
+
+--Распределение твита по часам
+select COUNT (*), h
+FROM(
+	SELECT  [tw_id]	
+		,unixt = DATEDIFF(second,{d '1970-01-01'},[created_at])
+		, h = DATEPART(HH, [created_at])
+	FROM [MatrixB].[dbo].[twTwits]
+	where DATEPART(dy, [created_at]) = DATEPART(dy, '2017-09-02')
+) A 
+GROUP BY h
