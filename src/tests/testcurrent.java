@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import service.TwitStripper;
 import twitter4j.Status;
 
 public class testcurrent {
@@ -28,21 +29,20 @@ public class testcurrent {
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("" + index + " finished");
 		}
 	}
 
-	//@Test
+	@Test
 	public void testshuffle() {
 		String pname = "Иван Иванов";
 		String ppage = "10 лет";
 		String twcontent = String.format("%s %s.%n", pname, ppage);
 		List<String> helps = Arrays.asList("Требуется лечение.", "Вы можете помочь.", "Помогите!", "Нужна помощь!", "Help!");
 		String randomHelp = helps.get(new Random().nextInt(helps.size())); 
-		String tags = "#ДобротаПодаритЖизнь #СпасиРебёнка";
+		String tags = "#ДобротаПодаритЖизнь #СотвориБлаго";
 
 		int id = 2367;
 		String link = "http://helpchildren.online/?id=" + id;
@@ -50,12 +50,7 @@ public class testcurrent {
 		List<String> twits = Arrays.asList("random1", "random2", "random3", "random4");
 		String randomTwit = twits.get(new Random().nextInt(twits.size())); 
 		
-		List<String> details = new ArrayList<String>(); 
-		details.add(twcontent);
-		details.add(randomHelp);
-		details.add(link);
-		details.add(tags);
-		details.add(String.format("%n%s%n", randomTwit));
+		List<String> details = Arrays.asList(twcontent, randomHelp, link, tags, String.format("%n%s%n", randomTwit));
 		
 		Collections.shuffle(details);
 		//for (String stat : details) System.out.println(stat);
@@ -64,7 +59,7 @@ public class testcurrent {
 
 	}
 
-	@Test
+	//@Test
 	public void testStripTwits() {
 		List<String> statuses = Arrays.asList(
 			"@YuraKas1 Число пострадавших при обрушении стены кинотеатра #ff в Балашихе возросло до 10 https://t.co/nOeX5Yhkm9 https://t.co/fiQhYR5ory qq @YuraKas1",
@@ -88,34 +83,12 @@ public class testcurrent {
 			"Госдеп отрицает участие #ФБР в обысках дипсобственности РФ и призывает отказаться от ответных мер… https://t.co/4rxbhZsVBZ",
 			"Во Флориде о приближении урагана «Ирма» оповещают на русском языке https://t.co/zIMBkcweXC"
 			);
-		String shablon = "(http\\S*\\s)|(http\\S*)|(#\\p{L}+\\s)|(@\\S*\\s)|(@\\S*)";
-		for (String stat : statuses) {
-			//System.out.println(stat);
-			Pattern p = Pattern.compile(shablon);
-			Matcher m = p.matcher(stat);
-			String content = m.replaceAll("");
-			content = content.substring(0, Math.min(78, content.length())) + "...";
+		
+		TwitStripper x = new TwitStripper(statuses, true);
+		List<String> y = x.GetStrippedList();
+		for (String content : y) {
 			System.out.println(content);		
-			}
-		String content = statuses.get(0);
-/*		Pattern pattern = Pattern.compile("http.*oauth_verifier=?(.*)$",
-				Pattern.CASE_INSENSITIVE);
-		Matcher m = pattern.matcher(content);
-		result = m.matches() ? m.group(1) : null;
-*/		
-		// String shablon = "#\\w+";
-		//String shablon = "#\\p{L}+";
-		
-		
-		/*/ Reading tag without #
-		while (m.find()) {
-			//list.add(m.group().substring(1).toLowerCase());
-			//System.out.println(m.group().substring(1).toLowerCase());		
-			System.out.println(content.replaceAll(m.group(), ""));		
 		}
-*/
-
-	
 	}
 	
 /*	public static void main2(String[] args) {

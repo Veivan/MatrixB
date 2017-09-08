@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 
 import dbaware.DbConnector;
 import service.Constants;
+import service.TwitStripper;
 import service.Utils;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -60,16 +62,25 @@ public class SendTwitCommand implements TwiCommand {
 			String picenc = json.getString("picture");
 			byte[] decodedBytes = Base64.getDecoder().decode(picenc.getBytes());
 
-			twcontent = String.format(
-					"%s %s. Требуется лечение, Вы можете помочь.%n", pname,
-					ppage)
-					+ "http://helpchildren.online/?id=" + id;
+			//twcontent = String.format("%s %s. Требуется лечение, Вы можете помочь.%n", pname,ppage)
+			//		+ "http://helpchildren.online/?id=" + id;
+
+			twcontent = String.format("%s %s.%n", pname, ppage);
+			List<String> helps = Arrays.asList("Требуется лечение.", "Вы можете помочь.", "Помогите!", "Нужна помощь!", "Help!");
+			String randomHelp = helps.get(new Random().nextInt(helps.size())); 
+			//String tags = "#ДобротаПодаритЖизнь #СотвориБлаго";
+			String link = "http://helpchildren.online/?id=" + id;
+			String randomTwit = GetRandomStatusText();
+
+			List<String> details = Arrays.asList(twcontent, randomHelp, link, tags, String.format("%n%s%n", randomTwit));		
+			Collections.shuffle(details);
+			String listString = String.join(" ", details);	
 
 			if (decodedBytes != null) {
 				is = new ByteArrayInputStream(decodedBytes);
 				fileName = Integer.toString(id) + ".jpg";
 			}
-			latestStatus = new StatusUpdate(twcontent + " " + tags); // " #ПодариЖизнь";
+			latestStatus = new StatusUpdate(listString); 
 		}
 
 		if (!Utils.empty(fileName))
@@ -91,13 +102,20 @@ public class SendTwitCommand implements TwiCommand {
 		dbConnector.StoreStatus(sendedstatus);
 	}
 	
-	private String GetRandomStatus() throws TwitterException
+	private String GetRandomStatusText() throws TwitterException
 	{
 		List<String> ScreenNames = Arrays.asList("ntvru", "vesti_news", "lentaruofficial", "lifenews_ru");
 		String randomScreenName = ScreenNames.get(new Random().nextInt(ScreenNames.size())); 
 		List<Status> statuses = twitter.getUserTimeline(randomScreenName);
-		// TODO здесь сделать очистку твитов от ссылок и хэштегов и затем сохранение в БД
-		String twittext = statuses.get(new Random().nextInt(statuses.size())).getText(); 
+		
+		TwitStripper x = new TwitStripper(statuses);
+		List<String> stripped = x.GetStrippedList();
+		String twittext = stripped.get(new Random().nextInt(stripped.size())); 
+		/*TODO/ Saving texts 2 DB
+		for (String item : stripped) {
+			System.out.println(item);		
+			//dbConnector.StoreStatus(item);
+		} */
 		return twittext;
 	}
 
