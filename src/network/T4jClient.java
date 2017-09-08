@@ -272,6 +272,11 @@ public class T4jClient implements IJobExecutor {
 						twicommand.execute();
 						result = true;
 						break;
+					case READUSERTIMELINE:
+						twicommand = combuilder.GetCommand();
+						twicommand.execute();
+						result = true;
+						break;
 					case SETAVA:
 						if (user.isDefaultProfileImage()) {
 							ConcreteAcc theAcc = (ConcreteAcc) this.acc;
@@ -298,17 +303,6 @@ public class T4jClient implements IJobExecutor {
 								job.getDescription());
 						System.out.println(us.getScreenName() + " : "
 								+ us.getId());
-						result = true;
-						break;
-					case READUSERTIMELINE:
-						statuses = twitter.getUserTimeline();
-						System.out.println("Showing @" + user.getScreenName()
-								+ "'s user timeline.");
-						for (Status stat : statuses) {
-							System.out.println(stat.getCreatedAt() + " @"
-									+ stat.getUser().getScreenName() + " - "
-									+ stat.getText());
-						}
 						result = true;
 						break;
 					case CHECKENABLED:

@@ -1,5 +1,6 @@
 package network;
 
+import twcommands.ReadUserTimeLineCommand;
 import twcommands.ReadHomeTimeLineCommand;
 import twcommands.SendTwitCommand;
 import twitter4j.Twitter;
@@ -46,6 +47,7 @@ public class CommandBuilder {
 		case NEWUSERBRUT:
 			break;
 		case READUSERTIMELINE:
+			intCommand = new ReadUserTimeLineCommand(job, user, twitter);
 			break;
 		case REPLAY:
 			break;

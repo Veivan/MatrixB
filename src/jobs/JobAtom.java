@@ -19,7 +19,7 @@ public class JobAtom {
 	 */
 	private String TContent;
 	private JsonParser parser;
-
+	
 	/**
 	 * Свойство - ID группы, которой назначено задание. Если = 0, значит задание
 	 * относится ко всем группам.
@@ -35,7 +35,7 @@ public class JobAtom {
 	public boolean IsFinished = false;
 
 	/** for UPDATEPROFILE only */
-	private String name;
+	private String name; // really ScreenName
 	private String url = "";
 	private String location = "Гондурас";
 	private String description = "";
@@ -43,12 +43,19 @@ public class JobAtom {
 	private byte[] profileImage = null;
 	private byte[] profileBanner = null;
 
-	/** Construct for TWIT */
-	public JobAtom(long JobID, String Type, String TContent) {
+	/** Construct for TWIT or READUSERTIMELINE
+	 * @param pString - строка
+	 */
+	public JobAtom(long JobID, String Type, String pString) {
 		this.JobID = JobID;
 		this.Type = Constants.JobType.valueOf(Type.toUpperCase());
-		this.TContent = TContent;
-		this.parser = new JsonParser(TContent);
+		if (this.Type == JobType.TWIT)
+		{
+			this.TContent = pString;
+			this.parser = new JsonParser(pString);
+		}
+		else // READUSERTIMELINE
+			this.name = pString;			
 	}
 
 	/** Construct for UPDATEPROFILE */
@@ -71,7 +78,7 @@ public class JobAtom {
 		else
 			this.profileBanner = image.clone();
 	}
-
+	
 	/** Construct new copy */
 	public JobAtom(JobAtom job) {
 		this.JobID = job.JobID;

@@ -2,7 +2,10 @@ package twcommands;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.Random;
 
 import org.json.JSONObject;
 
@@ -12,6 +15,7 @@ import service.Utils;
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import jobs.JobAtom;
 import inrtfs.TwiCommand;
 
@@ -44,6 +48,7 @@ public class SendTwitCommand implements TwiCommand {
 					fileName = "pic" + System.currentTimeMillis() + ".jpg";
 				}
 			}
+			latestStatus = new StatusUpdate(twcontent + " " + tags); 
 			break;
 		case "1": // helpchildren
 			// Получение id и картинки
@@ -64,8 +69,8 @@ public class SendTwitCommand implements TwiCommand {
 				is = new ByteArrayInputStream(decodedBytes);
 				fileName = Integer.toString(id) + ".jpg";
 			}
+			latestStatus = new StatusUpdate(twcontent + " " + tags); // " #ПодариЖизнь";
 		}
-		latestStatus = new StatusUpdate(twcontent + " " + tags); // " #ПодариЖизнь";
 
 		if (!Utils.empty(fileName))
 			// Загрузка картинки в твиттер
@@ -84,6 +89,16 @@ public class SendTwitCommand implements TwiCommand {
 		// Твиттинг
 		Status sendedstatus = twitter.updateStatus(latestStatus);
 		dbConnector.StoreStatus(sendedstatus);
+	}
+	
+	private String GetRandomStatus() throws TwitterException
+	{
+		List<String> ScreenNames = Arrays.asList("ntvru", "vesti_news", "lentaruofficial", "lifenews_ru");
+		String randomScreenName = ScreenNames.get(new Random().nextInt(ScreenNames.size())); 
+		List<Status> statuses = twitter.getUserTimeline(randomScreenName);
+		// TODO здесь сделать очистку твитов от ссылок и хэштегов и затем сохранение в БД
+		String twittext = statuses.get(new Random().nextInt(statuses.size())).getText(); 
+		return twittext;
 	}
 
 }

@@ -52,6 +52,9 @@ public class testT4jClient {
 		/*String READHOMETIMELINE = "{\"command\": \"READHOMETIMELINE\" } ";
 		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE); */
 		
+		//String READUSERTIMELINE = "{\"command\": \"READUSERTIMELINE\" } ";
+		JobAtom job = new JobAtom(12L, "READUSERTIMELINE", "ntvru"); 
+		
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				
 		//String RETWIT = "{\"command\": \"RETWIT\" , \"twit_id\" : \"843532240860659713\"} ";
@@ -66,13 +69,14 @@ public class testT4jClient {
 		//String query = "q=#helpchildren&geocode=55.751244,37.618423,10km&result_type=recent";
 		//String query = "#helpchildren";
 		//String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#helpchildren\" } ";
-		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#посудасервиз\" } ";
-		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); 
+		/*String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#посудасервиз\" } ";
+		JobAtom job = new JobAtom(102L, "SEARCH", SEARCH); */
 
 		ConcreteAcc acc = new ConcreteAcc(2702, 0);  
 		MatrixAct theact = new MatrixAct(job, acc);
 		
-		String proxy = "37.9.40.132:8085"; // good HTTPS  
+		//String proxy = "37.9.40.132:8085"; // good HTTPS on RuVDS
+		String proxy = "178.212.43.163:8080"; // good HTTPS
 		//String proxy = "66.110.216.105:39431"; // good SOCKS5  
 		
 		// 130 51.141.32.241:8080 test error code
@@ -91,12 +95,12 @@ public class testT4jClient {
 		try {
 			t4wclient.Execute();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
-/**/	
+/*	
 	public static void main(String[] args) {
 		testT4jClient t= new testT4jClient();
 		String SEARCH = "{\"command\": \"SEARCH\" , "	+ " \"query\" : \"#посудасервиз\" } ";
@@ -115,11 +119,10 @@ public class testT4jClient {
 		try {
 			t4wclient.Execute();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		}
 	} 
-
+*/
 
 }
