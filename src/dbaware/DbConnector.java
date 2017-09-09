@@ -675,6 +675,26 @@ public class DbConnector {
 	}
 
 	/**
+	 * Save random text in DB
+	 */
+	public void StoreRandText(String text) {
+		if (text.isEmpty())
+			return;
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spRandTextAdd](?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setString("text", text);
+			sp.execute();
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			DbConnector.logger.error("StoreRandText exception", e);
+		}
+	}
+
+	/**
 	 * Check if Status retweeted by user
 	 */
 	public boolean isRetweetedByUser(long statusId, long accID) {

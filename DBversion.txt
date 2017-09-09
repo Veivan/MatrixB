@@ -1,3 +1,4 @@
+2017.9.9.1 - Add mRandText table
 2017.5.24.1 - Add mGroupRegim table
 2017.5.2.1 - Add "forwork" to DicGroups
 2017.4.25.1 - Change spAccountsSelect

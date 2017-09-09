@@ -215,6 +215,14 @@ CREATE TABLE [dbo].[mProxyAcc](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[mRandText](
+	[rnt_id] [bigint] IDENTITY(1,1) NOT NULL,
+	[randtext] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mTasks](
 	[id_Task] [bigint] IDENTITY(1,1) NOT NULL,
 	[TaskDate] [smalldatetime] NOT NULL,
@@ -269,7 +277,7 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[twTwits](
 	[tw_id] [bigint] NOT NULL,
-	[status] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NULL,
+	[status] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NULL,
 	[creator_id] [bigint] NULL,
 	[created_at] [datetimeoffset](2) NULL,
 	[favorite_count] [int] NULL,
@@ -285,5 +293,14 @@ CREATE TABLE [dbo].[twTwits](
 	[retweeted] [bit] NULL,
 	[isRetweet] [bit] NULL,
 	[retweeted_id] [bigint] NULL
+) ON [PRIMARY]
+
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[user_tbl](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
+	[age] [int] NULL
 ) ON [PRIMARY]
 

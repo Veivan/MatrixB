@@ -62,9 +62,6 @@ public class SendTwitCommand implements TwiCommand {
 			String picenc = json.getString("picture");
 			byte[] decodedBytes = Base64.getDecoder().decode(picenc.getBytes());
 
-			//twcontent = String.format("%s %s. Требуется лечение, Вы можете помочь.%n", pname,ppage)
-			//		+ "http://helpchildren.online/?id=" + id;
-
 			twcontent = String.format("%s %s.%n", pname, ppage);
 			List<String> helps = Arrays.asList("Требуется лечение.", "Вы можете помочь.", "Помогите!", "Нужна помощь!", "Help!");
 			String randomHelp = helps.get(new Random().nextInt(helps.size())); 
@@ -72,9 +69,18 @@ public class SendTwitCommand implements TwiCommand {
 			String link = "http://helpchildren.online/?id=" + id;
 			String randomTwit = GetRandomStatusText();
 
+			// Определение длины будущего твита без рандомной части
+			List<String> predetails = Arrays.asList(twcontent, randomHelp, link, tags);		
+			String listString = String.join(" ", predetails);	
+			int randomlen = 138 - listString.length();
+			String points = "...";
+			// Усечение рандомной части при необходимости
+			if (randomTwit.length() > randomlen)
+				randomTwit = randomTwit.substring(0, randomlen-points.length()) + points;
+
 			List<String> details = Arrays.asList(twcontent, randomHelp, link, tags, String.format("%n%s%n", randomTwit));		
 			Collections.shuffle(details);
-			String listString = String.join(" ", details);	
+			listString = String.join(" ", details);	
 
 			if (decodedBytes != null) {
 				is = new ByteArrayInputStream(decodedBytes);
@@ -110,12 +116,11 @@ public class SendTwitCommand implements TwiCommand {
 		
 		TwitStripper x = new TwitStripper(statuses);
 		List<String> stripped = x.GetStrippedList();
-		String twittext = stripped.get(new Random().nextInt(stripped.size())); 
-		/*TODO/ Saving texts 2 DB
+		// Saving texts 2 DB
 		for (String item : stripped) {
-			System.out.println(item);		
-			//dbConnector.StoreStatus(item);
-		} */
+			dbConnector.StoreRandText(item);
+		} 
+		String twittext = stripped.get(new Random().nextInt(stripped.size())); 
 		return twittext;
 	}
 

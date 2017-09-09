@@ -15,7 +15,6 @@ public class TwitStripper {
 
 	private List<String> twtexts;
 	private String shablon = "(http\\S*\\s)|(http\\S*)|(#\\p{L}+\\s)|(@\\S*\\s)|(@\\S*)";
-	private int twlen = 77;
 	
 	public TwitStripper(final List<Status> statuses) {
 		this.twtexts = new ArrayList<String>();
@@ -36,8 +35,6 @@ public class TwitStripper {
 			Pattern p = Pattern.compile(shablon);
 			Matcher m = p.matcher(content);
 			String twtext = m.replaceAll("");
-			if (twtext.length() > twlen)
-				twtext = twtext.substring(0, twlen) + "...";
 			twtexts.set(i, twtext);
 			}
 		return twtexts;
