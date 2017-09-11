@@ -42,11 +42,8 @@ public class MatrixEntry extends Thread{
 		brain.setAccounts(accounts);
 		engine.setAccounts(accounts);
 
-		/*
-		 * engine.setUserAction(1, "Like", ""); engine.setUserAction(2, "act2", "");
-		 * engine.setUserAction(1, "act3", "");
-		 */
-	
+		dbConnector.FillGroupsRandomly();
+		
 		// Homeworks refreshing
 		Homeworks newschedule = dbConnector.getHomeworks(System.currentTimeMillis());
 		boolean ischanged = homeworks.IsDifferent(newschedule);

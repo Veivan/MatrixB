@@ -90,6 +90,23 @@ public class DbConnector {
 	}
 
 	/**
+	 * Заполнение рабочих групп случайными акками.
+	 */
+	public void FillGroupsRandomly() {
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spFillBelong2Rand]()}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.execute();
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			DbConnector.logger.error("FillGroupsRandomly exception", e);
+		}
+	}
+	
+	/**
 	 * Returns enabled Accounts from DB
 	 */
 	public List<IAccount> getAccounts() {
