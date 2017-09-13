@@ -23,7 +23,9 @@ GO
 ALTER TABLE dbo.mRandText ADD
 	pic_id int NULL,
 	url nvarchar(300) NULL,
-	twit_id int NOT NULL
+	twit_id int NOT NULL,
+	urlshort [nvarchar](30) NULL
+
 GO
 DECLARE @v sql_variant 
 SET @v = N'Link to DicTwType'
@@ -108,6 +110,7 @@ BEGIN
 	SELECT [randtext]
       ,[fpicture]
       ,[url]
+	  ,[urlshort]
 	FROM [dbo].[mRandText] R
 		INNER JOIN @tmp T ON T.[rnt_id] = R.[rnt_id]
 		LEFT JOIN [dbo].[mPicture] P ON P.[pic_id] = R.[pic_id]

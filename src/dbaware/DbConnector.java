@@ -764,7 +764,7 @@ public class DbConnector {
 			CallableStatement sp = conn.prepareCall(query);
 			ResultSet rs = sp.executeQuery();
 			if (rs.next())
-				content = new RandomTwitContent(rs.getString("randtext"), rs.getString("url"), 
+				content = new RandomTwitContent(rs.getString("randtext"), rs.getString("urlshort"), 
 					rs.getBytes("fpicture"), twit_id);
 			rs.close();
 			sp.close();

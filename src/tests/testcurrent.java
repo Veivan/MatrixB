@@ -45,7 +45,7 @@ public class testcurrent {
 	@Test
 	public void testSaveJPG() {
 		DbConnector dbConnector = DbConnector.getInstance();
-		int pic_id = 1745;
+		int pic_id = 1749;
 		byte[] picture = dbConnector.getPictureByID(pic_id);
 		String pfName = "D:/Temp/1.jpg";
 

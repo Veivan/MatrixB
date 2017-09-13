@@ -476,6 +476,7 @@ BEGIN
 	SELECT [randtext]
       ,[fpicture]
       ,[url]
+	  ,[urlshort]
 	FROM [dbo].[mRandText] R
 		INNER JOIN @tmp T ON T.[rnt_id] = R.[rnt_id]
 		LEFT JOIN [dbo].[mPicture] P ON P.[pic_id] = R.[pic_id]

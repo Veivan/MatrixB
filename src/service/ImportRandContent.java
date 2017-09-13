@@ -102,5 +102,7 @@ public class ImportRandContent extends JFrame{
 		}
 		dbConnector.StoreRandText(rtext, pic_id, url.getText(), twit_id);
 		text.setText("");
+		picfile.setText("");
+		url.setText("");
 	}
 }
