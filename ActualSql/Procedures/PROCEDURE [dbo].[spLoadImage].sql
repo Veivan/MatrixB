@@ -16,5 +16,6 @@ AS
 BEGIN
 	SET NOCOUNT ON;	
 	INSERT INTO [dbo].[mPicture] (fpicture, gender, ptype_id) VALUES (@pic, @gender, @ptype_id)
+	RETURN SCOPE_IDENTITY()
 END
 GO

@@ -118,7 +118,7 @@ public class SendTwitCommand implements TwiCommand {
 		List<String> stripped = x.GetStrippedList();
 		// Saving texts 2 DB
 		for (String item : stripped) {
-			dbConnector.StoreRandText(item);
+			dbConnector.StoreRandText(item, 0, null, 1);
 		} 
 		String twittext = stripped.get(new Random().nextInt(stripped.size())); 
 		return twittext;

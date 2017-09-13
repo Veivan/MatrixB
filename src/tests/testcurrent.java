@@ -1,5 +1,9 @@
 package tests;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import dbaware.DbConnector;
 import service.TwitStripper;
 import twitter4j.Status;
 
@@ -35,7 +40,35 @@ public class testcurrent {
 		}
 	}
 
+	/* Save foto to file
+	*/
 	@Test
+	public void testSaveJPG() {
+		DbConnector dbConnector = DbConnector.getInstance();
+		int pic_id = 1745;
+		byte[] picture = dbConnector.getPictureByID(pic_id);
+		String pfName = "D:/Temp/1.jpg";
+
+		SavePicture(picture, pfName);
+	}
+
+	private void SavePicture(byte[] picture, String filename) {
+		FileOutputStream fos = null;
+		// write binary stream into file
+		File file = new File(filename);
+		try {
+			fos = new FileOutputStream(file);
+			fos.write(picture);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	//@Test
 	public void testshuffle() {
 		String pname = "Иван Иванов";
 		String ppage = "10 лет";

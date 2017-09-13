@@ -177,7 +177,7 @@ public class DbConnector {
 
 
 	/**
-	 * Возвращает случайную картинку из БД
+	 * Возвращает случайную картинку из таблицы mPicture
 	 */
 	public byte[] getRandomPicture(Gender gender, int ptype_id) {
 		byte[] bytes = null;
@@ -214,7 +214,7 @@ public class DbConnector {
 	}
 
 	/**
-	 * Возвращает указанную картинку из БД
+	 * Возвращает указанную картинку из таблицы mPicture
 	 */
 	public byte[] getPictureByID(int pic_id) {
 		byte[] bytes = null;
@@ -245,6 +245,40 @@ public class DbConnector {
 		}
 		return bytes;
 	}
+
+	/**
+	 * Возвращает указанную картинку из таблицы mRandText
+	 */
+	public byte[] getRandPictureByID(int pic_id) {
+		byte[] bytes = null;
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spGetPictureByID](?,?)}";
+			CallableStatement sp = conn.prepareCall(query);
+			sp.registerOutParameter(2, java.sql.Types.BLOB);
+			sp.setInt("pic_id", pic_id);
+
+			sp.executeUpdate();
+			Blob pic = sp.getBlob("pic");
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte[] buf = new byte[1024];
+			InputStream in = pic.getBinaryStream();
+			int n = 0;
+			while ((n = in.read(buf)) >= 0) {
+				baos.write(buf, 0, n);
+			}
+			in.close();
+			bytes = baos.toByteArray();
+			baos.close();
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			logger.error("getRandPictureByID exception", e);
+		}
+		return bytes;
+	}
+
 
 	/**
 	 * Returns Single Account from DB
@@ -692,16 +726,59 @@ public class DbConnector {
 	}
 
 	/**
-	 * Save random text in DB
+	 * Save image to DB
 	 */
-	public void StoreRandText(String text) {
+	public int SaveImage(byte[] picture, int ptype_id) {
+		int pic_id = 0;
+		try {
+			Connection conn = getConnection();
+			String query = "{? = call [dbo].[spLoadImage](?,?,?)}";	
+			CallableStatement sp = conn.prepareCall(query);
+			sp.registerOutParameter(1, java.sql.Types.INTEGER);
+			if (picture == null)
+				sp.setNull("pic", java.sql.Types.VARBINARY);
+			else 			
+				sp.setBytes("pic", picture);
+			sp.setNull("gender", java.sql.Types.BIT);
+			sp.setInt("ptype_id", ptype_id);
+			sp.execute();		
+			pic_id = sp.getInt(1);
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			System.out.println("SaveImage exception : " + e.getMessage());
+		}
+		return pic_id;
+	}
+
+	/**
+	 * Save random text in DB
+	 * @param text twit text
+	 * @param picture twit picture
+	 * @param url twit url
+	 * @param twit_id Link to DicTwType - project type
+	 */
+	public void StoreRandText(String text, int pic_id, String url, int twit_id) {
 		if (text.isEmpty())
 			return;
 		try {
 			Connection conn = getConnection();
-			String query = "{call [dbo].[spRandTextAdd](?)}";
+			String query = "{call [dbo].[spRandTextAdd](?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setString("text", text);
+
+			if (pic_id == 0)
+				sp.setNull("pic_id", java.sql.Types.INTEGER);
+			else 			
+				sp.setInt("pic_id", pic_id);
+
+			if (url == null)
+				sp.setNull("url", java.sql.Types.NVARCHAR);
+			else 			
+				sp.setString("url", url);
+			sp.setInt("twit_id", twit_id);
+
 			sp.execute();
 			sp.close();
 			sp = null;

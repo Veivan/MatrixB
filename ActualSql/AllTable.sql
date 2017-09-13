@@ -73,6 +73,16 @@ CREATE TABLE [dbo].[DicTaskType](
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
+CREATE TABLE [dbo].[DicTwType](
+	[id_prj] [int] IDENTITY(1,1) NOT NULL,
+	[twit_id] [int] NOT NULL,
+	[descript] [nvarchar](1000) COLLATE Cyrillic_General_CI_AS NOT NULL
+) ON [PRIMARY]
+
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Тип проекта. Задаётся в TContent задачи.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DicTwType', @level2type=N'COLUMN',@level2name=N'twit_id'
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mAcc2App](
 	[bt_id] [bigint] IDENTITY(1,1) NOT NULL,
 	[id_app] [bigint] NOT NULL,
@@ -218,9 +228,13 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[mRandText](
 	[rnt_id] [bigint] IDENTITY(1,1) NOT NULL,
-	[randtext] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL
+	[randtext] [nvarchar](max) COLLATE Cyrillic_General_CI_AS NOT NULL,
+	[pic_id] [int] NULL,
+	[url] [nvarchar](300) COLLATE Cyrillic_General_CI_AS NULL,
+	[twit_id] [int] NOT NULL
 ) ON [PRIMARY]
 
+EXEC sys.sp_addextendedproperty @name=N'MS_Description', @value=N'Link to DicTwType' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'mRandText', @level2type=N'COLUMN',@level2name=N'twit_id'
 
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
@@ -294,14 +308,5 @@ CREATE TABLE [dbo].[twTwits](
 	[retweeted] [bit] NULL,
 	[isRetweet] [bit] NULL,
 	[retweeted_id] [bigint] NULL
-) ON [PRIMARY]
-
-
-SET ANSI_NULLS ON
-SET QUOTED_IDENTIFIER ON
-CREATE TABLE [dbo].[user_tbl](
-	[id] [int] IDENTITY(1,1) NOT NULL,
-	[name] [nvarchar](50) COLLATE Cyrillic_General_CI_AS NULL,
-	[age] [int] NULL
 ) ON [PRIMARY]
 
