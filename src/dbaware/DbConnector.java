@@ -31,6 +31,7 @@ import model.ConcreteAcc;
 import model.ElementCredentials;
 import model.ElementProxy;
 import model.MatrixAct;
+import model.RandomTwitContent;
 import model.Regimen;
 import model.TwFriend;
 
@@ -245,40 +246,6 @@ public class DbConnector {
 		}
 		return bytes;
 	}
-
-	/**
-	 * Возвращает указанную картинку из таблицы mRandText
-	 */
-	public byte[] getRandPictureByID(int pic_id) {
-		byte[] bytes = null;
-		try {
-			Connection conn = getConnection();
-			String query = "{call [dbo].[spGetPictureByID](?,?)}";
-			CallableStatement sp = conn.prepareCall(query);
-			sp.registerOutParameter(2, java.sql.Types.BLOB);
-			sp.setInt("pic_id", pic_id);
-
-			sp.executeUpdate();
-			Blob pic = sp.getBlob("pic");
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			byte[] buf = new byte[1024];
-			InputStream in = pic.getBinaryStream();
-			int n = 0;
-			while ((n = in.read(buf)) >= 0) {
-				baos.write(buf, 0, n);
-			}
-			in.close();
-			bytes = baos.toByteArray();
-			baos.close();
-			sp.close();
-			sp = null;
-			freeConnection(conn);
-		} catch (Exception e) {
-			logger.error("getRandPictureByID exception", e);
-		}
-		return bytes;
-	}
-
 
 	/**
 	 * Returns Single Account from DB
@@ -767,18 +734,15 @@ public class DbConnector {
 			String query = "{call [dbo].[spRandTextAdd](?,?,?,?)}";
 			CallableStatement sp = conn.prepareCall(query);
 			sp.setString("text", text);
-
 			if (pic_id == 0)
 				sp.setNull("pic_id", java.sql.Types.INTEGER);
 			else 			
 				sp.setInt("pic_id", pic_id);
-
 			if (url == null)
 				sp.setNull("url", java.sql.Types.NVARCHAR);
 			else 			
 				sp.setString("url", url);
 			sp.setInt("twit_id", twit_id);
-
 			sp.execute();
 			sp.close();
 			sp = null;
@@ -786,6 +750,30 @@ public class DbConnector {
 		} catch (Exception e) {
 			DbConnector.logger.error("StoreRandText exception", e);
 		}
+	}
+
+	/**
+	 * Get random content for twit from DB
+	 * @param twit_id Link to DicTwType - project type
+	 */
+	public RandomTwitContent getRandomContent(int twit_id) {
+		RandomTwitContent content = null;
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spGetRandomContent]()}";
+			CallableStatement sp = conn.prepareCall(query);
+			ResultSet rs = sp.executeQuery();
+			if (rs.next())
+				content = new RandomTwitContent(rs.getString("randtext"), rs.getString("url"), 
+					rs.getBytes("fpicture"), twit_id);
+			rs.close();
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			logger.error("getRandomContent exception", e);
+		}
+		return content;
 	}
 
 	/**

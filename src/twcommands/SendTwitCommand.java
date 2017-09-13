@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import model.RandomTwitContent;
+
 import org.json.JSONObject;
 
 import dbaware.DbConnector;
@@ -39,6 +41,8 @@ public class SendTwitCommand implements TwiCommand {
 		String twcontent = job.GetContentProperty("twcontent");
 		String pic_id = job.GetContentProperty("pic_id");
 		String fileName = "";
+		String link = "";
+		String listString = "";
 		InputStream is = null;
 		switch (twit_id) {
 		case "0": // обычный твит
@@ -66,12 +70,12 @@ public class SendTwitCommand implements TwiCommand {
 			List<String> helps = Arrays.asList("Требуется лечение.", "Вы можете помочь.", "Помогите!", "Нужна помощь!", "Help!");
 			String randomHelp = helps.get(new Random().nextInt(helps.size())); 
 			//String tags = "#ДобротаПодаритЖизнь #СотвориБлаго";
-			String link = "http://helpchildren.online/?id=" + id;
+			link = "http://helpchildren.online/?id=" + id;
 			String randomTwit = GetRandomStatusText();
 
 			// Определение длины будущего твита без рандомной части
 			List<String> predetails = Arrays.asList(twcontent, randomHelp, link, tags);		
-			String listString = String.join(" ", predetails);	
+			listString = String.join(" ", predetails);	
 			int randomlen = 138 - listString.length();
 			String points = "...";
 			// Усечение рандомной части при необходимости
@@ -87,6 +91,23 @@ public class SendTwitCommand implements TwiCommand {
 				fileName = Integer.toString(id) + ".jpg";
 			}
 			latestStatus = new StatusUpdate(listString); 
+		case "2": // йога
+			RandomTwitContent rtc = dbConnector.getRandomContent(Integer.parseInt(twit_id));
+			if (rtc == null)
+				throw new Exception("getRandomContent retuns null");
+			twcontent = rtc.getText();
+			link = rtc.getUrl();
+			List<String> details2 = Arrays.asList(twcontent, link, tags);		
+			Collections.shuffle(details2);
+			
+			byte[] buf = rtc.getPicture();
+			if (buf != null) {
+				is = new ByteArrayInputStream(buf);
+				fileName = "pic" + System.currentTimeMillis() + ".jpg";
+			}
+			listString = String.join(" ", details2);	
+			latestStatus = new StatusUpdate(listString); 
+			break;
 		}
 
 		if (!Utils.empty(fileName))

@@ -90,6 +90,11 @@ public class ImportRandContent extends JFrame{
 			JOptionPane.showMessageDialog(null,"Текст отсутствует!");
 			return;
 		}
+		if (rtext.length() > 100)
+		{
+			JOptionPane.showMessageDialog(null,"Текст длиннее 100!");
+			return;
+		}
 		if (!picpath.isEmpty())
 		{
 			picture = Utils.readBytesFromFile(picpath);
