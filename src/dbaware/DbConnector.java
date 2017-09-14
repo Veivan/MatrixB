@@ -720,6 +720,37 @@ public class DbConnector {
 	}
 
 	/**
+	 * Update image in DB
+	 */
+	public int UpdateImage(int pic_id, byte[] picture, int gender, int ptype_id) {
+		try {
+			Connection conn = getConnection();
+			String query = "{call [dbo].[spUpdateImage](?, ?,?,?)}";	
+			CallableStatement sp = conn.prepareCall(query);
+			sp.setInt("pic_id", pic_id);
+			if (picture == null)
+				sp.setNull("pic", java.sql.Types.VARBINARY);
+			else 			
+				sp.setBytes("pic", picture);
+
+			if (gender == -1)
+				sp.setNull("gender", java.sql.Types.BIT);
+			else 			
+				sp.setBoolean("pic", gender != 0);
+
+			sp.setInt("ptype_id", ptype_id);
+			sp.execute();		
+			pic_id = sp.getInt(1);
+			sp.close();
+			sp = null;
+			freeConnection(conn);
+		} catch (Exception e) {
+			System.out.println("UpdateImage exception : " + e.getMessage());
+		}
+		return pic_id;
+	}
+
+	/**
 	 * Save random text in DB
 	 * @param text twit text
 	 * @param picture twit picture
@@ -774,11 +805,6 @@ public class DbConnector {
 		} catch (Exception e) {
 			logger.error("getRandomContent exception", e);
 		}
-		
-		if (content != null) {
-			logger.info("Got RandomContent : urlshort = {}", content.getUrl());
-		}
-			
 		return content;
 	}
 

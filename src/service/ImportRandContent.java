@@ -52,7 +52,8 @@ public class ImportRandContent extends JFrame{
 		btImport = new JButton("Import");
 		btImport.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					StoreText2DB();
+					//StoreText2DB();
+					UpdateImageInDB();
 			}
 		});				
 
@@ -104,5 +105,25 @@ public class ImportRandContent extends JFrame{
 		text.setText("");
 		picfile.setText("");
 		url.setText("");
+	}
+	
+	private void UpdateImageInDB() {
+		String rtext = text.getText();
+		if (rtext.isEmpty())
+		{
+			JOptionPane.showMessageDialog(null,"Отсутствует ID картинки!");
+			return;
+		}
+		int pic_id = Integer.parseInt(rtext);
+		String picpath = picfile.getText();
+		if (picpath.isEmpty())
+		{			
+			JOptionPane.showMessageDialog(null,"Отсутствует имя файла!");
+			return;
+		}
+		byte[] picture = Utils.readBytesFromFile(picpath);
+		dbConnector.UpdateImage(pic_id, picture, -1, 3);
+		text.setText("");
+		picfile.setText("");
 	}
 }
