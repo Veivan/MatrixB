@@ -774,6 +774,11 @@ public class DbConnector {
 		} catch (Exception e) {
 			logger.error("getRandomContent exception", e);
 		}
+		
+		if (content != null) {
+			logger.info("Got RandomContent : urlshort = {}", content.getUrl());
+		}
+			
 		return content;
 	}
 
