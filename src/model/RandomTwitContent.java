@@ -18,7 +18,7 @@ public class RandomTwitContent {
 	}
 
 	public String getUrl() {
-		return url;
+		return url == null ? "" : url;
 	}
 
 	public byte[] getPicture() {

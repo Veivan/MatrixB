@@ -124,6 +124,16 @@ public class testcurrent {
 		}
 	}
 	
+	//@Test
+	public void testRandom() {
+		
+		Random random = new Random();
+		for (int i = 0; i < 9; i++) {
+			double tickscnt = random.nextGaussian();
+			System.out.printf("Value: %s \n", String.valueOf(tickscnt));
+		}
+	}
+	
 /*	public static void main2(String[] args) {
 		testcurrent x = new testcurrent();
 		

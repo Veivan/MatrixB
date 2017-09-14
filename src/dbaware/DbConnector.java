@@ -760,8 +760,9 @@ public class DbConnector {
 		RandomTwitContent content = null;
 		try {
 			Connection conn = getConnection();
-			String query = "{call [dbo].[spGetRandomContent]()}";
+			String query = "{call [dbo].[spGetRandomContent](?)}";
 			CallableStatement sp = conn.prepareCall(query);
+			sp.setInt("twit_id", twit_id);
 			ResultSet rs = sp.executeQuery();
 			if (rs.next())
 				content = new RandomTwitContent(rs.getString("randtext"), rs.getString("urlshort"), 

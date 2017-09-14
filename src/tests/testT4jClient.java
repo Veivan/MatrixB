@@ -35,11 +35,14 @@ public class testT4jClient {
 				+ " \"lat\" : \"55.751244\" , " + " \"lon\" : \"37.618423\" } ";
 		JobAtom job = new JobAtom(12L, "TWIT", TWIT2); */ 
 
-		/*String name = "Лорик Соловаева";
+		/**/
+		//String name = "Лорик Соловаева";
+		String name = "Светлана Керимова";
+		//String url = "https://www.yandex.ru/";
 		String url = "";
 		String location = "Гондурас";
 		String description = "Мне бы в небо...";
-		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); */
+		JobAtom job = new JobAtom(10L, "UPDATEPROFILE", name, url, location, description); 
 		
 		/*byte[] img = Utils.readBytesFromFile("c:\\temp\\a1.png");	
 		JobAtom job = new JobAtom(10L, "SETBANNER", img); */ 
@@ -53,7 +56,7 @@ public class testT4jClient {
 		JobAtom job = new JobAtom(12L, "READHOMETIMELINE", READHOMETIMELINE); */
 		
 		//String READUSERTIMELINE = "{\"command\": \"READUSERTIMELINE\" } ";
-		JobAtom job = new JobAtom(12L, "READUSERTIMELINE", "ntvru"); 
+		//JobAtom job = new JobAtom(12L, "READUSERTIMELINE", "ntvru"); 
 		
 		//JobAtom job = new JobAtom(100L, "NEWUSER", "");  
 		//JobAtom job = new JobAtom(101L, "CHECKENABLED", "");  				

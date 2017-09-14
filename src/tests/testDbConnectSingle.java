@@ -2,11 +2,16 @@ package tests;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import model.ElementProxy;
+import model.RandomTwitContent;
 import model.TwFriend;
 
 import org.junit.Before;
@@ -29,6 +34,24 @@ public class testDbConnectSingle {
 	}
 
 	@Test
+	public void testgetRandomContente() throws Exception {
+		int twit_id = 2;
+		RandomTwitContent content = dbConnector.getRandomContent(twit_id);
+		System.out.println(content.getText());
+		System.out.println(content.getUrl());
+		
+		/*String tags = "#dd";
+		List<String> details2 = Arrays.asList(content.getText(), content.getUrl(), tags);	
+		Predicate<String> itemPredicate = p-> p == null;     
+		details2.removeIf(itemPredicate);
+		Collections.shuffle(details2);
+		String listString = String.join(" ", details2);	
+		System.out.println(listString);*/
+
+		assertFalse(content == null);
+	}
+	
+	//@Test
 	public void testgetRandomPicture() throws Exception {
 		Gender gender = Gender.FEMALE;
 		int ptype_id = 2;
